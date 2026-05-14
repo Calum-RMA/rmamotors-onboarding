@@ -1,0 +1,3041 @@
+import React, { useState, useEffect } from 'react';
+
+const sGet = async (key) => {
+  try {
+    const r = await window.storage.get(key);
+    return r ? JSON.parse(r.value) : null;
+  } catch {
+    return null;
+  }
+};
+const sSet = async (key, val) => {
+  try {
+    await window.storage.set(key, JSON.stringify(val));
+    return true;
+  } catch {
+    return false;
+  }
+};
+const sList = async (prefix) => {
+  try {
+    const r = await window.storage.list(prefix);
+    return r?.keys || [];
+  } catch {
+    return [];
+  }
+};
+
+const MGMT_PASSWORD = 'RMAmanager2024';
+
+const QUIZZES = {
+  sales: {
+    label: 'Sales & CRM',
+    icon: '📋',
+    questions: [
+      {
+        q: 'What is the maximum time to contact a lead assigned during your shift?',
+        opts: [
+          'Within 60 seconds',
+          'Within 5 minutes of assignment',
+          'Within 30 minutes',
+          'Within 1 hour',
+        ],
+        correct: 1,
+        exp: 'Per the Sales SOP: leads assigned during shift must be contacted within 5 minutes. Overnight leads get 30 minutes from the start of the next shift.',
+      },
+      {
+        q: 'What must you NEVER change in Eskimo CRM once a lead is created?',
+        opts: [
+          "The customer's name",
+          'The vehicle of interest',
+          'The original lead source',
+          'The assigned salesperson',
+        ],
+        correct: 2,
+        exp: 'The original lead source must never be altered. If unknown, ask the customer during first contact and update immediately.',
+      },
+      {
+        q: 'What must you send within 5 minutes of completing the first call?',
+        opts: [
+          'A WhatsApp text with the car price',
+          'A personalised Snap Cell video — filmed in front of the specific car they enquired about',
+          'A link to the RMA Motors website',
+          'A finance pre-qualification form',
+        ],
+        correct: 1,
+        exp: 'A personalised Snap Cell video must be sent within 5 minutes. Must show your face and be recorded in front of the exact car enquired about.',
+      },
+      {
+        q: 'Who is the ONLY person authorised to approve discounts?',
+        opts: [
+          'The Sales Representative handling the deal',
+          'Any senior sales rep on the floor',
+          'The GM / Naz (Directors) only',
+          'The Department Manager',
+        ],
+        correct: 2,
+        exp: 'All discounts must be authorised by GM/Naz (Directors) only. No verbal approvals are valid under any circumstances.',
+      },
+      {
+        q: 'How long do you own a lead before handover to a Closer?',
+        opts: ['24 hours', '48 hours', '72 hours', '7 days'],
+        correct: 2,
+        exp: 'Per the job description: the Setter owns every lead for the first 72 hours. After that it is handed to a Closer for re-engagement.',
+      },
+      {
+        q: 'Which three things must a new setter NEVER do in their first month?',
+        opts: [
+          'Fail to log CRM activity, over-promise or give inaccurate info, and miss follow-up timeframes',
+          'Send Snap Cells, ask qualifying questions, and use scripts',
+          'Shadow reps, attend team meetings, and review call recordings',
+          'Book appointments, update CRM, and handle objections',
+        ],
+        correct: 0,
+        exp: 'The three critical mistakes: failing to log all CRM activity, over-promising inaccurate information, and not following up within the required timeframe.',
+      },
+    ],
+  },
+  finance: {
+    label: 'Finance & Admin',
+    icon: '🏦',
+    questions: [
+      {
+        q: 'How many copies of the signed deal sheet are created, and where does each go?',
+        opts: [
+          '2 copies — customer and F&I',
+          '3 copies — customer, F&I, and Accounts',
+          '1 copy stored in the customer file',
+          '4 copies including workshop',
+        ],
+        correct: 1,
+        exp: '3 copies always: one for the customer, one for F&I, one for Accounts (with deposit receipt).',
+      },
+      {
+        q: 'What does receiving the LPO (Loan Purchase Order) trigger?',
+        opts: [
+          'Vehicle immediately handed to customer',
+          'F&I prepares Sales Agreement or Hayaza mortgage request, and PDI + car care begins',
+          'The sales rep is notified the deal is complete',
+          'Vehicle sent directly for RTA registration',
+        ],
+        correct: 1,
+        exp: 'The LPO triggers F&I to prepare the Sales Agreement or the Hayaza request for mortgage. PDI and car care also begin at this stage.',
+      },
+      {
+        q: "Why is the customer's Emirates ID collected before handover?",
+        opts: [
+          'For the customer loyalty programme',
+          'To verify employment status',
+          "To register the vehicle in the customer's name through the RTA portal",
+          'To comply with insurance requirements',
+        ],
+        correct: 2,
+        exp: "F&I uses the Emirates ID to create the E-Certificate and register the vehicle in the customer's name through the RTA portal.",
+      },
+      {
+        q: 'Who coordinates the PDI (Pre-Delivery Inspection)?',
+        opts: [
+          'The Sales Representative',
+          'The F&I team — by pushing the line to start the PDI',
+          'The Marketing team',
+          'The customer directly',
+        ],
+        correct: 1,
+        exp: 'Per the F&I SOP: the F&I team coordinates the PDI by pushing the line to the prep team.',
+      },
+      {
+        q: 'What car care services can F&I coordinate before delivery?',
+        opts: [
+          'Only a basic wash',
+          'Ceramic coating, PPF, detailing, and window tinting',
+          'Engine service and tyre replacement only',
+          'Photography and advertising only',
+        ],
+        correct: 1,
+        exp: 'Per the F&I SOP: F&I notifies Car Care to perform ceramic coating, PPF, detailing, and window tinting as required before delivery.',
+      },
+      {
+        q: 'What are the final steps before vehicle registration is complete?',
+        opts: [
+          'Sign the deal sheet and collect deposit',
+          'Create the E-Cert in the RTA portal, arrange a driver for registration, then notify Sales Rep and customer',
+          'Hand the keys to the customer and request a Google review',
+          'F&I sends the finance application to the bank',
+        ],
+        correct: 1,
+        exp: 'F&I creates the E-Certificate in the RTA portal, a driver completes the physical registration, then both the Sales Rep and customer are notified.',
+      },
+    ],
+  },
+  marketing: {
+    label: 'Marketing',
+    icon: '📣',
+    questions: [
+      {
+        q: 'What is the primary function of the Marketing Department at RMA Motors?',
+        opts: [
+          'Handling vehicle sales and negotiations',
+          'Generating leads, promoting brand visibility, and managing vehicle listings across platforms',
+          'Managing inventory and physical logistics',
+          'Overseeing finance and accounting',
+        ],
+        correct: 1,
+        exp: "Marketing's primary function is lead generation, brand visibility, and managing all vehicle listings across digital platforms.",
+      },
+      {
+        q: 'Which factor requires an IMMEDIATE update or removal across ALL platforms?',
+        opts: [
+          'A minor description correction',
+          'A new vehicle arrival',
+          'The car is sold or its reserved/viewing status changes',
+          'A price drop below AED 1,000',
+        ],
+        correct: 2,
+        exp: 'When a car is sold or its reserved/viewing status changes, all listings must be updated or removed immediately across every platform — no delay.',
+      },
+      {
+        q: 'How quickly should a car be posted live after reconditioning sign-off?',
+        opts: [
+          'Same day within 2 hours',
+          'Within 24 hours',
+          'Within 48 hours',
+          'Within 1 week',
+        ],
+        correct: 1,
+        exp: 'The goal is to post live within 24 hours of reconditioning sign-off. Photography is requested by the Purchaser immediately upon vehicle arrival.',
+      },
+      {
+        q: 'Which departments does Marketing coordinate with most to get cars live?',
+        opts: [
+          'HR and Finance only',
+          'Sales/Management, Inventory/Logistics, and Purchasing/Management',
+          'Workshop and Accounts only',
+          'Only the Sales team',
+        ],
+        correct: 1,
+        exp: 'Marketing primarily coordinates with Sales/Management, Inventory/Logistics, and Purchasing/Management.',
+      },
+      {
+        q: 'As a setter, what personal assets must you build and maintain?',
+        opts: [
+          'Only vehicle photos and price lists',
+          'Intro to you/RMA video, 3 FAQ videos, authority/expert video, walkaround Snap Cells, and social proof videos',
+          'Social media profile and LinkedIn posts only',
+          'No personal assets required',
+        ],
+        correct: 1,
+        exp: 'Every setter must build: intro to you and RMA video, 3 FAQ videos, authority/expert video, vehicle walkaround Snap Cells, and social proof/testimonial videos.',
+      },
+      {
+        q: 'Which platforms does RMA Motors use for marketing?',
+        opts: [
+          'LinkedIn and email only',
+          'TV and radio only',
+          'Instagram/Facebook, Google Ads, TikTok, Dubizzle, and AutoTrader',
+          'Cold calling only',
+        ],
+        correct: 2,
+        exp: 'RMA uses Instagram/Facebook, Google Ads, TikTok, Dubizzle, AutoTrader, and the website.',
+      },
+    ],
+  },
+  purchasing: {
+    label: 'Purchasing',
+    icon: '🚗',
+    questions: [
+      {
+        q: 'What is the correct vehicle stocking flow at RMA Motors?',
+        opts: [
+          'Buy first, inspect later',
+          'Seller contact → inspect → negotiate → buy → DMS entry → prep → marketing → live listing',
+          'List online first then purchase',
+          'Agree price, buy, send straight to marketing',
+        ],
+        correct: 1,
+        exp: 'Correct flow: Seller contact → Inspect → Negotiate → Buy → DMS stock entry (within 1 hour) → Prep line → Mechanical approvals → Final QC → Marketing → Live listing.',
+      },
+      {
+        q: 'What is the deadline for entering a vehicle into Titan DMS after it physically arrives?',
+        opts: [
+          'Within 24 hours of purchase',
+          'Within one hour of physical arrival',
+          'Before workshop',
+          'After PDI sign-off',
+        ],
+        correct: 1,
+        exp: 'Per the Vehicle Sales Readiness SOP: the vehicle must be uploaded into the DMS within ONE HOUR of physical arrival. No incomplete listings are permitted.',
+      },
+      {
+        q: 'A car has been in stock for 52 days. What is the correct discount band?',
+        opts: [
+          '1–2% (soft adjust)',
+          '2–3% (tactical)',
+          '3–5% (defensive — must sell soon)',
+          '5–7% (aggressive)',
+        ],
+        correct: 2,
+        exp: 'Per the Stock Management SOP: 46–60 days = Defensive stage = 3–5% maximum discount.',
+      },
+      {
+        q: 'Who must approve all mechanical repair work in writing before it begins?',
+        opts: [
+          'The Sales Manager only',
+          'Head of Purchasing + Riccardo + the Purchaser — all three, in writing. Verbal approvals are strictly prohibited.',
+          'The Workshop team',
+          'The General Manager only',
+        ],
+        correct: 1,
+        exp: 'All three — Head of Purchasing, Riccardo, and the Purchaser — must approve the cost estimate in writing. Verbal approvals are strictly prohibited.',
+      },
+      {
+        q: 'When is payment released to the purchaser?',
+        opts: [
+          'Immediately after purchase',
+          'Once the car is listed on Dubizzle',
+          'Only when DMS listing, sales notes, repair approval trail, and Car Document Check Sheet are all fully signed off',
+          'After the customer test drives it',
+        ],
+        correct: 2,
+        exp: 'Payment is held until all four conditions are met: DMS listing complete, sales notes complete, repair approval trail recorded, and Car Document Check Sheet signed off.',
+      },
+      {
+        q: 'Which brand has the fastest average days to deposit AND highest average profit?',
+        opts: [
+          'Mercedes-Benz (37 days, AED 23,967)',
+          'Ford (22 days, AED 23,301)',
+          'Porsche (15 days, AED 31,541)',
+          'Cadillac (8 days, AED 38,748)',
+        ],
+        correct: 3,
+        exp: 'Per RMA Motors stock data: Cadillac averages just 8 days to deposit with AED 38,748 average profit.',
+      },
+    ],
+  },
+};
+
+const MODULES = [
+  {
+    id: 'm1',
+    day: 'Day 1',
+    title: 'Welcome & HR Induction',
+    phase: 1,
+    defaultUnlocked: true,
+    items: [
+      'Department Manager meet & greet — full site introduction to all staff',
+      'HR: finalise laptop, uniform, work phone, and all document sign-offs',
+      'Systems setup: Callgear, Eskimo CRM, Bayzat logins',
+      'Bring a notepad — written tests will be implemented throughout training',
+      'Read and sign: Sales SOP, Disciplinary Policy, and Company Policy',
+    ],
+  },
+  {
+    id: 'm2',
+    day: 'Day 2',
+    title: 'Sales Process & Setter Framework',
+    phase: 1,
+    defaultUnlocked: true,
+    items: [
+      'Speed to lead: contact within 5 minutes of assignment during shift',
+      'Study and memorise the 8-step Setter Framework (Scripts tab)',
+      'Understand all 6 CRM lead stages and when to update each one',
+      'Send personalised Snap Cell video within 5 min of completing first call',
+      'If no answer: x2 double dial → SMS intro → 6-message BAMFAM sequence',
+      "Appointment booked: update CRM status to 'Appointment Booked' immediately",
+      'Lead handover to Closer after 72 hours',
+    ],
+  },
+  {
+    id: 'm3',
+    day: 'Day 3',
+    title: 'Finance & Admin',
+    phase: 1,
+    defaultUnlocked: false,
+    items: [
+      'Sit with Irfan and Abrar — full F&I process walkthrough (2 days)',
+      'Understand the 12-step F&I SOP: deal handover → bank quote → LPO → PDI → RTA → registration',
+      'Documents Sales must give F&I: 3 signed deal sheets + customer ID + finance application',
+      'What an LPO is and what it triggers after receipt',
+      'PDI coordination and car care services (ceramic, PPF, detailing, tinting)',
+      'How Emirates ID is used for RTA vehicle registration',
+      'Finance vs Cash SOP differences — margin VAT vs full VAT',
+    ],
+  },
+  {
+    id: 'm4',
+    day: 'Day 4',
+    title: 'CRM, CallGear & Snap Cell',
+    phase: 2,
+    defaultUnlocked: false,
+    items: [
+      'Create a customer profile — always search first before creating new',
+      'Assign leads, change stages, update source — never change the original lead source',
+      'Tag inbound calls, add notes, use templates, close leads with correct reason',
+      'CallGear: outbound calls, AI scoring (target 80%+), review a recorded call with trainer',
+      'Snap Cell: record a personalised walkaround — face visible, filmed in front of the car',
+      'Deal sheets: when required, how to complete, who must sign',
+      'Create breakout video asset library (see Miro flowchart)',
+    ],
+  },
+  {
+    id: 'm5',
+    day: 'Day 5',
+    title: 'Purchasing & Fundamentals Test',
+    phase: 2,
+    defaultUnlocked: false,
+    items: [
+      'Half-day with Barry (Purchasing Manager) — stock acquisition strategies',
+      'Vehicle stocking flow: Seller → Inspect → Negotiate → Buy → DMS (within 1hr) → Prep',
+      'Top sellers by ROI: Cadillac (8 days avg), Porsche (15 days), Ford (22 days)',
+      'Age-based discount ladder — 0–14 days: full retail; 75+ days: exit pricing',
+      'GCC vs non-GCC specs, VIN verification, VAT on margin vs full VAT',
+      'Afternoon: RMA Fundamentals test — 10 Finance, 10 CRM, 10 Purchasing (all must pass)',
+    ],
+  },
+  {
+    id: 'm6',
+    day: 'Days 6–10',
+    title: 'Shadowing, Role Play & Live Calls',
+    phase: 3,
+    defaultUnlocked: false,
+    items: [
+      'Day 6: 1-1 with Department Manager, then full day shadowing their workflows',
+      'Day 7: Morning — Accounts. Afternoon — shadow a Sales Rep',
+      'Day 8: Morning — Marketing. Afternoon — shadow a Sales Rep',
+      'Day 9: Role play — full setter framework, objection handling, BAMFAM practice',
+      'Day 10: Supervised live calling + final test (10 marketing + 10 purchasing) + Shop Floor sign-off',
+    ],
+  },
+];
+
+const CRM_STAGES = [
+  {
+    label: 'Contacted',
+    color: '#4A90E2',
+    desc: 'Initial call made — send personalised Snap Cell video within 5 minutes',
+  },
+  {
+    label: 'Pending',
+    color: '#F0A030',
+    desc: 'Vehicle confirmed, awaiting callback, or appointment date set',
+  },
+  {
+    label: 'Appt Booked',
+    color: '#22C984',
+    desc: 'Physical appointment confirmed — log in CRM calendar immediately',
+  },
+  {
+    label: 'Quoted',
+    color: '#8B6FE8',
+    desc: 'Customer attended, identified the car — quote agreed',
+  },
+  {
+    label: 'Deposit Received',
+    color: '#E07840',
+    desc: 'Deal committed — update payment type: Cash or Finance',
+  },
+  {
+    label: 'Finance Approved',
+    color: '#4A90E2',
+    desc: 'Bank approved — car enters F&I/Accounts SOP',
+  },
+  {
+    label: 'F&I Clearance',
+    color: '#7A82A0',
+    desc: 'Post clearance — enters Handover SOP',
+  },
+  {
+    label: 'Sale Complete',
+    color: '#22C984',
+    desc: 'Handover done — customer enters Aftersales pipeline',
+  },
+];
+
+const T = {
+  bg: '#0D0F14',
+  surf: '#141720',
+  card: '#1A1E2A',
+  cardHov: '#1F2438',
+  border: '#252A3A',
+  borderLt: '#2E3448',
+  gold: '#C9A84C',
+  goldLt: '#E8C96A',
+  goldDim: '#8A6E2F',
+  goldBg: 'rgba(201,168,76,0.10)',
+  goldBgLt: 'rgba(201,168,76,0.18)',
+  text: '#F0F2F8',
+  muted: '#8A90B0',
+  faint: '#454D66',
+  green: '#22C984',
+  greenBg: 'rgba(34,201,132,0.12)',
+  greenTx: '#22C984',
+  red: '#F05454',
+  redBg: 'rgba(240,84,84,0.12)',
+  redTx: '#F07070',
+  blue: '#4A90E2',
+  blueBg: 'rgba(74,144,226,0.12)',
+  blueTx: '#7AB3F0',
+  amber: '#F0A030',
+  amberBg: 'rgba(240,160,48,0.12)',
+  amberTx: '#F0C060',
+  purple: '#8B6FE8',
+  purpleBg: 'rgba(139,111,232,0.12)',
+  purpleTx: '#B09CF0',
+};
+
+const G = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0D0F14;color:#F0F2F8;font-family:'DM Sans',system-ui,sans-serif}
+  :root{color-scheme:dark}
+  input,textarea,select{font-family:'DM Sans',system-ui,sans-serif;outline:none;transition:border-color .2s}
+  input:focus,textarea:focus,select:focus{border-color:#C9A84C!important}
+  input::placeholder,textarea::placeholder{color:#454D66}
+  option{background:#1A1E2A}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  .fade{animation:fadeUp .3s ease forwards}
+  .tab-btn{
+    padding:7px 15px;border-radius:8px;font-size:12px;font-weight:700;
+    cursor:pointer;border:1px solid #2E3448;
+    color:#ffffff!important;background:#1A1E2A;
+    transition:all .2s;font-family:'DM Sans',system-ui,sans-serif;
+  }
+  .tab-btn:hover{background:#2E3448}
+  .tab-btn.active{color:#0D0F14!important;background:#C9A84C;border-color:#C9A84C}
+  .sub-tab{
+    padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;
+    cursor:pointer;border:1px solid #252A3A;
+    color:#ffffff!important;background:transparent;
+    transition:all .2s;font-family:'DM Sans',system-ui,sans-serif;
+  }
+  .sub-tab:hover{background:#1A1E2A}
+  .sub-tab.active{background:#252A3A;border-color:#2E3448}
+  .quiz-opt{transition:all .15s;cursor:pointer}
+  .quiz-opt:hover{border-color:#C9A84C!important;background:rgba(201,168,76,.07)!important;color:#F0F2F8!important}
+  .primary-btn{
+    background:linear-gradient(135deg,#8A6E2F,#C9A84C);
+    color:#ffffff!important;border:none;font-weight:800;
+    cursor:pointer;border-radius:9px;
+    font-family:'DM Sans',system-ui,sans-serif;
+    transition:opacity .2s,transform .1s;
+  }
+  .primary-btn:hover{opacity:.88}
+  .primary-btn:active{transform:scale(.98)}
+  .primary-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .ghost-btn{
+    background:transparent;color:#ffffff!important;
+    border:1px solid #252A3A;cursor:pointer;border-radius:8px;
+    font-family:'DM Sans',system-ui,sans-serif;
+    transition:all .2s;font-weight:600;
+  }
+  .ghost-btn:hover{background:#1A1E2A;border-color:#2E3448}
+  .ghost-btn:disabled{opacity:.4;cursor:not-allowed}
+  .mod-card{transition:border-color .2s;cursor:pointer}
+  .mod-card:hover{border-color:#2E3448!important}
+  ::-webkit-scrollbar{width:4px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:#252A3A;border-radius:4px}
+`;
+
+const RMALogo = ({ size = 24 }) => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <span
+      style={{
+        fontSize: size,
+        fontWeight: 900,
+        fontStyle: 'italic',
+        color: T.text,
+        letterSpacing: -1,
+        lineHeight: 1,
+      }}
+    >
+      RMA
+    </span>
+    <span
+      style={{
+        fontSize: size,
+        fontWeight: 300,
+        color: T.text,
+        letterSpacing: 2,
+        lineHeight: 1,
+      }}
+    >
+      &nbsp;MOTORS
+    </span>
+  </div>
+);
+
+const Card = ({ children, accent, style = {} }) => (
+  <div
+    style={{
+      background: T.card,
+      borderRadius: 12,
+      marginBottom: 8,
+      border: `1px solid ${accent || T.border}`,
+      borderLeft: accent ? `3px solid ${accent}` : `1px solid ${T.border}`,
+      borderTopLeftRadius: accent ? 0 : 12,
+      borderBottomLeftRadius: accent ? 0 : 12,
+      padding: '1rem 1.25rem',
+      ...style,
+    }}
+  >
+    {children}
+  </div>
+);
+
+const SectionLabel = ({ children, style = {} }) => (
+  <div
+    style={{
+      fontSize: 10,
+      fontWeight: 700,
+      letterSpacing: '0.12em',
+      textTransform: 'uppercase',
+      color: T.faint,
+      margin: '1.25rem 0 8px',
+      ...style,
+    }}
+  >
+    {children}
+  </div>
+);
+
+const InfoRow = ({ label, value, last }) => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '7px 0',
+      borderBottom: last ? 'none' : `1px solid ${T.border}`,
+      gap: 12,
+    }}
+  >
+    <span style={{ fontSize: 13, color: T.muted }}>{label}</span>
+    <span
+      style={{
+        fontSize: 13,
+        fontWeight: 600,
+        color: T.text,
+        textAlign: 'right',
+      }}
+    >
+      {value}
+    </span>
+  </div>
+);
+
+const StepBlock = ({ n, title, desc, accent = T.gold }) => (
+  <div
+    style={{
+      background: T.surf,
+      borderRadius: 10,
+      padding: '0.85rem 1rem',
+      marginBottom: 6,
+      borderLeft: `2px solid ${accent}`,
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+    }}
+  >
+    {n && (
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          color: T.faint,
+          marginBottom: 3,
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+        }}
+      >
+        {n}
+      </div>
+    )}
+    <div
+      style={{ fontSize: 13, fontWeight: 600, color: T.text, marginBottom: 3 }}
+    >
+      {title}
+    </div>
+    <div style={{ fontSize: 12, color: T.muted, lineHeight: 1.65 }}>{desc}</div>
+  </div>
+);
+
+const Alert = ({ children, variant = 'info' }) => {
+  const s = {
+    info: { bg: T.blueBg, bd: T.blue, c: T.blueTx },
+    warn: { bg: T.amberBg, bd: T.amber, c: T.amberTx },
+    ok: { bg: T.greenBg, bd: T.green, c: T.greenTx },
+    danger: { bg: T.redBg, bd: T.red, c: T.redTx },
+    gold: { bg: T.goldBg, bd: T.goldDim, c: T.gold },
+  }[variant];
+  return (
+    <div
+      style={{
+        background: s.bg,
+        border: `1px solid ${s.bd}`,
+        borderRadius: 8,
+        padding: '10px 14px',
+        fontSize: 13,
+        color: s.c,
+        lineHeight: 1.55,
+        marginBottom: 8,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+const Avatar = ({ initials, size = 40 }) => (
+  <div
+    style={{
+      width: size,
+      height: size,
+      borderRadius: '50%',
+      background: `linear-gradient(135deg,${T.goldDim},${T.gold})`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: size > 44 ? 16 : 12,
+      fontWeight: 800,
+      color: '#0D0F14',
+      flexShrink: 0,
+    }}
+  >
+    {initials}
+  </div>
+);
+
+const ProgressBar = ({ pct, height = 5 }) => (
+  <div
+    style={{
+      background: T.border,
+      borderRadius: 99,
+      height,
+      overflow: 'hidden',
+    }}
+  >
+    <div
+      style={{
+        width: `${pct}%`,
+        height: '100%',
+        background: `linear-gradient(90deg,${T.goldDim},${T.gold})`,
+        borderRadius: 99,
+        transition: 'width .6s',
+      }}
+    />
+  </div>
+);
+
+const Btn = ({
+  children,
+  onClick,
+  primary,
+  small,
+  disabled,
+  full,
+  style = {},
+}) =>
+  primary ? (
+    <button
+      className="primary-btn"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        padding: small ? '7px 18px' : '10px 24px',
+        fontSize: small ? 12 : 14,
+        width: full ? '100%' : undefined,
+        ...style,
+      }}
+    >
+      {children}
+    </button>
+  ) : (
+    <button
+      className="ghost-btn"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        padding: small ? '5px 14px' : '8px 18px',
+        fontSize: small ? 12 : 13,
+        width: full ? '100%' : undefined,
+        opacity: disabled ? 0.4 : 1,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        ...style,
+      }}
+    >
+      {children}
+    </button>
+  );
+
+const Input = ({
+  value,
+  onChange,
+  onKeyDown,
+  placeholder,
+  type = 'text',
+  style = {},
+}) => (
+  <input
+    type={type}
+    value={value}
+    onChange={onChange}
+    onKeyDown={onKeyDown}
+    placeholder={placeholder}
+    style={{
+      width: '100%',
+      background: T.surf,
+      border: `1px solid ${T.border}`,
+      color: T.text,
+      borderRadius: 9,
+      padding: '11px 14px',
+      fontSize: 14,
+      ...style,
+    }}
+  />
+);
+
+export default function App() {
+  const [screen, setScreen] = useState('loading');
+  const [setterId, setSetterId] = useState(null);
+  const [setterData, setSetterData] = useState(null);
+  const [nameInput, setNameInput] = useState('');
+  const [activeTab, setActiveTab] = useState('home');
+  const [mgmtSetters, setMgmtSetters] = useState([]);
+  const [mgmtLoading, setMgmtLoading] = useState(false);
+  const [mgmtTab, setMgmtTab] = useState('overview');
+  const [mgmtAuth, setMgmtAuth] = useState(false);
+  const [mgmtPassword, setMgmtPassword] = useState('');
+  const [mgmtAuthError, setMgmtAuthError] = useState(false);
+  const [fbTarget, setFbTarget] = useState('');
+  const [fbType, setFbType] = useState('General coaching');
+  const [fbText, setFbText] = useState('');
+  const [fbSent, setFbSent] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [genLink, setGenLink] = useState('');
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [expandedMod, setExpandedMod] = useState(null);
+  const [activeSop, setActiveSop] = useState('sales');
+  const [activeQuiz, setActiveQuiz] = useState('sales');
+  const [quizAnswers, setQuizAnswers] = useState({});
+
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = G;
+    document.head.appendChild(style);
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'mgmt') {
+      setScreen('mgmt');
+      return;
+    }
+    if (hash?.startsWith('setter-')) {
+      setSetterId(hash);
+      loadSetter(hash);
+    } else setScreen('login');
+  }, []);
+
+  const loadSetter = async (id) => {
+    const data = await sGet(id);
+    if (data) {
+      setSetterData(data);
+      setQuizAnswers(data.quizAnswers || {});
+      setScreen('setter');
+    } else {
+      setSetterId(id);
+      setScreen('login');
+    }
+  };
+
+  const loadMgmt = async () => {
+    setMgmtLoading(true);
+    const keys = await sList('setter-');
+    const all = [];
+    for (const k of keys) {
+      const d = await sGet(k);
+      if (d) all.push({ id: k, ...d });
+    }
+    setMgmtSetters(all);
+    setMgmtLoading(false);
+  };
+
+  const handleMgmtLogin = () => {
+    if (mgmtPassword === MGMT_PASSWORD) {
+      setMgmtAuth(true);
+      setMgmtAuthError(false);
+      setMgmtPassword('');
+      loadMgmt();
+    } else {
+      setMgmtAuthError(true);
+      setMgmtPassword('');
+    }
+  };
+
+  const saveData = async (updated) => {
+    const id = setterId || `setter-demo-${Date.now()}`;
+    await sSet(id, updated);
+    setSetterData(updated);
+  };
+
+  const handleLogin = async () => {
+    if (!nameInput.trim()) return;
+    const initials = nameInput
+      .trim()
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+    const id =
+      setterId ||
+      `setter-${nameInput
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '-')}-${Date.now()}`;
+    setSetterId(id);
+    const data = {
+      name: nameInput.trim(),
+      initials,
+      startDate: new Date().toISOString().split('T')[0],
+      completedModules: [],
+      quizScores: {},
+      quizAnswers: {},
+      feedback: [],
+      setterId: id,
+    };
+    await sSet(id, data);
+    setSetterData(data);
+    setQuizAnswers({});
+    setScreen('setter');
+  };
+
+  const toggleModule = async (mid) => {
+    if (!setterData) return;
+    const already = setterData.completedModules.includes(mid);
+    const updated = {
+      ...setterData,
+      completedModules: already
+        ? setterData.completedModules.filter((m) => m !== mid)
+        : [...setterData.completedModules, mid],
+    };
+    await saveData(updated);
+  };
+
+  const handleQuizAnswer = async (qi, oi) => {
+    const key = `${activeQuiz}-${qi}`;
+    if (quizAnswers[key] !== undefined) return;
+    const correct = QUIZZES[activeQuiz].questions[qi].correct === oi;
+    const newA = { ...quizAnswers, [key]: { chosen: oi, correct } };
+    setQuizAnswers(newA);
+    const total = QUIZZES[activeQuiz].questions.length;
+    const allDone = Array.from(
+      { length: total },
+      (_, i) => newA[`${activeQuiz}-${i}`]
+    ).every(Boolean);
+    let updated = { ...setterData, quizAnswers: newA };
+    if (allDone) {
+      const score = Math.round(
+        (Array.from(
+          { length: total },
+          (_, i) => newA[`${activeQuiz}-${i}`].correct
+        ).filter(Boolean).length /
+          total) *
+          100
+      );
+      updated = {
+        ...updated,
+        quizScores: { ...setterData.quizScores, [activeQuiz]: score },
+      };
+    }
+    await saveData(updated);
+  };
+
+  const sendFeedback = async () => {
+    if (!fbText.trim() || !fbTarget) return;
+    const target = mgmtSetters.find((s) => s.name === fbTarget);
+    if (!target) return;
+    const d = await sGet(target.id);
+    if (!d) return;
+    const fb = {
+      from: 'Management',
+      type: fbType,
+      message: fbText.trim(),
+      date: new Date().toISOString().split('T')[0],
+    };
+    await sSet(target.id, { ...d, feedback: [...(d.feedback || []), fb] });
+    setFbSent(true);
+    setFbText('');
+    setTimeout(() => setFbSent(false), 3000);
+    loadMgmt();
+  };
+
+  const generateLink = () => {
+    if (!newName.trim()) return;
+    const slug = newName
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
+    const id = `setter-${slug}-${Math.floor(1000 + Math.random() * 9000)}`;
+    setGenLink(`${window.location.href.split('#')[0]}#${id}`);
+  };
+
+  const completionPct = (d) =>
+    d
+      ? Math.round(
+          (((d.completedModules?.length || 0) +
+            Object.keys(d.quizScores || {}).length) /
+            (MODULES.length + 4)) *
+            100
+        )
+      : 0;
+  const avgScore = (d) => {
+    const s = Object.values(d?.quizScores || {});
+    return s.length
+      ? Math.round(s.reduce((a, b) => a + b, 0) / s.length)
+      : null;
+  };
+  const isUnlocked = (mod, done) => {
+    if (mod.defaultUnlocked) return true;
+    const order = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6'];
+    const idx = order.indexOf(mod.id);
+    return idx > 0 && done.includes(order[idx - 1]);
+  };
+
+  if (screen === 'loading')
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 400,
+          flexDirection: 'column',
+          gap: 16,
+        }}
+      >
+        <style>{G}</style>
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            border: `2px solid ${T.border}`,
+            borderTop: `2px solid ${T.gold}`,
+            borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite',
+          }}
+        />
+        <div style={{ fontSize: 13, color: T.muted }}>Loading...</div>
+      </div>
+    );
+
+  if (screen === 'login')
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem 1rem',
+          background: T.bg,
+        }}
+        className="fade"
+      >
+        <div style={{ width: '100%', maxWidth: 420 }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <RMALogo size={30} />
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: T.muted,
+                textTransform: 'uppercase',
+              }}
+            >
+              Setter Onboarding Platform
+            </div>
+          </div>
+          <div
+            style={{
+              background: T.card,
+              borderRadius: 16,
+              border: `1px solid ${T.border}`,
+              padding: '2rem',
+              boxShadow: '0 0 40px rgba(201,168,76,0.06)',
+            }}
+          >
+            <div
+              style={{
+                fontSize: 20,
+                fontWeight: 800,
+                marginBottom: 6,
+                color: T.text,
+              }}
+            >
+              Welcome to the team.
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                color: T.muted,
+                marginBottom: '1.5rem',
+                lineHeight: 1.65,
+              }}
+            >
+              Enter your full name to begin your 10-day onboarding programme.
+              Your progress is automatically saved and shared with your manager.
+            </div>
+            <label
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: T.faint,
+                display: 'block',
+                marginBottom: 6,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+              }}
+            >
+              Your full name
+            </label>
+            <Input
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+              placeholder="e.g. Jordan Smith"
+              style={{ marginBottom: '1.25rem' }}
+            />
+            <Btn
+              primary
+              full
+              onClick={handleLogin}
+              disabled={!nameInput.trim()}
+              style={{ fontSize: 14, padding: 12 }}
+            >
+              Begin onboarding →
+            </Btn>
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 16 }}>
+            <button
+              onClick={() => {
+                window.location.hash = 'mgmt';
+                setScreen('mgmt');
+              }}
+              style={{
+                fontSize: 12,
+                color: T.faint,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: "'DM Sans',system-ui,sans-serif",
+              }}
+            >
+              Management access →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+
+  if (screen === 'mgmt' && !mgmtAuth)
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem 1rem',
+          background: T.bg,
+        }}
+        className="fade"
+      >
+        <div style={{ width: '100%', maxWidth: 380 }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <RMALogo size={30} />
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: T.muted,
+                textTransform: 'uppercase',
+              }}
+            >
+              Management Access
+            </div>
+          </div>
+          <div
+            style={{
+              background: T.card,
+              borderRadius: 16,
+              border: `1px solid ${T.border}`,
+              padding: '1.75rem',
+            }}
+          >
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                marginBottom: 6,
+                color: T.text,
+              }}
+            >
+              Manager sign in
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                color: T.muted,
+                marginBottom: '1.25rem',
+                lineHeight: 1.6,
+              }}
+            >
+              Enter the management password to access the dashboard.
+            </div>
+            {mgmtAuthError && (
+              <Alert variant="danger" style={{ marginBottom: 12 }}>
+                Incorrect password. Please try again.
+              </Alert>
+            )}
+            <label
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: T.faint,
+                display: 'block',
+                marginBottom: 6,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+              }}
+            >
+              Password
+            </label>
+            <Input
+              type="password"
+              value={mgmtPassword}
+              onChange={(e) => setMgmtPassword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleMgmtLogin()}
+              placeholder="Enter management password"
+              style={{ marginBottom: '1.25rem' }}
+            />
+            <Btn
+              primary
+              full
+              onClick={handleMgmtLogin}
+              disabled={!mgmtPassword.trim()}
+              style={{ fontSize: 14, padding: 12 }}
+            >
+              Sign in →
+            </Btn>
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 16 }}>
+            <button
+              onClick={() => {
+                window.location.hash = '';
+                setScreen('login');
+              }}
+              style={{
+                fontSize: 12,
+                color: T.faint,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: "'DM Sans',system-ui,sans-serif",
+              }}
+            >
+              ← Setter login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+
+  if (screen === 'mgmt' && mgmtAuth) {
+    const avgComp = mgmtSetters.length
+      ? Math.round(
+          mgmtSetters.reduce((a, s) => a + completionPct(s), 0) /
+            mgmtSetters.length
+        )
+      : 0;
+    const passed = mgmtSetters.filter((s) => {
+      const a = avgScore(s);
+      return a !== null && a >= 70;
+    }).length;
+    return (
+      <div
+        style={{
+          padding: '2rem',
+          maxWidth: 1000,
+          margin: '0 auto',
+          background: T.bg,
+          minHeight: '100vh',
+        }}
+        className="fade"
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '1.75rem',
+            flexWrap: 'wrap',
+            gap: 10,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <RMALogo size={22} />
+            <div style={{ width: 1, height: 24, background: T.border }} />
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: T.text }}>
+                Management Dashboard
+              </div>
+              <div style={{ fontSize: 11, color: T.muted }}>
+                Setter onboarding tracker
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Btn small onClick={loadMgmt}>
+              ↻ Refresh
+            </Btn>
+            <Btn
+              small
+              primary
+              onClick={() =>
+                setMgmtTab(mgmtTab === 'links' ? 'overview' : 'links')
+              }
+            >
+              {mgmtTab === 'links' ? '← Overview' : '+ New setter link'}
+            </Btn>
+            <Btn
+              small
+              onClick={() => {
+                setMgmtAuth(false);
+                setMgmtPassword('');
+              }}
+            >
+              Sign out
+            </Btn>
+          </div>
+        </div>
+        {mgmtTab === 'links' ? (
+          <Card>
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                marginBottom: 6,
+                color: T.text,
+              }}
+            >
+              Generate a unique setter link
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                color: T.muted,
+                marginBottom: '1.25rem',
+                lineHeight: 1.65,
+              }}
+            >
+              Each setter gets their own unique URL. Their progress, quiz
+              scores, and module completions appear in this dashboard
+              automatically once they log in.
+            </div>
+            <label
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: T.faint,
+                display: 'block',
+                marginBottom: 6,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+              }}
+            >
+              Setter's full name
+            </label>
+            <Input
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              placeholder="e.g. Alex Mitchell"
+              style={{ marginBottom: 10 }}
+            />
+            <Btn
+              primary
+              small
+              onClick={generateLink}
+              disabled={!newName.trim()}
+            >
+              Generate link →
+            </Btn>
+            {genLink && (
+              <div
+                style={{
+                  marginTop: 14,
+                  background: T.surf,
+                  borderRadius: 10,
+                  padding: '12px 14px',
+                  border: `1px solid ${T.border}`,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: T.faint,
+                    marginBottom: 6,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  Unique setter link
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: T.gold,
+                    wordBreak: 'break-all',
+                    marginBottom: 10,
+                    fontFamily: 'monospace',
+                  }}
+                >
+                  {genLink}
+                </div>
+                <Btn
+                  small
+                  onClick={() => {
+                    navigator.clipboard?.writeText(genLink);
+                    setLinkCopied(true);
+                    setTimeout(() => setLinkCopied(false), 2000);
+                  }}
+                >
+                  {linkCopied ? '✓ Copied!' : 'Copy link'}
+                </Btn>
+              </div>
+            )}
+          </Card>
+        ) : (
+          <>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit,minmax(120px,1fr))',
+                gap: 10,
+                marginBottom: '1.75rem',
+              }}
+            >
+              {[
+                ['Active setters', mgmtSetters.length],
+                ['Avg completion', `${avgComp}%`],
+                ['Quizzes passed', passed],
+                [
+                  'Shop floor ready',
+                  mgmtSetters.filter((s) => completionPct(s) >= 90).length,
+                ],
+              ].map(([l, v]) => (
+                <div
+                  key={l}
+                  style={{
+                    background: T.surf,
+                    borderRadius: 10,
+                    padding: '1rem',
+                    border: `1px solid ${T.border}`,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      color: T.faint,
+                      marginBottom: 4,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                    }}
+                  >
+                    {l}
+                  </div>
+                  <div style={{ fontSize: 24, fontWeight: 800, color: T.text }}>
+                    {v}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <SectionLabel style={{ marginTop: 0 }}>
+              Setter progress
+            </SectionLabel>
+            {mgmtLoading ? (
+              <Alert variant="info">Loading setter data...</Alert>
+            ) : mgmtSetters.length === 0 ? (
+              <Alert variant="gold">
+                No setters have logged in yet. Generate a unique link above and
+                share it with your new hires.
+              </Alert>
+            ) : (
+              <Card style={{ padding: '0.75rem 1.25rem' }}>
+                {mgmtSetters.map((s, i) => {
+                  const pct = completionPct(s),
+                    avg = avgScore(s),
+                    good = avg !== null && avg >= 70;
+                  return (
+                    <div
+                      key={s.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 10,
+                        padding: '10px 0',
+                        borderBottom:
+                          i < mgmtSetters.length - 1
+                            ? `1px solid ${T.border}`
+                            : 'none',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <Avatar initials={s.initials} size={36} />
+                      <div style={{ flex: 1, minWidth: 100 }}>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: T.text,
+                          }}
+                        >
+                          {s.name}
+                        </div>
+                        <div style={{ fontSize: 11, color: T.muted }}>
+                          Started {s.startDate} ·{' '}
+                          {s.completedModules?.length || 0}/{MODULES.length}{' '}
+                          modules
+                        </div>
+                      </div>
+                      <span
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 700,
+                          padding: '3px 10px',
+                          borderRadius: 99,
+                          background:
+                            avg === null
+                              ? 'rgba(122,130,160,0.1)'
+                              : good
+                              ? T.greenBg
+                              : T.redBg,
+                          color:
+                            avg === null ? T.faint : good ? T.greenTx : T.redTx,
+                        }}
+                      >
+                        {avg !== null ? `Avg: ${avg}%` : 'No quizzes yet'}
+                      </span>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 3,
+                          minWidth: 80,
+                        }}
+                      >
+                        <ProgressBar pct={pct} />
+                        <div
+                          style={{
+                            fontSize: 10,
+                            color: T.faint,
+                            textAlign: 'right',
+                          }}
+                        >
+                          {pct}%
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </Card>
+            )}
+            {mgmtSetters.map((s) => (
+              <div key={s.id} style={{ marginTop: '1.25rem' }}>
+                <SectionLabel style={{ marginTop: 0 }}>
+                  {s.name} — quiz scores
+                </SectionLabel>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))',
+                    gap: 8,
+                    marginBottom: 10,
+                  }}
+                >
+                  {Object.entries(QUIZZES).map(([k, q]) => {
+                    const score = s.quizScores?.[k],
+                      good = score !== undefined && score >= 70;
+                    return (
+                      <div
+                        key={k}
+                        style={{
+                          background: T.surf,
+                          borderRadius: 10,
+                          padding: '0.85rem 1rem',
+                          border: `1px solid ${
+                            score !== undefined
+                              ? good
+                                ? T.green
+                                : T.red
+                              : T.border
+                          }`,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: T.muted,
+                            marginBottom: 4,
+                          }}
+                        >
+                          {q.icon} {q.label}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 22,
+                            fontWeight: 800,
+                            color:
+                              score === undefined
+                                ? T.border
+                                : good
+                                ? T.greenTx
+                                : T.redTx,
+                          }}
+                        >
+                          {score !== undefined ? `${score}%` : '—'}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {(s.feedback || []).map((fb, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      background: T.purpleBg,
+                      border: `1px solid ${T.purple}`,
+                      borderRadius: 8,
+                      padding: '8px 12px',
+                      fontSize: 12,
+                      marginBottom: 4,
+                      color: T.purpleTx,
+                    }}
+                  >
+                    <strong>{fb.type}</strong> ({fb.date}): {fb.message}
+                  </div>
+                ))}
+              </div>
+            ))}
+            {mgmtSetters.length > 0 && (
+              <>
+                <SectionLabel>Send coaching feedback</SectionLabel>
+                <Card>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: 8,
+                      marginBottom: 10,
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    <select
+                      value={fbTarget}
+                      onChange={(e) => setFbTarget(e.target.value)}
+                      style={{
+                        background: T.surf,
+                        border: `1px solid ${T.border}`,
+                        color: T.text,
+                        padding: '8px 12px',
+                        fontSize: 13,
+                        borderRadius: 8,
+                        flex: 1,
+                        minWidth: 140,
+                      }}
+                    >
+                      <option value="">Select setter...</option>
+                      {mgmtSetters.map((s) => (
+                        <option key={s.id} value={s.name}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={fbType}
+                      onChange={(e) => setFbType(e.target.value)}
+                      style={{
+                        background: T.surf,
+                        border: `1px solid ${T.border}`,
+                        color: T.text,
+                        padding: '8px 12px',
+                        fontSize: 13,
+                        borderRadius: 8,
+                        flex: 1,
+                        minWidth: 160,
+                      }}
+                    >
+                      {[
+                        'General coaching',
+                        'KPI concern',
+                        'Great performance',
+                        'Needs re-training',
+                        'Stage 1 — verbal warning',
+                        'Stage 2 — written warning',
+                      ].map((t) => (
+                        <option key={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <textarea
+                    value={fbText}
+                    onChange={(e) => setFbText(e.target.value)}
+                    placeholder="Add your coaching note or feedback..."
+                    style={{
+                      width: '100%',
+                      background: T.surf,
+                      border: `1px solid ${T.border}`,
+                      color: T.text,
+                      padding: '10px 12px',
+                      fontSize: 13,
+                      borderRadius: 8,
+                      resize: 'vertical',
+                      minHeight: 80,
+                      marginBottom: 10,
+                    }}
+                  />
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <Btn
+                      primary
+                      small
+                      onClick={sendFeedback}
+                      disabled={!fbText.trim() || !fbTarget}
+                    >
+                      Send feedback
+                    </Btn>
+                    <Btn small onClick={() => setFbText('')}>
+                      Clear
+                    </Btn>
+                  </div>
+                  {fbSent && (
+                    <Alert variant="ok" style={{ marginTop: 10 }}>
+                      ✓ Feedback sent and saved to setter's profile.
+                    </Alert>
+                  )}
+                </Card>
+              </>
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  const TABS = [
+    { id: 'home', label: 'Home' },
+    { id: 'training', label: 'Training' },
+    { id: 'scripts', label: 'Scripts' },
+    { id: 'sops', label: 'SOPs' },
+    { id: 'kpis', label: 'KPIs' },
+    { id: 'assessments', label: 'Assessments' },
+  ];
+  const totalItems = MODULES.length + 4;
+  const doneItems =
+    (setterData?.completedModules?.length || 0) +
+    Object.keys(setterData?.quizScores || {}).length;
+  const pct = Math.round((doneItems / totalItems) * 100);
+
+  return (
+    <div
+      style={{ background: T.bg, minHeight: '100vh', padding: '1.5rem 2rem' }}
+      className="fade"
+    >
+      <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 14,
+            paddingBottom: '1.25rem',
+            borderBottom: `1px solid ${T.border}`,
+            marginBottom: '1.5rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          <RMALogo size={20} />
+          <div
+            style={{
+              width: 1,
+              height: 20,
+              background: T.border,
+              flexShrink: 0,
+            }}
+          />
+          <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', flex: 1 }}>
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                className={`tab-btn ${activeTab === t.id ? 'active' : ''}`}
+                onClick={() => setActiveTab(t.id)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              marginLeft: 'auto',
+            }}
+          >
+            <button
+              onClick={() => {
+                window.location.hash = 'mgmt';
+                setScreen('mgmt');
+              }}
+              title="Management access"
+              style={{
+                background: 'transparent',
+                border: `1px solid ${T.border}`,
+                borderRadius: 8,
+                width: 32,
+                height: 32,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: T.faint,
+                fontSize: 15,
+                transition: 'all .2s',
+                flexShrink: 0,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = T.gold;
+                e.currentTarget.style.color = T.gold;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = T.border;
+                e.currentTarget.style.color = T.faint;
+              }}
+            >
+              🔒
+            </button>
+            <Avatar initials={setterData?.initials} size={30} />
+            <div style={{ fontSize: 12, fontWeight: 600, color: T.muted }}>
+              {setterData?.name}
+            </div>
+          </div>
+        </div>
+
+        {activeTab === 'home' && (
+          <div>
+            <div
+              style={{
+                background: `linear-gradient(135deg,${T.card},#1E2335)`,
+                borderRadius: 16,
+                border: `1px solid ${T.border}`,
+                padding: '1.75rem',
+                marginBottom: '1.25rem',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: -30,
+                  right: -30,
+                  width: 120,
+                  height: 120,
+                  borderRadius: '50%',
+                  background: T.goldBg,
+                  filter: 'blur(40px)',
+                  pointerEvents: 'none',
+                }}
+              />
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  marginBottom: '1.25rem',
+                }}
+              >
+                <Avatar initials={setterData?.initials} size={52} />
+                <div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: T.text }}>
+                    Welcome, {setterData?.name?.split(' ')[0]}.
+                  </div>
+                  <div style={{ fontSize: 12, color: T.muted, marginTop: 2 }}>
+                    Sales Setter Onboarding · 10-Day Programme
+                  </div>
+                </div>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: 8,
+                }}
+              >
+                <span style={{ fontSize: 12, color: T.muted, fontWeight: 600 }}>
+                  Overall progress
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 800, color: T.gold }}>
+                  {pct}%
+                </span>
+              </div>
+              <ProgressBar pct={pct} height={6} />
+            </div>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit,minmax(110px,1fr))',
+                gap: 8,
+                marginBottom: '1.5rem',
+              }}
+            >
+              {[
+                ['Programme', '10 days', '3 phases'],
+                [
+                  `Modules`,
+                  `${setterData?.completedModules?.length || 0}/${
+                    MODULES.length
+                  }`,
+                  'completed',
+                ],
+                [
+                  `Quizzes`,
+                  `${
+                    Object.values(setterData?.quizScores || {}).filter(
+                      (s) => s >= 70
+                    ).length
+                  }/4`,
+                  'passed',
+                ],
+                [
+                  'Score',
+                  avgScore(setterData) !== null
+                    ? `${avgScore(setterData)}%`
+                    : '—',
+                  'avg',
+                ],
+              ].map(([l, v, s]) => (
+                <div
+                  key={l}
+                  style={{
+                    background: T.surf,
+                    borderRadius: 10,
+                    padding: '0.9rem 1rem',
+                    border: `1px solid ${T.border}`,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      color: T.faint,
+                      marginBottom: 4,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                    }}
+                  >
+                    {l}
+                  </div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: T.text }}>
+                    {v}
+                  </div>
+                  <div style={{ fontSize: 10, color: T.muted, marginTop: 2 }}>
+                    {s}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <SectionLabel style={{ marginTop: 0 }}>Role overview</SectionLabel>
+            <Card>
+              {[
+                ['Position', 'Sales Executive (Setter Role)'],
+                ['Location', 'Showroom 6, Speedex Centre, DIP 1, Dubai'],
+                ['Reports to', 'Sales Manager'],
+                ['Shifts', '06:00–15:00 or 15:00–00:00'],
+                ['Probation', '6 months'],
+                ['Lead handover', 'To Closer after 72 hours'],
+                ['3-month review', 'Pathway to Closer assessed'],
+              ].map(([l, v], i, a) => (
+                <InfoRow
+                  key={l}
+                  label={l}
+                  value={v}
+                  last={i === a.length - 1}
+                />
+              ))}
+            </Card>
+            {setterData?.feedback?.length > 0 && (
+              <>
+                <SectionLabel>Feedback from management</SectionLabel>
+                {setterData.feedback.map((fb, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      background: T.purpleBg,
+                      border: `1px solid ${T.purple}`,
+                      borderRadius: 10,
+                      padding: '10px 14px',
+                      fontSize: 13,
+                      marginBottom: 6,
+                      color: T.purpleTx,
+                    }}
+                  >
+                    <strong>{fb.type}</strong>{' '}
+                    <span style={{ color: T.muted }}>({fb.date})</span> —{' '}
+                    {fb.message}
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'training' && (
+          <div>
+            {[1, 2, 3].map((phase) => {
+              const labels = [
+                'Phase 1 — Foundation',
+                'Phase 2 — CRM Mastery',
+                'Phase 3 — Live Operations',
+              ];
+              return (
+                <div key={phase}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      margin: phase === 1 ? '0 0 10px' : '1.5rem 0 10px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 2,
+                        height: 14,
+                        background: T.gold,
+                        borderRadius: 1,
+                      }}
+                    />
+                    <div
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        letterSpacing: '0.1em',
+                        color: T.gold,
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      {labels[phase - 1]}
+                    </div>
+                  </div>
+                  {MODULES.filter((m) => m.phase === phase).map((mod) => {
+                    const done = setterData?.completedModules?.includes(mod.id),
+                      unlocked = isUnlocked(
+                        mod,
+                        setterData?.completedModules || []
+                      ),
+                      open = expandedMod === mod.id;
+                    return (
+                      <div
+                        key={mod.id}
+                        className="mod-card"
+                        style={{
+                          background: T.card,
+                          borderRadius: 12,
+                          marginBottom: 8,
+                          border: `1px solid ${open ? T.borderLt : T.border}`,
+                          borderLeft: `3px solid ${
+                            done ? T.green : open ? T.gold : T.border
+                          }`,
+                          borderTopLeftRadius: 0,
+                          borderBottomLeftRadius: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 12,
+                            padding: '0.9rem 1.1rem',
+                          }}
+                          onClick={() => setExpandedMod(open ? null : mod.id)}
+                        >
+                          <div style={{ flex: 1 }}>
+                            <div
+                              style={{
+                                fontSize: 13,
+                                fontWeight: 700,
+                                color: T.text,
+                              }}
+                            >
+                              {mod.day} — {mod.title}
+                            </div>
+                            <div
+                              style={{
+                                fontSize: 11,
+                                color: T.muted,
+                                marginTop: 2,
+                              }}
+                            >
+                              {mod.items.length} checklist items
+                            </div>
+                          </div>
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 700,
+                              padding: '3px 10px',
+                              borderRadius: 99,
+                              background: done
+                                ? T.greenBg
+                                : !unlocked
+                                ? 'rgba(122,130,160,0.1)'
+                                : T.goldBg,
+                              color: done
+                                ? T.greenTx
+                                : !unlocked
+                                ? T.faint
+                                : T.gold,
+                            }}
+                          >
+                            {done
+                              ? '✓ Complete'
+                              : !unlocked
+                              ? '🔒 Locked'
+                              : 'In progress'}
+                          </span>
+                          <div
+                            style={{
+                              color: T.faint,
+                              fontSize: 12,
+                              transition: 'transform .2s',
+                              transform: open ? 'rotate(180deg)' : 'none',
+                            }}
+                          >
+                            ▾
+                          </div>
+                        </div>
+                        {open && (
+                          <div
+                            style={{
+                              padding: '0 1.1rem 1rem',
+                              borderTop: `1px solid ${T.border}`,
+                              paddingTop: '0.85rem',
+                            }}
+                          >
+                            <ul
+                              style={{
+                                listStyle: 'none',
+                                padding: 0,
+                                margin: 0,
+                                marginBottom: 12,
+                              }}
+                            >
+                              {mod.items.map((item, i) => (
+                                <li
+                                  key={i}
+                                  style={{
+                                    display: 'flex',
+                                    gap: 10,
+                                    fontSize: 12,
+                                    padding: '5px 0',
+                                    borderBottom: `1px solid ${T.border}`,
+                                    color: T.muted,
+                                    lineHeight: 1.55,
+                                    alignItems: 'flex-start',
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      color: done ? T.green : T.faint,
+                                      flexShrink: 0,
+                                      marginTop: 1,
+                                      fontWeight: 700,
+                                    }}
+                                  >
+                                    {done ? '✓' : '·'}
+                                  </span>
+                                  <span
+                                    style={{ color: done ? T.text : T.muted }}
+                                  >
+                                    {item}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                            {unlocked ? (
+                              <Btn
+                                small
+                                primary={!done}
+                                onClick={() => toggleModule(mod.id)}
+                              >
+                                {done
+                                  ? 'Mark incomplete'
+                                  : 'Mark as complete ✓'}
+                              </Btn>
+                            ) : (
+                              <div
+                                style={{
+                                  fontSize: 12,
+                                  color: T.faint,
+                                  fontStyle: 'italic',
+                                }}
+                              >
+                                Complete the previous module to unlock.
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {activeTab === 'scripts' && (
+          <div>
+            <SectionLabel style={{ marginTop: 0 }}>
+              8-step setter framework
+            </SectionLabel>
+            {[
+              [
+                'Step 1 — Connection',
+                `"Yeah hi [Name], it's [Your Name] from RMA Motors. You were looking at the [Car Model] earlier, right?"`,
+              ],
+              [
+                'Step 2 — Clarify interest',
+                `"Just so I understand properly, what was it about that car that caught your attention?"`,
+              ],
+              [
+                'Step 3 — Discovery',
+                `"What are you driving currently?" · "What matters most in your next car?" · "Is this daily use or weekend driving?"`,
+              ],
+              [
+                'Step 4 — Position RMA',
+                `"One thing buyers really like about RMA is how transparent and straightforward the process is, especially when comparing cars in this market."`,
+              ],
+              [
+                'Step 5 — Sell the appointment',
+                `"The next step is to schedule a test drive so you can properly inspect the car, go through the condition/history, and see if it feels right. We'll also answer any finance questions."`,
+              ],
+              [
+                'Step 6 — Verbal commitment',
+                `"If we book this for tomorrow at 5pm, can I get your word that you'll show up? If anything changes, just message me and we'll reschedule."`,
+              ],
+              [
+                'Step 7 — Confirmation',
+                "Confirm date, time, and showroom address. Log in Eskimo CRM immediately. Change lead status to 'Appointment Booked'.",
+              ],
+              [
+                'Step 8 — Pre-appointment reinforcement',
+                `"Hey [Name], looking forward to seeing you tomorrow at [time]. The car is ready. You mentioned [desired outcome] — can't wait to walk you through it." [Send as video or text the day before]`,
+              ],
+            ].map(([l, t]) => (
+              <div
+                key={l}
+                style={{
+                  borderLeft: `2px solid ${T.gold}`,
+                  padding: '0.8rem 0.8rem 0.8rem 1rem',
+                  marginBottom: 6,
+                  borderRadius: '0 8px 8px 0',
+                  background: T.goldBg,
+                  border: `1px solid ${T.goldDim}`,
+                  borderLeftWidth: 2,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: T.gold,
+                    marginBottom: 4,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                  }}
+                >
+                  {l}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: T.muted,
+                    lineHeight: 1.65,
+                    fontStyle: 'italic',
+                  }}
+                >
+                  {t}
+                </div>
+              </div>
+            ))}
+            <SectionLabel>BAMFAM follow-up sequence</SectionLabel>
+            {[
+              [
+                'Message 1 — Intro SMS',
+                `"Hi [Name], tried giving you a quick call because I saw you reached out about the [Car Model]. I've got a few minutes now, or later today if that works?"`,
+              ],
+              [
+                'Message 2 — Education',
+                `"Hi [Name], thought this might be useful — shows you how we do business here. [INSERT VIDEO]"`,
+              ],
+              [
+                'Message 3 — Authority',
+                `"This explains how to avoid costly mistakes when buying a car in the UAE — transparency about car history is key. [INSERT VIDEO]"`,
+              ],
+              [
+                'Message 4 — FAQ',
+                `"Some of the most common questions buyers have here at RMA: [Insert Q+A]. Quick video explains it in detail. [SEND VIDEO]"`,
+              ],
+              [
+                'Message 5 — Product',
+                `"This just came across my desk. Thought it would help. [Car · Year · KM · AED + WEBSITE LINK]"`,
+              ],
+              [
+                'Message 6 — Final reopener',
+                `"Hi [Name], tried contacting you but didn't hear back... Where should we go from here?"`,
+              ],
+            ].map(([l, t]) => (
+              <div
+                key={l}
+                style={{
+                  borderLeft: `2px solid ${T.purple}`,
+                  padding: '0.8rem 0.8rem 0.8rem 1rem',
+                  marginBottom: 6,
+                  borderRadius: '0 8px 8px 0',
+                  background: T.purpleBg,
+                  border: `1px solid ${T.purple}`,
+                  borderLeftWidth: 2,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: T.purpleTx,
+                    marginBottom: 4,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                  }}
+                >
+                  {l}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: T.muted,
+                    lineHeight: 1.65,
+                    fontStyle: 'italic',
+                  }}
+                >
+                  {t}
+                </div>
+              </div>
+            ))}
+            <SectionLabel>Objection handling</SectionLabel>
+            {[
+              [
+                T.amber,
+                T.amberBg,
+                T.amberTx,
+                'Stall objections — clarity, not pressure',
+                `"Do you mind if I ask what part of the deal you'd like to think about?" · "What would need to change for the timing to feel right?" · "If everything felt right with the car, would you move forward?"`,
+              ],
+              [
+                T.amber,
+                T.amberBg,
+                T.amberTx,
+                'Price objections',
+                `"Is the concern about affordability, or getting the best value?" · "If the prices were the same, which one would you choose?" · "That company is cheaper — why are you not choosing them?"`,
+              ],
+              [
+                T.green,
+                T.greenBg,
+                T.greenTx,
+                'Decision maker objections',
+                `"Would it help if I sent a quick video so they can see it too?" · "Would you like to create a group with the three of us?"`,
+              ],
+              [
+                T.green,
+                T.greenBg,
+                T.greenTx,
+                'Show rate — verbal commitment',
+                `"Can I get your word you'll actually show up? If anything comes up, just text me and we'll reschedule."`,
+              ],
+            ].map(([acc, bg, tc, l, t]) => (
+              <div
+                key={l}
+                style={{
+                  borderLeft: `2px solid ${acc}`,
+                  padding: '0.8rem 0.8rem 0.8rem 1rem',
+                  marginBottom: 6,
+                  borderRadius: '0 8px 8px 0',
+                  background: bg,
+                  border: `1px solid ${acc}`,
+                  borderLeftWidth: 2,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: tc,
+                    marginBottom: 4,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                  }}
+                >
+                  {l}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: T.muted,
+                    lineHeight: 1.65,
+                    fontStyle: 'italic',
+                  }}
+                >
+                  {t}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'sops' && (
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                gap: 6,
+                flexWrap: 'wrap',
+                marginBottom: '1.25rem',
+              }}
+            >
+              {[
+                ['sales', 'Sales process'],
+                ['crm', 'CRM stages'],
+                ['fi', 'Finance & admin'],
+                ['handover', 'Handover'],
+                ['stock', 'Stock & pricing'],
+                ['marketing', 'Marketing'],
+              ].map(([id, label]) => (
+                <button
+                  key={id}
+                  className={`sub-tab ${activeSop === id ? 'active' : ''}`}
+                  onClick={() => setActiveSop(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {activeSop === 'sales' && (
+              <div>
+                <StepBlock
+                  n="Step 1"
+                  title="Lead entry & data integrity"
+                  desc="All leads into Eskimo CRM immediately. The original lead source must NEVER be changed. If unknown, ask during first contact."
+                />
+                <StepBlock
+                  n="Step 2"
+                  title="Initial contact — time-critical"
+                  desc="Contact within 5 minutes during shift; 30 minutes for overnight leads. Send personalised Snap Cell video within 5 minutes of first call — filmed in front of the specific car."
+                />
+                <StepBlock
+                  n="Step 3"
+                  title="In-person appointment"
+                  desc="Meet & greet → qualify → GM/Naz update (mandatory) → value trade-in FIRST → static demo → trial close → test drive → deposit."
+                />
+                <StepBlock
+                  n="Step 4"
+                  title="Post-sale documentation"
+                  desc="Deal sheet same day. Finance eligibility sheet required. EID/Visa copy for finance. 24-hour follow-up after handover. Request Google Review and Trustpilot."
+                />
+                <Alert variant="warn">
+                  ⚠️ All discounts authorised by GM/Naz (Directors) only. No
+                  verbal approvals valid.
+                </Alert>
+              </div>
+            )}
+            {activeSop === 'crm' && (
+              <div>
+                <Card style={{ padding: '0.75rem 1.25rem' }}>
+                  {CRM_STAGES.map((s, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: 'flex',
+                        gap: 12,
+                        padding: '9px 0',
+                        borderBottom:
+                          i < CRM_STAGES.length - 1
+                            ? `1px solid ${T.border}`
+                            : 'none',
+                        alignItems: 'flex-start',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 10,
+                          height: 10,
+                          borderRadius: '50%',
+                          background: s.color,
+                          flexShrink: 0,
+                          marginTop: 4,
+                        }}
+                      />
+                      <div style={{ width: 145, flexShrink: 0 }}>
+                        <span
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: s.color,
+                          }}
+                        >
+                          {s.label}
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: T.muted,
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {s.desc}
+                      </div>
+                    </div>
+                  ))}
+                </Card>
+                <Alert variant="info">
+                  Update CRM stages immediately and accurately. 100% CRM hygiene
+                  is a measured KPI.
+                </Alert>
+              </div>
+            )}
+            {activeSop === 'fi' && (
+              <div>
+                <StepBlock
+                  n="Step 1"
+                  title="Deal handover — Sales to F&I"
+                  accent={T.blue}
+                  desc="3 signed deal sheet copies (customer, F&I, Accounts) + all customer documents. Must be complete before submission."
+                />
+                <StepBlock
+                  n="Steps 2–3"
+                  title="Bank quotation & approval"
+                  accent={T.blue}
+                  desc="F&I prepares quotation exactly as per deal sheet, emails banker. Once approved, F&I applies for insurance."
+                />
+                <StepBlock
+                  n="Step 4"
+                  title="LPO received → agreements"
+                  accent={T.blue}
+                  desc="LPO triggers: F&I prepares the Sales Agreement (consignment) or Hayaza mortgage request (RMA-owned)."
+                />
+                <StepBlock
+                  n="Steps 5–12"
+                  title="PDI → RTA → Car Care → E-Cert → Notify"
+                  accent={T.blue}
+                  desc="F&I coordinates PDI, RTA inspection, Car Care. Creates E-Certificate in RTA portal. Notifies Sales Rep and customer once registration complete."
+                />
+              </div>
+            )}
+            {activeSop === 'handover' && (
+              <div>
+                <StepBlock
+                  title="Vehicle preparation"
+                  desc="Full valet · PDI completed · no warning lights · AC working · min ¼ tank fuel · no paired Bluetooth · clean to showroom standard."
+                />
+                <StepBlock
+                  title="Scheduling"
+                  desc="ONE customer per hour maximum. Confirm readiness with Car Care. Park in designated handover bay 30 minutes before."
+                />
+                <StepBlock
+                  title="The reveal"
+                  desc="Marketing present for photos/video. Keys and gift handed over. Manager delivers 'Thank you'. Handover sheet signed off by manager."
+                />
+                <StepBlock
+                  title="Post-handover"
+                  desc="Call or message within 48 hours. Request Google Review and Trustpilot. Customer enters 6/12/18/24-month check-in pipeline."
+                />
+              </div>
+            )}
+            {activeSop === 'stock' && (
+              <div>
+                <SectionLabel style={{ marginTop: 0 }}>
+                  Age-based discount ladder
+                </SectionLabel>
+                <Card
+                  style={{ padding: '0.75rem 1.25rem', marginBottom: '1rem' }}
+                >
+                  {[
+                    ['0–14 days', 'Full retail — 0–1% max', T.green],
+                    ['15–30 days', 'Soft adjust — 1–2%', T.green],
+                    ['31–45 days', 'Tactical — 2–3%', T.amber],
+                    [
+                      '46–60 days',
+                      'Defensive — 3–5% (must sell soon)',
+                      T.amber,
+                    ],
+                    ['61–75 days', 'Aggressive — 5–7%', T.red],
+                    ['75+ days', 'Exit — whatever clears', T.red],
+                  ].map(([d, a, c]) => (
+                    <div
+                      key={d}
+                      style={{
+                        display: 'flex',
+                        gap: 10,
+                        padding: '7px 0',
+                        borderBottom: `1px solid ${T.border}`,
+                        fontSize: 12,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          background: c,
+                          flexShrink: 0,
+                          marginTop: 3,
+                        }}
+                      />
+                      <div
+                        style={{
+                          width: 90,
+                          fontWeight: 700,
+                          color: T.text,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {d}
+                      </div>
+                      <div style={{ color: T.muted }}>{a}</div>
+                    </div>
+                  ))}
+                </Card>
+                <Alert variant="warn">
+                  ⚠️ Never discount below minimum GP without written approval
+                  from the Purchasing Manager or General Manager.
+                </Alert>
+              </div>
+            )}
+            {activeSop === 'marketing' && (
+              <div>
+                <StepBlock
+                  title="Listing goal"
+                  accent={T.purple}
+                  desc="Live within 24 hours of reconditioning sign-off. Photography requested by Purchaser immediately on vehicle arrival."
+                />
+                <StepBlock
+                  title="Immediate update triggers"
+                  accent={T.purple}
+                  desc="Car sold or status changes → ALL listings updated/removed immediately across Dubizzle, AutoTrader, Instagram, Google, TikTok, website. No delay."
+                />
+                <StepBlock
+                  title="Your personal asset library (required)"
+                  accent={T.purple}
+                  desc="(1) Intro to you/RMA video · (2) 3 FAQ videos · (3) Authority/expert video · (4) Vehicle walkaround Snap Cells · (5) Social proof and testimonial videos."
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'kpis' && (
+          <div>
+            <SectionLabel style={{ marginTop: 0 }}>
+              Performance targets
+            </SectionLabel>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit,minmax(175px,1fr))',
+                gap: 10,
+                marginBottom: '1.5rem',
+              }}
+            >
+              {[
+                [
+                  '⏱',
+                  'Speed to lead',
+                  '60 seconds',
+                  'All inbound leads — no exceptions',
+                ],
+                [
+                  '📅',
+                  'Lead → appointment',
+                  '33% min',
+                  'Responded leads → booked',
+                ],
+                [
+                  '🚪',
+                  'Show rate',
+                  '66% min',
+                  'Booked appointments that attend',
+                ],
+                ['📹', 'Snap cells', '33% min', 'Of responded customers'],
+                ['📞', 'Connected calls', '40 / day', 'Min 1 minute each'],
+                ['⭐', 'AI call score', '80% avg', 'CallGear — in & outbound'],
+              ].map(([ico, l, v, n]) => (
+                <div
+                  key={l}
+                  style={{
+                    background: T.surf,
+                    borderRadius: 10,
+                    padding: '1rem',
+                    border: `1px solid ${T.border}`,
+                  }}
+                >
+                  <div style={{ fontSize: 20, marginBottom: 6 }}>{ico}</div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: T.muted,
+                      marginBottom: 4,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {l}
+                  </div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: T.gold }}>
+                    {v}
+                  </div>
+                  <div style={{ fontSize: 11, color: T.faint, marginTop: 3 }}>
+                    {n}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <SectionLabel>Commission — 35% setter split</SectionLabel>
+            <Card>
+              <div
+                style={{
+                  fontSize: 13,
+                  color: T.muted,
+                  marginBottom: '1rem',
+                  lineHeight: 1.65,
+                }}
+              >
+                Based on GP of each car sold from your leads. You receive{' '}
+                <span style={{ color: T.gold, fontWeight: 700 }}>35%</span> when
+                you set the appointment and the Closer closes.
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gap: 8,
+                }}
+              >
+                {[
+                  ['0–AED 250k GP', '1.40%', T.surf, T.text],
+                  ['AED 250k–450k GP', '1.75%', T.surf, T.text],
+                  ['Above AED 450k GP', '2.10%', T.goldBg, T.gold],
+                ].map(([l, v, bg, tc]) => (
+                  <div
+                    key={l}
+                    style={{
+                      background: bg,
+                      borderRadius: 8,
+                      padding: '0.85rem',
+                      textAlign: 'center',
+                      border: `1px solid ${
+                        bg === T.goldBg ? T.goldDim : T.border
+                      }`,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 10,
+                        color: T.muted,
+                        marginBottom: 4,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {l}
+                    </div>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: tc }}>
+                      {v}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+            <SectionLabel>Monthly fixed salary</SectionLabel>
+            <Card>
+              {[
+                ['Basic salary', 'AED 4,000'],
+                ['Housing allowance', 'AED 2,000'],
+                ['Travel allowance', 'AED 2,000'],
+                ['Total fixed monthly', 'AED 8,000'],
+              ].map(([l, v], i, a) => (
+                <InfoRow
+                  key={l}
+                  label={l}
+                  value={
+                    <span
+                      style={{
+                        color: i === a.length - 1 ? T.gold : T.text,
+                        fontWeight: i === a.length - 1 ? 800 : 600,
+                      }}
+                    >
+                      {v}
+                    </span>
+                  }
+                  last={i === a.length - 1}
+                />
+              ))}
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'assessments' && (
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                gap: 6,
+                flexWrap: 'wrap',
+                marginBottom: '1.25rem',
+              }}
+            >
+              {Object.entries(QUIZZES).map(([id, q]) => {
+                const score = setterData?.quizScores?.[id];
+                return (
+                  <button
+                    key={id}
+                    className={`sub-tab ${activeQuiz === id ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveQuiz(id);
+                      setQuizAnswers(setterData?.quizAnswers || {});
+                    }}
+                  >
+                    {q.icon} {q.label}
+                    {score !== undefined && (
+                      <span
+                        style={{
+                          marginLeft: 6,
+                          fontSize: 10,
+                          color: score >= 70 ? T.greenTx : T.redTx,
+                          fontWeight: 800,
+                        }}
+                      >
+                        ({score}%)
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            {(() => {
+              const quiz = QUIZZES[activeQuiz],
+                savedScore = setterData?.quizScores?.[activeQuiz],
+                total = quiz.questions.length;
+              const answeredCount = quiz.questions.filter(
+                (_, i) => quizAnswers[`${activeQuiz}-${i}`] !== undefined
+              ).length;
+              const allDone = answeredCount === total;
+              const liveScore = allDone
+                ? Math.round(
+                    (quiz.questions.filter(
+                      (_, i) => quizAnswers[`${activeQuiz}-${i}`]?.correct
+                    ).length /
+                      total) *
+                      100
+                  )
+                : null;
+              const displayScore = savedScore ?? liveScore;
+              return (
+                <div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '1rem',
+                      flexWrap: 'wrap',
+                      gap: 8,
+                    }}
+                  >
+                    <div style={{ fontSize: 13, color: T.muted }}>
+                      {quiz.label} — {total} questions based on your RMA Motors
+                      SOPs.
+                    </div>
+                    {savedScore !== undefined && (
+                      <span
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: savedScore >= 70 ? T.greenTx : T.redTx,
+                        }}
+                      >
+                        {savedScore >= 70 ? '✓' : '✗'} Best score: {savedScore}%
+                      </span>
+                    )}
+                  </div>
+                  {quiz.questions.map((q, qi) => {
+                    const key = `${activeQuiz}-${qi}`,
+                      ans = quizAnswers[key];
+                    return (
+                      <div
+                        key={qi}
+                        style={{
+                          background: T.card,
+                          borderRadius: 12,
+                          border: `1px solid ${T.border}`,
+                          padding: '1rem 1.25rem',
+                          marginBottom: '0.75rem',
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            marginBottom: '0.85rem',
+                            lineHeight: 1.55,
+                            color: T.text,
+                          }}
+                        >
+                          {qi + 1}. {q.q}
+                        </div>
+                        {q.opts.map((opt, oi) => {
+                          let bg = T.surf,
+                            border = T.border,
+                            color = T.muted,
+                            fw = 400;
+                          if (ans !== undefined) {
+                            if (oi === q.correct) {
+                              bg = T.greenBg;
+                              border = T.green;
+                              color = T.greenTx;
+                              fw = 600;
+                            } else if (oi === ans.chosen && !ans.correct) {
+                              bg = T.redBg;
+                              border = T.red;
+                              color = T.redTx;
+                              fw = 600;
+                            }
+                          }
+                          return (
+                            <div
+                              key={oi}
+                              className={ans === undefined ? 'quiz-opt' : ''}
+                              onClick={() => handleQuizAnswer(qi, oi)}
+                              style={{
+                                padding: '9px 14px',
+                                border: `1px solid ${border}`,
+                                borderRadius: 8,
+                                marginBottom: 6,
+                                cursor: ans ? 'default' : 'pointer',
+                                fontSize: 13,
+                                lineHeight: 1.5,
+                                background: bg,
+                                color,
+                                fontWeight: fw,
+                              }}
+                            >
+                              {opt}
+                            </div>
+                          );
+                        })}
+                        {ans !== undefined && (
+                          <div
+                            style={{
+                              fontSize: 12,
+                              padding: '9px 12px',
+                              borderRadius: 8,
+                              marginTop: 8,
+                              background: ans.correct ? T.greenBg : T.redBg,
+                              border: `1px solid ${
+                                ans.correct ? T.green : T.red
+                              }`,
+                              color: ans.correct ? T.greenTx : T.redTx,
+                              lineHeight: 1.55,
+                            }}
+                          >
+                            <strong>
+                              {ans.correct ? '✓ Correct! ' : '✗ Not quite. '}
+                            </strong>
+                            {q.exp}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {allDone && displayScore !== null && (
+                    <div
+                      style={{
+                        padding: '1.5rem',
+                        borderRadius: 14,
+                        textAlign: 'center',
+                        background: displayScore >= 70 ? T.greenBg : T.redBg,
+                        border: `1px solid ${
+                          displayScore >= 70 ? T.green : T.red
+                        }`,
+                        marginTop: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 28,
+                          fontWeight: 800,
+                          color: displayScore >= 70 ? T.greenTx : T.redTx,
+                        }}
+                      >
+                        {displayScore}%
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 13,
+                          color: displayScore >= 70 ? T.greenTx : T.redTx,
+                        }}
+                      >
+                        {
+                          quiz.questions.filter(
+                            (_, i) => quizAnswers[`${activeQuiz}-${i}`]?.correct
+                          ).length
+                        }
+                        /{total} correct
+                      </div>
+                      <div
+                        style={{ fontSize: 12, color: T.muted, marginTop: 6 }}
+                      >
+                        {displayScore >= 70
+                          ? '✓ Passed — your score has been saved and is visible to your manager.'
+                          : '✗ Below 70% — review the relevant SOP and retake to improve your score.'}
+                      </div>
+                    </div>
+                  )}
+                  {allDone && (
+                    <div style={{ marginTop: 10 }}>
+                      <Btn small primary onClick={() => setQuizAnswers({})}>
+                        Retake quiz
+                      </Btn>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

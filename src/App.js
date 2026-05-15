@@ -42,12 +42,12 @@ const QUIZZES = {
 };
 
 const MODULES = [
-  { id:"m1", day:"Day 1", title:"Welcome & HR Induction", phase:1, defaultUnlocked:true, items:["Department Manager meet & greet — full site introduction to all staff","HR: finalise laptop, uniform, work phone, and all document sign-offs","Systems setup: Callgear, Eskimo CRM, Bayzat logins","Bring a notepad — written tests will be implemented throughout training","Read and sign: Sales SOP, Disciplinary Policy, and Company Policy"] },
-  { id:"m2", day:"Day 2", title:"Sales Process & Setter Framework", phase:1, defaultUnlocked:true, items:["Speed to lead: contact within 5 minutes of assignment during shift","Study and memorise the 8-step Setter Framework (Scripts tab)","Understand all 6 CRM lead stages and when to update each one","Send personalised Snap Cell video within 5 min of completing first call","If no answer: x2 double dial → SMS intro → 6-message BAMFAM sequence","Appointment booked: update CRM status to 'Appointment Booked' immediately","Lead handover to Closer after 72 hours"] },
-  { id:"m3", day:"Day 3", title:"Finance & Admin", phase:1, defaultUnlocked:false, items:["Sit with Irfan and Abrar — full F&I process walkthrough (2 days)","Understand the 12-step F&I SOP: deal handover → bank quote → LPO → PDI → RTA → registration","Documents Sales must give F&I: 3 signed deal sheets + customer ID + finance application","What an LPO is and what it triggers after receipt","PDI coordination and car care services (ceramic, PPF, detailing, tinting)","How Emirates ID is used for RTA vehicle registration","Finance vs Cash SOP differences — margin VAT vs full VAT"] },
-  { id:"m4", day:"Day 4", title:"CRM, CallGear & Snap Cell", phase:2, defaultUnlocked:false, items:["Create a customer profile — always search first before creating new","Assign leads, change stages, update source — never change the original lead source","Tag inbound calls, add notes, use templates, close leads with correct reason","CallGear: outbound calls, AI scoring (target 80%+), review a recorded call with trainer","Snap Cell: record a personalised walkaround — face visible, filmed in front of the car","Deal sheets: when required, how to complete, who must sign","Create breakout video asset library (see Miro flowchart)"] },
-  { id:"m5", day:"Day 5", title:"Purchasing & Fundamentals Test", phase:2, defaultUnlocked:false, items:["Half-day with Barry (Purchasing Manager) — stock acquisition strategies","Vehicle stocking flow: Seller → Inspect → Negotiate → Buy → DMS (within 1hr) → Prep","Top sellers by ROI: Cadillac (8 days avg), Porsche (15 days), Ford (22 days)","Age-based discount ladder — 0–14 days: full retail; 75+ days: exit pricing","GCC vs non-GCC specs, VIN verification, VAT on margin vs full VAT","Afternoon: RMA Fundamentals test — 10 Finance, 10 CRM, 10 Purchasing (all must pass)"] },
-  { id:"m6", day:"Days 6–10", title:"Shadowing, Role Play & Live Calls", phase:3, defaultUnlocked:false, items:["Day 6: 1-1 with Department Manager, then full day shadowing their workflows","Day 7: Morning — Accounts. Afternoon — shadow a Sales Rep","Day 8: Morning — Marketing. Afternoon — shadow a Sales Rep","Day 9: Role play — full setter framework, objection handling, BAMFAM practice","Day 10: Supervised live calling + final test (10 marketing + 10 purchasing) + Shop Floor sign-off"] },
+  { id:"m1", day:"Day 1", title:"Welcome & HR Induction", phase:1, defaultUnlocked:true, items:["Department Manager meet & greet — full site introduction to all staff and showroom tour","HR session: finalise laptop, uniform, work phone, and complete all document sign-offs","Systems setup: Callgear, Eskimo CRM, and Bayzat logins activated and tested","Receive notepad and pen — written tests will be implemented throughout training","Read, understand, and sign: Sales SOP, Disciplinary & Performance Management Procedure, and Company Policy","Understand your role: you are the first point of contact for ALL inbound leads — speed, precision, and communication directly influence revenue","Review your KPIs: 60-second response, 33% conversion, 66% show rate, 40 calls/day, 80% AI score","Understand shift patterns: 06:00–15:00 or 15:00–00:00 — flexibility is essential for the under-60-second standard","Review probation terms: 6-month probation, monthly KPI reviews, 3-month Closer pathway assessment"] },
+  { id:"m2", day:"Day 2", title:"Sales Process & Setter Framework", phase:1, defaultUnlocked:true, items:["Understand the full setter role: own all new inbound leads for the critical first 24 hours and up to 7 days","Speed to lead: respond to ALL new inbound leads within 60 seconds during your assigned coverage shift — no exceptions","Study and memorise the 8-step Setter Framework from the Scripts tab","Qualification & discovery: thoroughly qualify each lead — budget, timeline, vehicle preference, finance readiness","Use approved messaging frameworks across WhatsApp, phone, and social media to build instant rapport","Send a personalised Snap Cell video within 5 minutes of completing the first call — filmed in front of the specific car enquired about, face visible","If no answer: x2 double dial immediately, then send SMS intro, then follow the 6-message BAMFAM sequence over 15 days","Appointment booked: update CRM stage to 'Appointment Booked' immediately and trigger the pre-appointment reinforcement sequence","Contact, qualify, and quote all new leads within the first 24 hours of receipt","Lead handover: after 72 hours without conversion, complete a clean handover to the Closer team","Maintain 100% CRM accuracy — every note, task, and pipeline stage must be updated in real time","Understand the BAMFAM principle: every interaction ends with a confirmed next step — Book A Meeting From A Meeting"] },
+  { id:"m3", day:"Day 3", title:"Finance & Admin", phase:1, defaultUnlocked:false, items:["Sit with Irfan (Kat's team) and Abrar (Cam's team) for 2 days — full F&I process walkthrough","Understand the DBR (Debt Burden Ratio) process and how it affects customer finance eligibility","Understand finance application forms: what is required, how to complete, and what documents to collect","Learn the bank partnerships and current interest rates RMA Motors works with","Understand the full 12-step F&I SOP: deal handover → bank quote → LPO → PDI → RTA → registration → notify","Documents Sales must provide to F&I: 3 signed deal sheet copies + customer Emirates ID + Visa copy + finance application","Understand what an LPO (Loan Purchase Order) is and what it triggers: Sales Agreement or Hayaza mortgage request","Understand PDI coordination: F&I pushes the line to prep team — ceramic, PPF, detailing, tinting","Understand how Emirates ID is collected and used to register the vehicle in the customer's name via RTA portal","Finance vs Cash SOP differences — margin VAT applies to profit only, full VAT applies to entire sale price","Understand how the E-Certificate is created in the RTA portal and how registration is completed"] },
+  { id:"m4", day:"Day 4", title:"CRM, CallGear & Snap Cell", phase:2, defaultUnlocked:false, items:["CRM — Eskimo: create a new customer profile correctly (always search for existing customer first)","Assign a lead to the correct salesperson, change lead status correctly, update lead source correctly","Tag an inbound phone call to the correct customer in CRM — never leave a call untagged","Add customer correspondence and internal notes correctly — 100% CRM hygiene is a measured KPI","Use templates correctly, close leads with the correct closure reason","Phone — CallGear: make an outbound call through the system, answer inbound calls professionally within 3 rings","Use the correct opening script on every call, ask key qualifying questions, attempt to book an appointment on every call","Understand AI call scoring: what is measured, how to achieve 80%+, review one recorded call with your trainer","Snap Cell: understand what a Snap Cell is and why it improves response rates and show rates","Record and send a Snap Cell video — must include your face, filmed in front of the specific car, sent within 5 minutes of first call","Know when to send a walk-around video vs a finance/trust video vs a social proof asset","Deal Sheets: understand when a deal sheet is required, how to complete it correctly, who must sign","Submit a completed test deal sheet to your trainer for review and sign-off","Asset creation: create your personal breakout video asset library — intro to you/RMA, 3 FAQs, authority/expert video","Push a Line: understand when a line should be pushed, who to notify, and the prep/workshop/PDI process"] },
+  { id:"m5", day:"Day 5", title:"Purchasing & Fundamentals Test", phase:2, defaultUnlocked:false, items:["Morning: half-day with Barry (Purchasing Manager) — stock acquisition strategies and sourcing flow","Understand department workflow: sourcing to after-sales, roles within the Purchasing team","Sourcing process: Seller → Inspect → Negotiate → Buy — understand each stage thoroughly","Product identification: VIN and chassis number verification, model variations, exact trim levels, GCC vs non-GCC specs","Understand pricing structures: purchase pricing, RMA margin requirements, VAT on profit margin vs full VAT","Understand retail vs trade pricing strategies and discounting policies (management approval always required)","Reconditioning costing: how recon cost impacts buying price and required margin","Inspection training with Ricardo: RMA vehicle inspection standards, mechanical assessment (EVC), cosmetic evaluation (paintwork, panel work, accident history), RTA passing requirements","Vehicle file creation with Zora: stock entry in Titan DMS within one hour of vehicle arrival, documentation verification","Marketing push process: preparing vehicles for photography, coordination with Marketing team, 24-hour listing goal after recon sign-off","Top sellers by ROI: Cadillac (8 days avg, AED 38,748 profit), Porsche (15 days, AED 31,541), Ford (22 days, AED 23,301)","Age-based discount ladder — 0–14 days: full retail; 75+ days: exit pricing","Afternoon: RMA Fundamentals test — 10 Finance/Admin, 10 CRM, 10 Purchasing. Must pass all 30 to progress to Phase 3"] },
+  { id:"m6", day:"Days 6–10", title:"Shadowing, Role Play & Live Calls", phase:3, defaultUnlocked:false, items:["Day 6: 1-1 with Department Manager to review progress against training plan. Full day shadowing Department Manager workflows — CRM management, team communication, escalation handling","Day 7 morning: sit with Accounts team — understand their role in the sales lifecycle, deal processing, and payment reconciliation","Day 7 afternoon: shadow a Sales Rep selected by the Department Manager — observe live lead handling, call structure, and CRM updates in real time","Day 8 morning: sit with Marketing team — understand lead generation, brand standards, listing process, platform management, and the 'Just Arrived' update process","Day 8 afternoon: shadow a Sales Rep selected by the Department Manager — focus on objection handling and appointment setting technique","Day 9: structured role play sessions coordinated by Department Managers — practise full 8-step setter framework, stall objections, price objections, decision maker objections, BAMFAM sequence, and appointment close","Day 10: supervised live calling under Department Team Leaders — real leads, real conversations, manager monitoring","Day 10 final test: 10 marketing questions + 10 purchasing questions — must pass to receive Shop Floor Ready sign-off","Shop Floor Ready sign-off: Department Manager formally signs off that you have demonstrated CRM proficiency, professional communication standards, and full knowledge of the setter framework","Completion requirements: 30 questions passed on Day 5 + 20 questions passed on Day 10 + supervised live call standard + Department Manager sign-off"] },
 ];
 
 const CRM_STAGES = [
@@ -204,6 +204,8 @@ export default function App() {
   const [resetTarget, setResetTarget] = useState("");
   const [resetPassword, setResetPassword] = useState("");
   const [resetDone, setResetDone] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [expandedSetter, setExpandedSetter] = useState(null);
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [genPassword, setGenPassword] = useState("");
@@ -319,6 +321,13 @@ export default function App() {
     loadMgmt();
   };
 
+
+
+  const handleDeleteAccount = async (setterId) => {
+    try { localStorage.removeItem(setterId); } catch {}
+    setDeleteConfirm("");
+    loadMgmt();
+  };
 
   const handleResetPassword = async () => {
     if (!resetTarget || !resetPassword.trim()) return;
@@ -470,20 +479,67 @@ export default function App() {
               <Card style={{ padding:"0.75rem 1.25rem" }}>
                 {mgmtSetters.map((s,i)=>{
                   const pct=completionPct(s), avg=avgScore(s), good=avg!==null&&avg>=90;
+                  const isExpanded = expandedSetter === s.id;
                   return (
-                    <div key={s.id} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 0", borderBottom:i<mgmtSetters.length-1?`1px solid ${T.border}`:"none", flexWrap:"wrap" }}>
-                      <Avatar initials={s.initials} size={36} />
-                      <div style={{ flex:1, minWidth:100 }}>
-                        <div style={{ fontSize:13, fontWeight:700, color:T.text }}>{s.name}</div>
-                        <div style={{ fontSize:11, color:T.muted }}>Started {s.startDate} · {s.completedModules?.length||0}/{MODULES.length} modules</div>
+                    <div key={s.id} style={{ borderBottom:i<mgmtSetters.length-1?`1px solid ${T.border}`:"none" }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 0", flexWrap:"wrap", cursor:"pointer" }} onClick={()=>setExpandedSetter(isExpanded?null:s.id)}>
+                        <Avatar initials={s.initials} size={36} />
+                        <div style={{ flex:1, minWidth:100 }}>
+                          <div style={{ fontSize:13, fontWeight:700, color:T.text }}>{s.name}</div>
+                          <div style={{ fontSize:11, color:T.muted }}>Started {s.startDate} · {s.completedModules?.length||0}/{MODULES.length} modules</div>
+                        </div>
+                        <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:99, background:avg===null?"rgba(122,130,160,0.1)":good?T.greenBg:T.redBg, color:avg===null?T.faint:good?T.greenTx:T.redTx }}>
+                          {avg!==null?`Avg: ${avg}%`:"No quizzes yet"}
+                        </span>
+                        <div style={{ display:"flex", flexDirection:"column", gap:3, minWidth:80 }}>
+                          <ProgressBar pct={pct} />
+                          <div style={{ fontSize:10, color:T.faint, textAlign:"right" }}>{pct}%</div>
+                        </div>
+                        <div style={{ color:T.faint, fontSize:11, transition:"transform .2s", transform:isExpanded?"rotate(180deg)":"none" }}>▾</div>
                       </div>
-                      <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:99, background:avg===null?"rgba(122,130,160,0.1)":good?T.greenBg:T.redBg, color:avg===null?T.faint:good?T.greenTx:T.redTx }}>
-                        {avg!==null?`Avg: ${avg}%`:"No quizzes yet"}
-                      </span>
-                      <div style={{ display:"flex", flexDirection:"column", gap:3, minWidth:80 }}>
-                        <ProgressBar pct={pct} />
-                        <div style={{ fontSize:10, color:T.faint, textAlign:"right" }}>{pct}%</div>
-                      </div>
+                      {isExpanded && (
+                        <div style={{ padding:"12px 0 16px", borderTop:`1px solid ${T.border}` }}>
+                          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:8, marginBottom:12 }}>
+                            <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
+                              <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Full name</div>
+                              <div style={{ fontSize:13, fontWeight:600, color:T.text }}>{s.name}</div>
+                            </div>
+                            <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
+                              <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Start date</div>
+                              <div style={{ fontSize:13, fontWeight:600, color:T.text }}>{s.startDate}</div>
+                            </div>
+                            <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
+                              <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Current password</div>
+                              <div style={{ fontSize:13, fontWeight:600, color:T.gold, fontFamily:"monospace" }}>{s.password || "—"}</div>
+                            </div>
+                            <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
+                              <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Unique link</div>
+                              <div style={{ fontSize:10, color:T.blueTx, wordBreak:"break-all", fontFamily:"monospace" }}>{window.location.href.split("#")[0]}#{s.setterId||s.id}</div>
+                            </div>
+                            <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
+                              <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Modules completed</div>
+                              <div style={{ fontSize:13, fontWeight:600, color:T.text }}>{s.completedModules?.length||0} / {MODULES.length}</div>
+                            </div>
+                            <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
+                              <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Quiz average</div>
+                              <div style={{ fontSize:13, fontWeight:600, color:avg!==null?(good?T.greenTx:T.redTx):T.faint }}>{avg!==null?`${avg}%`:"No quizzes taken"}</div>
+                            </div>
+                          </div>
+                          <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap" }}>
+                            <Btn small onClick={()=>{ navigator.clipboard?.writeText(`${window.location.href.split("#")[0]}#${s.setterId||s.id}`); }}>Copy link</Btn>
+                            <Btn small onClick={()=>{ navigator.clipboard?.writeText(s.password||""); }}>Copy password</Btn>
+                            {deleteConfirm===s.id ? (
+                              <>
+                                <span style={{ fontSize:12, color:T.redTx, fontWeight:600 }}>Are you sure? This cannot be undone.</span>
+                                <Btn small onClick={()=>handleDeleteAccount(s.id)} style={{ background:T.red, color:"#fff", border:"none" }}>Yes, delete</Btn>
+                                <Btn small onClick={()=>setDeleteConfirm("")}>Cancel</Btn>
+                              </>
+                            ) : (
+                              <Btn small onClick={()=>setDeleteConfirm(s.id)} style={{ color:T.redTx, borderColor:T.red }}>Delete account</Btn>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -676,7 +732,23 @@ export default function App() {
 
         {activeTab==="scripts" && (
           <div>
-            <SectionLabel style={{ marginTop:0 }}>8-step setter framework</SectionLabel>
+            <div style={{ background:T.goldBg, border:`1px solid ${T.goldDim}`, borderRadius:10, padding:"12px 16px", marginBottom:"1.25rem" }}>
+            <div style={{ fontSize:12, fontWeight:700, color:T.gold, marginBottom:4 }}>📹 Training videos</div>
+            <div style={{ fontSize:12, color:T.muted, marginBottom:10, lineHeight:1.6 }}>Paste a YouTube or Vimeo URL to add training videos to this section. Videos are added by your manager — ask them to update the platform when new videos are available.</div>
+            <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+              {[{label:"Setter Framework walkthrough",url:""},{label:"Objection handling masterclass",url:""},{label:"CRM live demo",url:""},{label:"BAMFAM sequence explained",url:""}].map(v=>(
+                <div key={v.label} style={{ background:T.surf, borderRadius:8, padding:"10px 14px", border:`1px solid ${T.border}`, flex:"1 1 200px" }}>
+                  <div style={{ fontSize:11, fontWeight:600, color:T.muted, marginBottom:6 }}>📽 {v.label}</div>
+                  {v.url ? (
+                    <iframe src={v.url.replace("watch?v=","embed/").replace("youtu.be/","youtube.com/embed/")} style={{ width:"100%", aspectRatio:"16/9", border:"none", borderRadius:6 }} allowFullScreen title={v.label} />
+                  ) : (
+                    <div style={{ background:T.bg, borderRadius:6, padding:"20px", textAlign:"center", fontSize:11, color:T.faint }}>Video not yet uploaded — check with your manager</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+          <SectionLabel style={{ marginTop:0 }}>8-step setter framework</SectionLabel>
             {[["Step 1 — Connection",`"Yeah hi [Name], it's [Your Name] from RMA Motors. You were looking at the [Car Model] earlier, right?"`],["Step 2 — Clarify interest",`"Just so I understand properly, what was it about that car that caught your attention?"`],["Step 3 — Discovery",`"What are you driving currently?" · "What matters most in your next car?" · "Is this daily use or weekend driving?"`],["Step 4 — Position RMA",`"One thing buyers really like about RMA is how transparent and straightforward the process is, especially when comparing cars in this market."`],["Step 5 — Sell the appointment",`"The next step is to schedule a test drive so you can properly inspect the car, go through the condition/history, and see if it feels right. We'll also answer any finance questions."`],["Step 6 — Verbal commitment",`"If we book this for tomorrow at 5pm, can I get your word that you'll show up? If anything changes, just message me and we'll reschedule."`],["Step 7 — Confirmation","Confirm date, time, and showroom address. Log in Eskimo CRM immediately. Change lead status to 'Appointment Booked'."],["Step 8 — Pre-appointment reinforcement",`"Hey [Name], looking forward to seeing you tomorrow at [time]. The car is ready. You mentioned [desired outcome] — can't wait to walk you through it." [Send as video or text the day before]`]].map(([l,t])=>(
               <div key={l} style={{ borderLeft:`2px solid ${T.gold}`, padding:"0.8rem 0.8rem 0.8rem 1rem", marginBottom:6, borderRadius:"0 8px 8px 0", background:T.goldBg, border:`1px solid ${T.goldDim}`, borderLeftWidth:2 }}>
                 <div style={{ fontSize:10, fontWeight:700, color:T.gold, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
@@ -703,16 +775,34 @@ export default function App() {
         {activeTab==="sops" && (
           <div>
             <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"1.25rem" }}>
-              {[["sales","Sales process"],["crm","CRM stages"],["fi","Finance & admin"],["handover","Handover"],["stock","Stock & pricing"],["marketing","Marketing"]].map(([id,label])=>(
+              {[["sales","Sales process"],["crm","CRM stages"],["fi","Finance & admin"],["handover","Handover"],["stock","Stock & pricing"],["marketing","Marketing"],["disciplinary","Disciplinary"]].map(([id,label])=>(
                 <button key={id} className={`sub-tab ${activeSop===id?"active":""}`} onClick={()=>setActiveSop(id)}>{label}</button>
               ))}
             </div>
-            {activeSop==="sales" && (<div><StepBlock n="Step 1" title="Lead entry & data integrity" desc="All leads into Eskimo CRM immediately. The original lead source must NEVER be changed. If unknown, ask during first contact." /><StepBlock n="Step 2" title="Initial contact — time-critical" desc="Contact within 5 minutes during shift; 30 minutes for overnight leads. Send personalised Snap Cell video within 5 minutes of first call — filmed in front of the specific car." /><StepBlock n="Step 3" title="In-person appointment" desc="Meet & greet → qualify → GM/Naz update (mandatory) → value trade-in FIRST → static demo → trial close → test drive → deposit." /><StepBlock n="Step 4" title="Post-sale documentation" desc="Deal sheet same day. Finance eligibility sheet required. EID/Visa copy for finance. 24-hour follow-up after handover. Request Google Review and Trustpilot." /><Alert variant="warn">⚠️ All discounts authorised by GM/Naz (Directors) only. No verbal approvals valid.</Alert></div>)}
+            {activeSop==="sales" && (<div>
+              <StepBlock n="Step 1" title="Lead entry & data integrity" desc="ALL leads must be entered into Eskimo CRM immediately upon receipt. Full contact details, enquiry source, and vehicle interest are required. The original lead source must NEVER be changed. If unknown, ask the customer during first contact and update immediately. 100% CRM hygiene is a KPI — every note, task, and pipeline stage must be updated accurately and in real time." />
+              <StepBlock n="Step 2" title="Rapid lead response — 60 seconds" desc="Respond to ALL new inbound leads within 60 seconds during your assigned coverage shift. For overnight or out-of-shift leads: contact within 30 minutes of the start of your next shift. Use approved sales messaging frameworks across WhatsApp, phone, and social media. Send a personalised Snap Cell video within 5 minutes of the first call — filmed in front of the specific car, face visible." />
+              <StepBlock n="Step 3" title="Qualification & discovery" desc="Contact, qualify, and quote all new leads within the first 24 hours. Qualify on: budget, timeline, vehicle preference, finance readiness, and current vehicle situation. Use the 8-step setter framework (Scripts tab). Your conversion target: minimum 33% of responded leads result in a booked appointment." />
+              <StepBlock n="Step 4" title="Appointment setting & show rate" desc="Convert leads into showroom or video appointments. Secure verbal commitment on every appointment: 'Can I get your word that you will show up? If anything changes, just message me and we will reschedule.' Send pre-appointment reinforcement the day before — video or text. Target: minimum 66% appointment show rate." />
+              <StepBlock n="Step 5" title="No answer — BAMFAM follow-up sequence" desc="If no answer after x2 double dial: send SMS intro immediately, then follow the structured 6-message sequence over 15 days — educational video, authority/expert video, FAQ video, product with link, social proof, and final reopener. BAMFAM = Book A Meeting From A Meeting. Every interaction must end with a confirmed next step." />
+              <StepBlock n="Step 6" title="Lead handover to Closer" desc="After 72 hours without conversion: complete a clean handover to the Closer team. Update all CRM notes, document all interaction history, and brief the Closer on the customer's situation, objections raised, and any commitments made. The Closer takes ownership from this point." />
+              <StepBlock n="Step 7" title="Post-sale & aftersales" desc="24-hour follow-up call after handover — confirm satisfaction. Request Google Review and Trustpilot review. Customer enters the aftersales pipeline: 6, 12, 18, and 24-month check-ins." />
+              <Alert variant="warn">⚠️ All discounts must be authorised by GM/Naz (Directors) only. No verbal approvals are valid under any circumstances.</Alert>
+              <Alert variant="info">📞 Answer all incoming calls within 3 rings. Complete a minimum of 40 connected outbound calls per day, each lasting at least 1 minute.</Alert>
+            </div>)}
             {activeSop==="crm" && (<div><Card style={{ padding:"0.75rem 1.25rem" }}>{CRM_STAGES.map((s,i)=>(<div key={i} style={{ display:"flex", gap:12, padding:"9px 0", borderBottom:i<CRM_STAGES.length-1?`1px solid ${T.border}`:"none", alignItems:"flex-start" }}><div style={{ width:10, height:10, borderRadius:"50%", background:s.color, flexShrink:0, marginTop:4 }} /><div style={{ width:145, flexShrink:0 }}><span style={{ fontSize:12, fontWeight:700, color:s.color }}>{s.label}</span></div><div style={{ fontSize:12, color:T.muted, lineHeight:1.5 }}>{s.desc}</div></div>))}</Card><Alert variant="info">Update CRM stages immediately and accurately. 100% CRM hygiene is a measured KPI.</Alert></div>)}
             {activeSop==="fi" && (<div><StepBlock n="Step 1" title="Deal handover — Sales to F&I" accent={T.blue} desc="3 signed deal sheet copies (customer, F&I, Accounts) + all customer documents. Must be complete before submission." /><StepBlock n="Steps 2–3" title="Bank quotation & approval" accent={T.blue} desc="F&I prepares quotation exactly as per deal sheet, emails banker. Once approved, F&I applies for insurance." /><StepBlock n="Step 4" title="LPO received → agreements" accent={T.blue} desc="LPO triggers: F&I prepares the Sales Agreement (consignment) or Hayaza mortgage request (RMA-owned)." /><StepBlock n="Steps 5–12" title="PDI → RTA → Car Care → E-Cert → Notify" accent={T.blue} desc="F&I coordinates PDI, RTA inspection, Car Care. Creates E-Certificate in RTA portal. Notifies Sales Rep and customer once registration complete." /></div>)}
             {activeSop==="handover" && (<div><StepBlock title="Vehicle preparation" desc="Full valet · PDI completed · no warning lights · AC working · min ¼ tank fuel · no paired Bluetooth · clean to showroom standard." /><StepBlock title="Scheduling" desc="ONE customer per hour maximum. Confirm readiness with Car Care. Park in designated handover bay 30 minutes before." /><StepBlock title="The reveal" desc="Marketing present for photos/video. Keys and gift handed over. Manager delivers 'Thank you'. Handover sheet signed off by manager." /><StepBlock title="Post-handover" desc="Call or message within 48 hours. Request Google Review and Trustpilot. Customer enters 6/12/18/24-month check-in pipeline." /></div>)}
             {activeSop==="stock" && (<div><SectionLabel style={{ marginTop:0 }}>Age-based discount ladder</SectionLabel><Card style={{ padding:"0.75rem 1.25rem", marginBottom:"1rem" }}>{[["0–14 days","Full retail — 0–1% max",T.green],["15–30 days","Soft adjust — 1–2%",T.green],["31–45 days","Tactical — 2–3%",T.amber],["46–60 days","Defensive — 3–5% (must sell soon)",T.amber],["61–75 days","Aggressive — 5–7%",T.red],["75+ days","Exit — whatever clears",T.red]].map(([d,a,c])=>(<div key={d} style={{ display:"flex", gap:10, padding:"7px 0", borderBottom:`1px solid ${T.border}`, fontSize:12 }}><div style={{ width:8, height:8, borderRadius:"50%", background:c, flexShrink:0, marginTop:3 }} /><div style={{ width:90, fontWeight:700, color:T.text, flexShrink:0 }}>{d}</div><div style={{ color:T.muted }}>{a}</div></div>))}</Card><Alert variant="warn">⚠️ Never discount below minimum GP without written approval from the Purchasing Manager or General Manager.</Alert></div>)}
-            {activeSop==="marketing" && (<div><StepBlock title="Listing goal" accent={T.purple} desc="Live within 24 hours of reconditioning sign-off. Photography requested by Purchaser immediately on vehicle arrival." /><StepBlock title="Immediate update triggers" accent={T.purple} desc="Car sold or status changes → ALL listings updated/removed immediately across Dubizzle, AutoTrader, Instagram, Google, TikTok, website. No delay." /><StepBlock title="Your personal asset library (required)" accent={T.purple} desc="(1) Intro to you/RMA video · (2) 3 FAQ videos · (3) Authority/expert video · (4) Vehicle walkaround Snap Cells · (5) Social proof and testimonial videos." /></div>)}
+            {activeSop==="disciplinary" && (<div>
+              <StepBlock n="Stage 1" title="Verbal Warning" desc="Trigger: 1st offence or 1st-month performance review identifying sub-standard KPI output. Action: Department Manager and Witnessing Manager arrange a formal meeting. Outcome: Verbal Warning issued and documented in employee file. Training needs identified immediately and a formal training plan put in place." />
+              <StepBlock n="Stage 2" title="Formal Written Warning" accent={T.amber} desc="Trigger: 2nd offence or 2nd month of underperformance. Action: Department Manager requests a formal Written Warning letter from HR. The letter details data-driven underperformance and is signed by the Department Manager, Witnessing Manager, and the employee. Two copies produced — one for the employee, one for HR. Active on record for 6 months." />
+              <StepBlock n="Stage 3" title="Final Written Warning" accent={T.red} desc="Trigger: 3rd offence or 3rd month of underperformance. A Final Written Warning is issued, signed by all parties. Retention: 6 months active. Final review of training needs and a final recovery plan implemented." />
+              <StepBlock n="Stage 4" title="Termination of Employment" accent={T.red} desc="Trigger: Further offence, continued underperformance after Final Written Warning, or 4th month of underperformance. A Letter of Termination is issued by HR. Employee must immediately return all company property — devices, IDs, keys. Passwords and PINs must be provided. Employee is escorted from the premises." />
+              <Alert variant="warn">Non-gross misconduct examples: repeated lateness, unauthorised absence, poor call quality, failure to meet call KPIs.</Alert>
+              <Alert variant="danger">Gross misconduct (immediate investigation): loss of company money due to negligence, aggressive behaviour, insubordination, bringing the company into disrepute, or breaches of UAE PDPL (Personal Data Protection Law).</Alert>
+            </div>)}
+            {activeSop==="marketing" && (<div><StepBlock title="Listing goal" accent={T.purple} desc="Live within 24 hours of reconditioning sign-off. Photography requested by Purchaser immediately on vehicle arrival. 'Just Arrived' internal group update posted immediately." /><StepBlock title="Immediate update triggers" accent={T.purple} desc="Car sold or status changes → ALL listings updated/removed immediately across Dubizzle, AutoTrader, Instagram, Google, TikTok, website. No delay whatsoever." /><StepBlock title="Your personal asset library (required)" accent={T.purple} desc="(1) Intro to you and RMA video · (2) 3 FAQ videos answering most common buyer questions · (3) Authority/expert video — 3 things to check before buying a car in the UAE · (4) Vehicle walkaround Snap Cells — specific to each enquiry · (5) Social proof and testimonial videos." /><Alert variant="info">Build and maintain your asset library in your first week. These assets are sent throughout the BAMFAM sequence and directly improve engagement rates.</Alert></div>)}
           </div>
         )}
 
@@ -818,4 +908,3 @@ export default function App() {
     </div>
   );
 }
-

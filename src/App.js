@@ -555,14 +555,21 @@ export default function App() {
                 {mgmtSetters.map((s,i)=>{
                   const pct=completionPct(s), avg=avgScore(s), good=avg!==null&&avg>=90;
                   const isExpanded = expandedSetter === s.id;
+                  const lockedQuizzes = Object.entries(QUIZZES).filter(([k])=>s.quizBlocked?.[k]);
+                  const hasLocked = lockedQuizzes.length > 0;
                   return (
-                    <div key={s.id} style={{ borderBottom:i<mgmtSetters.length-1?`1px solid ${T.border}`:"none" }}>
+                    <div key={s.id} style={{ borderBottom:i<mgmtSetters.length-1?`1px solid ${T.border}`:"none", borderLeft:hasLocked?`3px solid ${T.red}`:"3px solid transparent", borderTopLeftRadius:0, borderBottomLeftRadius:0 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 0", flexWrap:"wrap", cursor:"pointer" }} onClick={()=>setExpandedSetter(isExpanded?null:s.id)}>
                         <Avatar initials={s.initials} size={36} />
                         <div style={{ flex:1, minWidth:100 }}>
                           <div style={{ fontSize:13, fontWeight:700, color:T.text }}>{s.name}</div>
                           <div style={{ fontSize:11, color:T.muted }}>Started {s.startDate} · {s.completedModules?.length||0}/{MODULES.length} modules</div>
                         </div>
+                        {hasLocked && (
+                          <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:99, background:T.redBg, color:T.redTx }}>
+                            🔒 {lockedQuizzes.length} assessment{lockedQuizzes.length>1?"s":""} locked
+                          </span>
+                        )}
                         <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:99, background:avg===null?"rgba(122,130,160,0.1)":good?T.greenBg:T.redBg, color:avg===null?T.faint:good?T.greenTx:T.redTx }}>
                           {avg!==null?`Avg: ${avg}%`:"No quizzes yet"}
                         </span>
@@ -574,6 +581,19 @@ export default function App() {
                       </div>
                       {isExpanded && (
                         <div style={{ padding:"12px 0 16px", borderTop:`1px solid ${T.border}` }}>
+                          {hasLocked && (
+                            <div style={{ background:T.redBg, border:`1px solid ${T.red}`, borderRadius:10, padding:"12px 14px", marginBottom:12 }}>
+                              <div style={{ fontSize:12, fontWeight:700, color:T.redTx, marginBottom:8 }}>🔒 Locked assessments — click to unlock and reset attempts</div>
+                              <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                                {lockedQuizzes.map(([k,q])=>(
+                                  <button key={k} onClick={()=>handleUnblockQuiz(s.id, k)}
+                                    style={{ padding:"6px 14px", background:T.red, color:"#fff", border:"none", borderRadius:7, fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',system-ui,sans-serif" }}>
+                                    Unlock {q.icon} {q.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:8, marginBottom:12 }}>
                             <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
                               <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Full name</div>
@@ -603,17 +623,7 @@ export default function App() {
                           <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap" }}>
                             <Btn small onClick={()=>{ navigator.clipboard?.writeText(`${window.location.href.split("#")[0]}#${s.setterId||s.id}`); }}>Copy link</Btn>
                             <Btn small onClick={()=>{ navigator.clipboard?.writeText(s.password||""); }}>Copy password</Btn>
-                            {Object.keys(s.quizBlocked||{}).filter(k=>s.quizBlocked[k]).length > 0 && (
-                              <div style={{ width:"100%", marginBottom:8, background:T.redBg, border:`1px solid ${T.red}`, borderRadius:8, padding:"8px 12px" }}>
-                                <div style={{ fontSize:11, fontWeight:700, color:T.redTx, marginBottom:6 }}>🔒 Locked assessments — click to unlock</div>
-                                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                                  {Object.entries(QUIZZES).filter(([k])=>s.quizBlocked?.[k]).map(([k,q])=>(
-                                    <Btn key={k} small onClick={()=>handleUnblockQuiz(s.id, k)} style={{ fontSize:11 }}>Unlock {q.icon} {q.label}</Btn>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          {deleteConfirm===s.id ? (
+                            {deleteConfirm===s.id ? (
                               <>
                                 <span style={{ fontSize:12, color:T.redTx, fontWeight:600 }}>Are you sure? This cannot be undone.</span>
                                 <Btn small onClick={()=>handleDeleteAccount(s.id)} style={{ background:T.red, color:"#fff", border:"none" }}>Yes, delete</Btn>

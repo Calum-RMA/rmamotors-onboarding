@@ -1,8 +1,47 @@
 import React, { useState, useEffect } from "react";
 
-const sGet = async (key) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; } };
-const sSet = async (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch { return false; } };
-const sList = async (prefix) => { try { return Object.keys(localStorage).filter(k => k.startsWith(prefix)); } catch { return []; } };
+// ── Firebase Realtime Database Storage ──────────────────────────────────────
+// Replace FIREBASE_URL below with your project URL from Firebase Console
+// Format: https://YOUR-PROJECT-ID-default-rtdb.firebaseio.com
+const FIREBASE_URL = "https://rma-motors-onboarding-default-rtdb.firebaseio.com";
+
+const sGet = async (key) => {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rma/${encodeURIComponent(key)}.json`);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+};
+
+const sSet = async (key, val) => {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rma/${encodeURIComponent(key)}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(val)
+    });
+    return r.ok;
+  } catch { return false; }
+};
+
+const sList = async (prefix) => {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rma.json?shallow=true`);
+    if (!r.ok) return [];
+    const data = await r.json();
+    if (!data) return [];
+    return Object.keys(data)
+      .map(k => decodeURIComponent(k))
+      .filter(k => k.startsWith(prefix));
+  } catch { return []; }
+};
+
+const sDelete = async (key) => {
+  try {
+    await fetch(`${FIREBASE_URL}/rma/${encodeURIComponent(key)}.json`, { method: "DELETE" });
+    return true;
+  } catch { return false; }
+};
 
 const MGMT_PASSWORD = "RMAmanager2024";
 
@@ -325,7 +364,7 @@ export default function App() {
 
 
   const handleDeleteAccount = async (setterId) => {
-    try { localStorage.removeItem(setterId); } catch {}
+    await sDelete(setterId);
     setDeleteConfirm("");
     loadMgmt();
   };

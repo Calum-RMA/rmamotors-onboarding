@@ -51,14 +51,15 @@ const MODULES = [
 ];
 
 const CRM_STAGES = [
-  { label:"Contacted", color:"#4A90E2", desc:"Initial call made — send personalised Snap Cell video within 5 minutes" },
-  { label:"Pending", color:"#F0A030", desc:"Vehicle confirmed, awaiting callback, or appointment date set" },
-  { label:"Appt Booked", color:"#22C984", desc:"Physical appointment confirmed — log in CRM calendar immediately" },
-  { label:"Quoted", color:"#8B6FE8", desc:"Customer attended, identified the car — quote agreed" },
-  { label:"Deposit Received", color:"#E07840", desc:"Deal committed — update payment type: Cash or Finance" },
+  { label:"Contacted", color:"#4A90E2", desc:"Initial call made — send personalised Snap Cell video within 5 minutes of completing the first call" },
+  { label:"Pending", color:"#F0A030", desc:"Vehicle confirmed, awaiting callback, or appointment date set — continue BAMFAM sequence if no response" },
+  { label:"Appt Booked", color:"#22C984", desc:"Physical appointment confirmed — log in CRM calendar immediately. Send pre-appointment reinforcement message the day before." },
+  { label:"Appt Kept ✓", color:"#16A865", desc:"Customer physically attended the showroom. REQUIRED: click the 'Attended' button in Eskimo CRM immediately when the customer arrives. Failure to do this means the appointment is not recorded as kept and will not count towards your show rate KPI." },
+  { label:"Quoted", color:"#8B6FE8", desc:"Customer attended, identified the car — quote agreed and deal sheet initiated" },
+  { label:"Deposit Received", color:"#E07840", desc:"Deal committed — update payment type: Cash or Finance. Hand over to F&I with 3 signed deal sheet copies." },
   { label:"Finance Approved", color:"#4A90E2", desc:"Bank approved — car enters F&I/Accounts SOP" },
-  { label:"F&I Clearance", color:"#7A82A0", desc:"Post clearance — enters Handover SOP" },
-  { label:"Sale Complete", color:"#22C984", desc:"Handover done — customer enters Aftersales pipeline" },
+  { label:"F&I Clearance", color:"#7A82A0", desc:"Post F&I clearance — enters Handover SOP" },
+  { label:"Sale Complete", color:"#22C984", desc:"Handover done — customer enters Aftersales pipeline. Request Google Review and Trustpilot." },
 ];
 
 const T = {
@@ -748,25 +749,120 @@ export default function App() {
               ))}
             </div>
           </div>
-          <SectionLabel style={{ marginTop:0 }}>8-step setter framework</SectionLabel>
-            {[["Step 1 — Connection",`"Yeah hi [Name], it's [Your Name] from RMA Motors. You were looking at the [Car Model] earlier, right?"`],["Step 2 — Clarify interest",`"Just so I understand properly, what was it about that car that caught your attention?"`],["Step 3 — Discovery",`"What are you driving currently?" · "What matters most in your next car?" · "Is this daily use or weekend driving?"`],["Step 4 — Position RMA",`"One thing buyers really like about RMA is how transparent and straightforward the process is, especially when comparing cars in this market."`],["Step 5 — Sell the appointment",`"The next step is to schedule a test drive so you can properly inspect the car, go through the condition/history, and see if it feels right. We'll also answer any finance questions."`],["Step 6 — Verbal commitment",`"If we book this for tomorrow at 5pm, can I get your word that you'll show up? If anything changes, just message me and we'll reschedule."`],["Step 7 — Confirmation","Confirm date, time, and showroom address. Log in Eskimo CRM immediately. Change lead status to 'Appointment Booked'."],["Step 8 — Pre-appointment reinforcement",`"Hey [Name], looking forward to seeing you tomorrow at [time]. The car is ready. You mentioned [desired outcome] — can't wait to walk you through it." [Send as video or text the day before]`]].map(([l,t])=>(
-              <div key={l} style={{ borderLeft:`2px solid ${T.gold}`, padding:"0.8rem 0.8rem 0.8rem 1rem", marginBottom:6, borderRadius:"0 8px 8px 0", background:T.goldBg, border:`1px solid ${T.goldDim}`, borderLeftWidth:2 }}>
-                <div style={{ fontSize:10, fontWeight:700, color:T.gold, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
-                <div style={{ fontSize:13, color:T.muted, lineHeight:1.65, fontStyle:"italic" }}>{t}</div>
+          <SectionLabel style={{ marginTop:0 }}>8-step setter framework — full conversational examples</SectionLabel>
+            {[
+              ["Step 1 — Connection","Open with energy. Confirm who they are and what they enquired about.",
+`Setter: "Yeah hi [Name], this is [Your Name] from RMA Motors — you reached out about the [Car Model] earlier, right?"
+Customer: "Yeah that's me."
+Setter: "Perfect, glad I caught you. I've actually just been standing in front of the car — it's a great spec. Got a couple of minutes so I can tell you more about it?"`],
+              ["Step 2 — Clarify interest","Find out specifically what drew them to this car. Do not assume.",
+`Setter: "Just so I understand properly — what was it about the [Car Model] that caught your eye? The spec, the mileage, the price?"
+Customer: "Mainly the price and mileage to be honest."
+Setter: "That makes sense — it's one of the best-priced options we've had for that spec. The mileage is really clean too. How long have you been looking?"`],
+              ["Step 3 — Discovery","Qualify on budget, timeline, current car, and priorities. Listen more than you talk.",
+`Setter: "What are you driving at the moment?"
+Customer: "A 2019 Camry."
+Setter: "Are you looking to sell it or keeping it? And timing-wise — actively looking in the next couple of weeks or more of a right-deal-comes-along situation?"
+Customer: "Actively looking if the right car comes up."
+Setter: "Perfect. And budget — cash or would you explore finance?"`],
+              ["Step 4 — Position RMA","Build trust. Be transparent before they even ask.",
+`Setter: "One thing that matters to a lot of our buyers — we're fully upfront about the car's history before you even come in. Every car is inspected before we list it. No surprises when you arrive. That's the RMA difference."`],
+              ["Step 5 — Sell the appointment","Sell the visit, not the car.",
+`Setter: "Here's what I'd suggest — come in, have a proper look, go through the history with me, see how it feels in person. We can also run through finance options if relevant. Takes about 45 minutes and you'll know exactly where you stand."
+Customer: "Yeah that works."
+Setter: "Great — let's get that locked in."`],
+              ["Step 6 — Verbal commitment","Get their word. This is the single biggest lever for improving show rates.",
+`Setter: "Before I put it in the diary — can I get your word that you'll show up? I ask everyone this because I want to hold that slot for you and not show the car to anyone else at that time. If anything comes up, just message me and we'll move it. But I need that commitment."
+Customer: "Yes, I'll be there."
+Setter: "Perfect — I appreciate that."`],
+              ["Step 7 — Confirmation","Lock in all details and update CRM immediately.",
+`Setter: "So we're confirmed — [Day] at [Time], Showroom 6, Speedex Centre, DIP 1. I'll send you the location on WhatsApp now. Car will be ready and waiting. Any questions before then, message me directly on this number."
+→ Update CRM to 'Appointment Booked' immediately. Set reminder for pre-appointment message.`],
+              ["Step 8 — Pre-appointment reinforcement","Send the day before. Video is more personal than text.",
+`"Hey [Name] — just confirming we're on for tomorrow at [time]. The [Car Model] is ready for you. You mentioned [what they said] — I think you'll like it. See you tomorrow. Any issues, message me here."
+→ Send as a Snap Cell video filmed in front of the car if possible.`]
+            ].map(([l,sub,t])=>(
+              <div key={l} style={{ borderLeft:`2px solid ${T.gold}`, padding:"0.9rem 0.9rem 0.9rem 1rem", marginBottom:8, borderRadius:"0 8px 8px 0", background:T.goldBg, border:`1px solid ${T.goldDim}`, borderLeftWidth:2 }}>
+                <div style={{ fontSize:10, fontWeight:700, color:T.gold, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                <div style={{ fontSize:11, color:T.goldLt, marginBottom:6, fontWeight:500 }}>{sub}</div>
+                <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{t}</div>
               </div>
             ))}
-            <SectionLabel>BAMFAM follow-up sequence</SectionLabel>
-            {[["Message 1 — Intro SMS",`"Hi [Name], tried giving you a quick call because I saw you reached out about the [Car Model]. I've got a few minutes now, or later today if that works?"`],["Message 2 — Education",`"Hi [Name], thought this might be useful — shows you how we do business here. [INSERT VIDEO]"`],["Message 3 — Authority",`"This explains how to avoid costly mistakes when buying a car in the UAE — transparency about car history is key. [INSERT VIDEO]"`],["Message 4 — FAQ",`"Some of the most common questions buyers have here at RMA: [Insert Q+A]. Quick video explains it in detail. [SEND VIDEO]"`],["Message 5 — Product",`"This just came across my desk. Thought it would help. [Car · Year · KM · AED + WEBSITE LINK]"`],["Message 6 — Final reopener",`"Hi [Name], tried contacting you but didn't hear back... Where should we go from here?"`]].map(([l,t])=>(
-              <div key={l} style={{ borderLeft:`2px solid ${T.purple}`, padding:"0.8rem 0.8rem 0.8rem 1rem", marginBottom:6, borderRadius:"0 8px 8px 0", background:T.purpleBg, border:`1px solid ${T.purple}`, borderLeftWidth:2 }}>
-                <div style={{ fontSize:10, fontWeight:700, color:T.purpleTx, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
-                <div style={{ fontSize:13, color:T.muted, lineHeight:1.65, fontStyle:"italic" }}>{t}</div>
+            <SectionLabel>BAMFAM follow-up sequence — no answer</SectionLabel>
+            <div style={{ fontSize:12, color:T.muted, marginBottom:12, lineHeight:1.65 }}>When a lead does not answer after x2 double dial, send these messages in sequence over 15 days. Space them out — do not send all at once.</div>
+            {[
+              ["Message 1 — Intro (send immediately)","",
+`"Hi [Name], tried giving you a quick call because I saw you reached out about the [Car Model]. I've got a few minutes now, or later today if that works? If you have any questions, just message me here."`],
+              ["Message 2 — Education (Day 2)","Send your intro/process video asset.",
+`"Hi [Name], [Your Name] from RMA Motors. Thought this might be useful — shows you how we do business here and the process of buying a car with us. [INSERT ASSET VIDEO]"`],
+              ["Message 3 — Authority (Day 4)","Send your 'avoid costly mistakes' video.",
+`"The video explains how to avoid costly mistakes when buying a car in the UAE. This usually comes down to dealerships not being fully transparent about the car's history. Put together a short video showing what to look out for. [INSERT ASSET VIDEO]"`],
+              ["Message 4 — FAQ (Day 7)","Answer questions they haven't asked yet.",
+`"Some of the most common questions buyers have here at RMA:
+'What should I check when buying this model?'
+'How does financing normally work?'
+'What affects resale value?'
+Short answer: [Insert answer]. Quick video explains it in more detail. [SEND VIDEO]"`],
+              ["Message 5 — Product (Day 10)","Present a relevant vehicle.",
+`"This just came across my desk. Thought it would help if you haven't found what you're looking for.
+
+[Car Model] [Year]
+KM: [Mileage]
+AED [Price]
+[INSERT LINK — let it load for image preview]"`],
+              ["Message 6 — Final reopener (Day 15)","Keep it short.",
+`"Hi [Name], tried contacting you but didn't hear back… Where should we go from here?"`],
+              ["Manager close — if still no response","A manager stepping in creates a fresh conversation.",
+`"Hi [Name], [Sales Rep] looped me in. What do we need to do on our side to get this deal wrapped up for you? — [Manager Name]"
+
+Alternative: "Hi [Name], what would need to happen for us to get this sorted for you in the best way possible? — [Manager Name]"`]
+            ].map(([l,sub,t])=>(
+              <div key={l} style={{ borderLeft:`2px solid ${T.purple}`, padding:"0.9rem 0.9rem 0.9rem 1rem", marginBottom:8, borderRadius:"0 8px 8px 0", background:T.purpleBg, border:`1px solid ${T.purple}`, borderLeftWidth:2 }}>
+                <div style={{ fontSize:10, fontWeight:700, color:T.purpleTx, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                {sub && <div style={{ fontSize:11, color:T.muted, marginBottom:6, fontWeight:500 }}>{sub}</div>}
+                <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{t}</div>
               </div>
             ))}
-            <SectionLabel>Objection handling</SectionLabel>
-            {[[T.amber,T.amberBg,T.amberTx,"Stall objections — clarity, not pressure",`"Do you mind if I ask what part of the deal you'd like to think about?" · "What would need to change for the timing to feel right?" · "If everything felt right with the car, would you move forward?"`],[T.amber,T.amberBg,T.amberTx,"Price objections",`"Is the concern about affordability, or getting the best value?" · "If the prices were the same, which one would you choose?" · "That company is cheaper — why are you not choosing them?"`],[T.green,T.greenBg,T.greenTx,"Decision maker objections",`"Would it help if I sent a quick video so they can see it too?" · "Would you like to create a group with the three of us?"`],[T.green,T.greenBg,T.greenTx,"Show rate — verbal commitment",`"Can I get your word you'll actually show up? If anything comes up, just text me and we'll reschedule."`]].map(([acc,bg,tc,l,t])=>(
-              <div key={l} style={{ borderLeft:`2px solid ${acc}`, padding:"0.8rem 0.8rem 0.8rem 1rem", marginBottom:6, borderRadius:"0 8px 8px 0", background:bg, border:`1px solid ${acc}`, borderLeftWidth:2 }}>
-                <div style={{ fontSize:10, fontWeight:700, color:tc, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
-                <div style={{ fontSize:13, color:T.muted, lineHeight:1.65, fontStyle:"italic" }}>{t}</div>
+            <SectionLabel>Objection handling — conversational examples</SectionLabel>
+            {[
+              [T.amber,T.amberBg,T.amberTx,"Stall — 'I need to think about it'","Find what they're actually thinking about. Goal is clarity, not pressure.",
+`Customer: "I just need to think about it."
+Setter: "Of course — do you mind if I ask what part specifically? Is it the car itself, the price, the timing?"
+Customer: "Mainly the price."
+Setter: "Makes sense. Is it that it's over budget, or more that you want to make sure you're getting the best value?"
+→ Now you have the real objection. Handle that specifically.
+
+Also try: "If everything felt right with the car and the price was where you needed it — would you move forward?"`],
+              [T.amber,T.amberBg,T.amberTx,"Price — 'It's too expensive' or 'Found it cheaper'","Never drop price without manager approval. Anchor value first.",
+`Customer: "I've seen the same car cheaper elsewhere."
+Setter: "Same year, spec, and mileage?"
+Customer: "Pretty similar."
+Setter: "Can I ask — if the prices were the same, which would you choose?"
+Customer: "Probably yours to be honest."
+Setter: "So the question is whether the difference is worth the peace of mind. Here's what's included with ours... [history, inspection, warranty]."
+
+Also try: "That company is cheaper — what's stopping you from just buying from them?"`],
+              [T.amber,T.amberBg,T.amberTx,"Decision maker — 'Need to speak to my wife/husband'","Include them, don't fight them.",
+`Customer: "I need to run it past my wife first."
+Setter: "Totally understand — big purchase. Would it help if I sent a quick video so she can see exactly what you're looking at?"
+Customer: "Yeah that could work."
+Setter: "And would you want to bring her in when you come? Or a WhatsApp group with the three of us so she can ask questions directly?"
+Goal: keep the conversation alive and include the decision maker.`],
+              [T.green,T.greenBg,T.greenTx,"Show rate — 'I'll try to make it'","'Try' means no commitment. Push for a real yes.",
+`Customer: "Yeah I'll try to come in Thursday."
+Setter: "Can I ask you to give me your word you'll be there? I'll have the car ready for you and won't show it to anyone else at that time. If anything comes up just message me — but I need that commitment."
+Customer: "Yes, I'll be there."
+Setter: "Perfect — you're confirmed for Thursday at [time]."`],
+              [T.green,T.greenBg,T.greenTx,"Where did we lose you? — re-engagement","When a customer goes silent after showing interest.",
+`"Hi [Name], if you're not opposed — could you send me 1-2 sentences on where we lost you? I'd appreciate it so we can improve. Thank you — [Your Name]"
+
+If they reply with an objection:
+"That makes sense. The way we usually handle that is [answer clearly]. Would it be worth a quick 5-minute call to walk through it?"`]
+            ].map(([acc,bg,tc,l,sub,t])=>(
+              <div key={l} style={{ borderLeft:`2px solid ${acc}`, padding:"0.9rem 0.9rem 0.9rem 1rem", marginBottom:8, borderRadius:"0 8px 8px 0", background:bg, border:`1px solid ${acc}`, borderLeftWidth:2 }}>
+                <div style={{ fontSize:10, fontWeight:700, color:tc, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                <div style={{ fontSize:11, color:T.muted, marginBottom:6, fontWeight:500 }}>{sub}</div>
+                <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{t}</div>
               </div>
             ))}
           </div>
@@ -774,9 +870,25 @@ export default function App() {
 
         {activeTab==="sops" && (
           <div>
-            <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"1.25rem" }}>
+            <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"0.75rem" }}>
               {[["sales","Sales process"],["crm","CRM stages"],["fi","Finance & admin"],["handover","Handover"],["stock","Stock & pricing"],["marketing","Marketing"],["disciplinary","Disciplinary"]].map(([id,label])=>(
                 <button key={id} className={`sub-tab ${activeSop===id?"active":""}`} onClick={()=>setActiveSop(id)}>{label}</button>
+              ))}
+            </div>
+            <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:"1.25rem", padding:"10px 12px", background:T.goldBg, borderRadius:8, border:`1px solid ${T.goldDim}` }}>
+              <div style={{ fontSize:11, fontWeight:700, color:T.gold, width:"100%", marginBottom:4 }}>📄 Download SOP documents — open, save, and print</div>
+              {[
+                ["Sales Process","RMA-Motors-Sales-Process-SOP.docx"],
+                ["CRM Stages","RMA-Motors-CRM-Stages-SOP.docx"],
+                ["Finance & Admin","RMA-Motors-Finance-Admin-SOP.docx"],
+                ["Handover","RMA-Motors-Vehicle-Handover-SOP.docx"],
+                ["Stock & Pricing","RMA-Motors-Stock-Pricing-SOP.docx"],
+                ["Marketing","RMA-Motors-Marketing-SOP.docx"],
+              ].map(([label, file])=>(
+                <a key={label} href={`/${file}`} download={file}
+                  style={{ fontSize:11, fontWeight:600, padding:"5px 12px", borderRadius:6, background:T.card, border:`1px solid ${T.goldDim}`, color:T.gold, textDecoration:"none", display:"flex", alignItems:"center", gap:5 }}>
+                  ↓ {label}
+                </a>
               ))}
             </div>
             {activeSop==="sales" && (<div>

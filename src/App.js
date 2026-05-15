@@ -1114,7 +1114,7 @@ If they reply with an objection:
                       <div style={{ fontSize:12, color:T.muted, marginTop:6 }}>
                         {displayScore>=90 ? "✓ Passed — your score has been saved and is visible to your manager."
                         : quizBlocked[activeQuiz] ? "🔒 You have used all 3 attempts. This assessment is now locked. Your manager must unlock it before you can retake."
-                        : `✗ Below 90% — review the relevant SOP and training material, then retake. You have ${3-(quizAttempts[activeQuiz]||0)} attempt${3-(quizAttempts[activeQuiz]||0)===1?"":"s"} remaining.`}
+                        : `✗ Below 90% — review the relevant SOP and training materials and retake. Attempts remaining: ${3-(quizAttempts[activeQuiz]||0)}.`}
                       </div>
                     </div>
                   )}

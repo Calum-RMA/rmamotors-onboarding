@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-const sGet = async (key) => { try { const r = await window.storage.get(key); return r ? JSON.parse(r.value) : null; } catch { return null; } };
-const sSet = async (key, val) => { try { await window.storage.set(key, JSON.stringify(val)); return true; } catch { return false; } };
-const sList = async (prefix) => { try { const r = await window.storage.list(prefix); return r?.keys || []; } catch { return []; } };
+const sGet = async (key) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; } };
+const sSet = async (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch { return false; } };
+const sList = async (prefix) => { try { return Object.keys(localStorage).filter(k => k.startsWith(prefix)); } catch { return []; } };
 
 const MGMT_PASSWORD = "RMAmanager2024";
 
@@ -787,4 +787,3 @@ export default function App() {
     </div>
   );
 }
-

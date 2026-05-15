@@ -51,7 +51,7 @@ const QUIZZES = {
     { q:"What is your minimum target for converting responded leads into booked appointments?", opts:["10%","20%","33%","50%"], correct:2, exp:"Per your KPIs: Responded Lead to Appointment conversion must be a minimum of 33%. Every 3 leads you respond to, at least 1 must result in a booked appointment." },
     { q:"What is the minimum show rate you must achieve for booked appointments?", opts:["40%","50%","60%","66%"], correct:3, exp:"Your Appointment Show Rate KPI is a minimum of 66%. This means at least 2 out of every 3 booked appointments must physically show up to the showroom." },
     { q:"How many connected outbound calls must you complete per day?", opts:["20 calls","30 calls","40 calls","50 calls"], correct:2, exp:"You must complete a minimum of 40 connected outbound calls per day, each lasting a minimum of 1 minute. This is a core daily activity KPI." },
-    { q:"What is the minimum percentage of responded customers you must send a Snap Cell to?", opts:["10%","20%","33%","50%"], correct:2, exp:"You must send a personalised Snap Cell video to a minimum of 33% of the customers you respond to. Snap Cells significantly increase engagement and show rates." },
+    { q:"What is the minimum percentage of responded customers you must send a Snap Cell to?", opts:["10%","20%","33%","50%"], correct:3, exp:"You must send a personalised Snap Cell video to a minimum of 50% of the customers you respond to. Snap Cells significantly increase engagement and show rates." },
     { q:"What is the minimum AI Call Score you must maintain on CallGear?", opts:["60%","70%","80%","90%"], correct:2, exp:"You must achieve an average of 80% or above on the CallGear AI Call Scoring System. This measures your call quality, script adherence, and professionalism on every call." },
   ]},
   crm: { label:"CRM & Process", icon:"📋", questions:[
@@ -74,28 +74,35 @@ const QUIZZES = {
     { q:"Where is RMA Motors located?", opts:["Business Bay, Dubai","Showroom 6, Speedex Centre, DIP 1, Dubai","Dubai Marina, Dubai","DIFC, Dubai"], correct:1, exp:"RMA Motors is located at Showroom 6, Speedex Centre, Dubai Investment Park 1 (DIP 1), Dubai. As a Setter, you must know this address so you can direct customers and confirm showroom appointments accurately." },
     { q:"What is the Setter's primary objective in the sales process?", opts:["To close deals and take deposits","To respond fast, build rapport, and book qualified appointments for the Closing team","To manage vehicle listings across online platforms","To handle finance applications and bank submissions"], correct:1, exp:"As a Setter, your primary objective is to respond with extreme urgency, build immediate rapport, and book qualified appointments for the Sales Closer team. You are the critical first point of contact." },
     { q:"What is the pathway for a high-performing Setter at RMA Motors?", opts:["Move into marketing after 6 months","Become a Purchasing Manager","Progression into a Sales Closer role, assessed at the 3-month review","Move into an HR or admin role"], correct:2, exp:"Per your employment offer: this is an entry-level position with a structured progression pathway into Closing roles for high performers. Your 3-month review assesses your readiness for the Closer pathway." },
-    { q:"What does the Setter role require above all else according to the job description?", opts:["Patience and a slow, methodical approach","Urgency, CRM discipline, and exceptional communication skills","Experience in automotive finance","A background in vehicle purchasing"], correct:2, exp:"Per the RMA Motors job description: the Setter role demands urgency, CRM discipline, and exceptional communication skills. Speed and consistency throughout your shift are what separate top performers from average ones." },
+    { q:"What does the Setter role require above all else according to the job description?", opts:["Patience and a slow, methodical approach","Urgency, CRM discipline, and exceptional communication skills","Experience in automotive finance","A background in vehicle purchasing"], correct:1, exp:"Per the RMA Motors job description: the Setter role demands urgency, CRM discipline, and exceptional communication skills. Speed and consistency throughout your shift are what separate top performers from average ones." },
     { q:"What happens at the end of the 10-day onboarding programme before you go live?", opts:["You start taking calls immediately with no assessment","You must pass a final test of 20 questions (10 marketing + 10 purchasing) and receive a Shop Floor Ready sign-off from the Department Manager","You shadow a Closer for a full week","You complete a written essay about the sales process"], correct:1, exp:"Per the onboarding plan: on Day 10 you complete a final business test (10 marketing questions + 10 purchasing questions) and must receive a formal Shop Floor Ready sign-off from your Department Manager before going live." },
     { q:"What should you do if a lead comes in outside of your shift hours?", opts:["Ignore it until your next shift","Contact it within 60 seconds regardless of shift hours","Contact it within 30 minutes of the start of your next shift","Pass it to a colleague immediately"], correct:2, exp:"Per the Sales SOP: overnight or out-of-shift leads must be contacted within 30 minutes of the start of your next shift. These leads are still your responsibility and must be treated with the same urgency." },
   ]},
-};
+  sop: { label:"SOP Questions", icon:"📖", questions:[
+    { q:"When must you click the 'Attended' button in Eskimo CRM?", opts:["At the end of your shift","When the customer physically arrives at the showroom","After the appointment is confirmed by phone","When the deal sheet is signed"], correct:1, exp:"Refer to the CRM Stages SOP — Appointment Kept section." },
+    { q:"How many signed deal sheet copies must be provided at handover and where does each go?", opts:["1 copy to F&I only","2 copies — customer and F&I","3 copies — customer, F&I, and Accounts","4 copies including the Purchasing team"], correct:2, exp:"Refer to Finance & Admin SOP — Step 1 Deal Handover." },
+    { q:"What additional document must be completed on the same day as the deal, before the customer leaves?", opts:["Vehicle inspection form","Finance enquiry form","RTA registration form","Customer satisfaction survey"], correct:1, exp:"Refer to Finance & Admin SOP — Step 1 Deal Handover." },
+    { q:"For a car that has been in stock for 80 days, what is the correct discount action?", opts:["Full retail — 0–1%","Tactical — 2–3%","Aggressive — 5–7%","Exit — whatever clears. Auction, trade, or wholesale."], correct:2, exp:"Refer to Stock & Pricing SOP — Age-Based Discount Ladder. 75–90 days = Aggressive 5–7%." },
+    { q:"What is the maximum time a car should take to go live on all platforms after reconditioning sign-off?", opts:["6 hours","12 hours","24 hours","48 hours"], correct:2, exp:"Refer to Marketing SOP — Listing Goal section." },
+    { q:"During an in-person appointment, at what stage must the trade-in be valued?", opts:["After the test drive","After the trial close","Before the static demo — trade-in must be valued FIRST","After the deposit is taken"], correct:2, exp:"Refer to Sales Process SOP — Step 3 In-Person Appointment." },
+  ]},
 
 const MODULES = [
   { id:"m1", day:"Day 1", title:"Welcome & HR Induction", phase:1, defaultUnlocked:true, items:["Department Manager meet & greet — full site introduction to all staff and showroom tour","HR session: finalise laptop, uniform, work phone, and complete all document sign-offs","Systems setup: Callgear, Eskimo CRM, and Bayzat logins activated and tested","Receive notepad and pen — written tests will be implemented throughout training","Read, understand, and sign: Sales SOP, Disciplinary & Performance Management Procedure, and Company Policy","Understand your role: you are the first point of contact for ALL inbound leads — speed, precision, and communication directly influence revenue","Review your KPIs: 60-second response, 33% conversion, 66% show rate, 40 calls/day, 80% AI score","Understand shift patterns: 06:00–15:00 or 15:00–00:00 — flexibility is essential for the under-60-second standard","Review probation terms: 6-month probation, monthly KPI reviews, 3-month Closer pathway assessment"] },
   { id:"m2", day:"Day 2", title:"Sales Process & Setter Framework", phase:1, defaultUnlocked:true, items:["Understand the full setter role: own all new inbound leads for the critical first 24 hours and up to 7 days","Speed to lead: respond to ALL new inbound leads within 60 seconds during your assigned coverage shift — no exceptions","Study and memorise the 8-step Setter Framework from the Scripts tab","Qualification & discovery: thoroughly qualify each lead — budget, timeline, vehicle preference, finance readiness","Use approved messaging frameworks across WhatsApp, phone, and social media to build instant rapport","Send a personalised Snap Cell video within 5 minutes of completing the first call — filmed in front of the specific car enquired about, face visible","If no answer: x2 double dial immediately, then send SMS intro, then follow the 6-message BAMFAM sequence over 15 days","Appointment booked: update CRM stage to 'Appointment Booked' immediately and trigger the pre-appointment reinforcement sequence","Contact, qualify, and quote all new leads within the first 24 hours of receipt","Lead handover: after 72 hours without conversion, complete a clean handover to the Closer team","Maintain 100% CRM accuracy — every note, task, and pipeline stage must be updated in real time","Understand the BAMFAM principle: every interaction ends with a confirmed next step — Book A Meeting From A Meeting"] },
   { id:"m3", day:"Day 3", title:"Finance & Admin", phase:1, defaultUnlocked:false, items:["Sit with Irfan (Kat's team) and Abrar (Cam's team) for 2 days — full F&I process walkthrough","Understand the DBR (Debt Burden Ratio) process and how it affects customer finance eligibility","Understand finance application forms: what is required, how to complete, and what documents to collect","Learn the bank partnerships and current interest rates RMA Motors works with","Understand the full 12-step F&I SOP: deal handover → bank quote → LPO → PDI → RTA → registration → notify","Documents Sales must provide to F&I: 3 signed deal sheet copies + customer Emirates ID + Visa copy + finance application","Understand what an LPO (Loan Purchase Order) is and what it triggers: Sales Agreement or Hayaza mortgage request","Understand PDI coordination: F&I pushes the line to prep team — ceramic, PPF, detailing, tinting","Understand how Emirates ID is collected and used to register the vehicle in the customer's name via RTA portal","Finance vs Cash SOP differences — margin VAT applies to profit only, full VAT applies to entire sale price","Understand how the E-Certificate is created in the RTA portal and how registration is completed"] },
-  { id:"m4", day:"Day 4", title:"CRM, CallGear & Snap Cell", phase:2, defaultUnlocked:false, items:["CRM — Eskimo: create a new customer profile correctly (always search for existing customer first)","Assign a lead to the correct salesperson, change lead status correctly, update lead source correctly","Tag an inbound phone call to the correct customer in CRM — never leave a call untagged","Add customer correspondence and internal notes correctly — 100% CRM hygiene is a measured KPI","Use templates correctly, close leads with the correct closure reason","Phone — CallGear: make an outbound call through the system, answer inbound calls professionally within 3 rings","Use the correct opening script on every call, ask key qualifying questions, attempt to book an appointment on every call","Understand AI call scoring: what is measured, how to achieve 80%+, review one recorded call with your trainer","Snap Cell: understand what a Snap Cell is and why it improves response rates and show rates","Record and send a Snap Cell video — must include your face, filmed in front of the specific car, sent within 5 minutes of first call","Know when to send a walk-around video vs a finance/trust video vs a social proof asset","Deal Sheets: understand when a deal sheet is required, how to complete it correctly, who must sign","Submit a completed test deal sheet to your trainer for review and sign-off","Asset creation: create your personal breakout video asset library — intro to you/RMA, 3 FAQs, authority/expert video","Push a Line: understand when a line should be pushed, who to notify, and the prep/workshop/PDI process"] },
-  { id:"m5", day:"Day 5", title:"Purchasing & Fundamentals Test", phase:2, defaultUnlocked:false, items:["Morning: half-day with Barry (Purchasing Manager) — stock acquisition strategies and sourcing flow","Understand department workflow: sourcing to after-sales, roles within the Purchasing team","Sourcing process: Seller → Inspect → Negotiate → Buy — understand each stage thoroughly","Product identification: VIN and chassis number verification, model variations, exact trim levels, GCC vs non-GCC specs","Understand pricing structures: purchase pricing, RMA margin requirements, VAT on profit margin vs full VAT","Understand retail vs trade pricing strategies and discounting policies (management approval always required)","Reconditioning costing: how recon cost impacts buying price and required margin","Inspection training with Ricardo: RMA vehicle inspection standards, mechanical assessment (EVC), cosmetic evaluation (paintwork, panel work, accident history), RTA passing requirements","Vehicle file creation with Zora: stock entry in Titan DMS within one hour of vehicle arrival, documentation verification","Marketing push process: preparing vehicles for photography, coordination with Marketing team, 24-hour listing goal after recon sign-off","Top sellers by ROI: Cadillac (8 days avg, AED 38,748 profit), Porsche (15 days, AED 31,541), Ford (22 days, AED 23,301)","Age-based discount ladder — 0–14 days: full retail; 75+ days: exit pricing","Afternoon: RMA Fundamentals test — 10 Finance/Admin, 10 CRM, 10 Purchasing. Must pass all 30 to progress to Phase 3"] },
+  { id:"m4", day:"Day 4", title:"CRM, CallGear & Snap Cell", phase:2, defaultUnlocked:false, items:["CRM — Eskimo: create a new customer profile correctly (always search for existing customer first)","Assign a lead to the correct salesperson, change lead status correctly, update lead source correctly","Tag an inbound phone call to the correct customer in CRM — never leave a call untagged","Add customer correspondence and internal notes correctly — 100% CRM hygiene is a measured KPI","Use templates correctly, close leads with the correct closure reason","Phone — CallGear: make an outbound call through the system, answer inbound calls professionally within 3 rings","Use the correct opening script on every call, ask key qualifying questions, attempt to book an appointment on every call","Understand AI call scoring: what is measured, how to achieve 80%+, review one recorded call with your trainer","Snap Cell: understand what a Snap Cell is and why it improves response rates and show rates","Record and send a Snap Cell video — must include your face, filmed in front of the specific car, sent within 5 minutes of first call","Know when to send a walk-around video vs a finance/trust video vs a social proof asset","Deal Sheets: understand when a deal sheet is required, how to complete it correctly, who must sign","Submit a completed test deal sheet to your trainer for review and sign-off","Systems: Qsync — vehicle data sync and stock management tool, understand daily use","Systems: DMS Titan — primary dealership management system, stock entry, documentation, and reporting","Systems: Meta Business Suite — managing RMA Motors social media ads, monitoring lead performance from Facebook and Instagram","Asset creation: create your personal breakout video asset library — intro to you/RMA, 3 FAQs, authority/expert video","Push a Line: understand when a line should be pushed, who to notify, and the prep/workshop/PDI process"] },
+  { id:"m5", day:"Day 5", title:"Purchasing & Fundamentals Test", phase:2, defaultUnlocked:false, items:["Morning: half-day with Barry (Purchasing Manager) — stock acquisition strategies and sourcing flow","Understand department workflow: sourcing to after-sales, roles within the Purchasing team","Sourcing process: Seller → Inspect → Negotiate → Buy — understand each stage thoroughly","Product identification: VIN and chassis number verification, model variations, exact trim levels, GCC vs non-GCC specs","Understand pricing structures: purchase pricing, RMA margin requirements, VAT on profit margin vs full VAT","Understand retail vs trade pricing strategies and discounting policies (management approval always required)","Reconditioning costing: how recon cost impacts buying price and required margin","Inspection training with Ricardo: RMA vehicle inspection standards, mechanical assessment (EVC), cosmetic evaluation (paintwork, panel work, accident history), RTA passing requirements","DD Pro: how to run a full vehicle history and market valuation report — used to verify pricing, flag hidden issues, and support price negotiation with customers","Vehicle file creation with Zora: stock entry in Titan DMS within one hour of vehicle arrival, documentation verification","Marketing push process: preparing vehicles for photography, coordination with Marketing team, 24-hour listing goal after recon sign-off","Top sellers by ROI: Cadillac (8 days avg, AED 38,748 profit), Porsche (15 days, AED 31,541), Ford (22 days, AED 23,301)","Age-based discount ladder — 0–14 days: full retail; 75+ days: exit pricing","Afternoon: RMA Fundamentals test — 10 Finance/Admin, 10 CRM, 10 Purchasing. Must pass all 30 to progress to Phase 3"] },
   { id:"m6", day:"Days 6–10", title:"Shadowing, Role Play & Live Calls", phase:3, defaultUnlocked:false, items:["Day 6: 1-1 with Department Manager to review progress against training plan. Full day shadowing Department Manager workflows — CRM management, team communication, escalation handling","Day 7 morning: sit with Accounts team — understand their role in the sales lifecycle, deal processing, and payment reconciliation","Day 7 afternoon: shadow a Sales Rep selected by the Department Manager — observe live lead handling, call structure, and CRM updates in real time","Day 8 morning: sit with Marketing team — understand lead generation, brand standards, listing process, platform management, and the 'Just Arrived' update process","Day 8 afternoon: shadow a Sales Rep selected by the Department Manager — focus on objection handling and appointment setting technique","Day 9: structured role play sessions coordinated by Department Managers — practise full 8-step setter framework, stall objections, price objections, decision maker objections, BAMFAM sequence, and appointment close","Day 10: supervised live calling under Department Team Leaders — real leads, real conversations, manager monitoring","Day 10 final test: 10 marketing questions + 10 purchasing questions — must pass to receive Shop Floor Ready sign-off","Shop Floor Ready sign-off: Department Manager formally signs off that you have demonstrated CRM proficiency, professional communication standards, and full knowledge of the setter framework","Completion requirements: 30 questions passed on Day 5 + 20 questions passed on Day 10 + supervised live call standard + Department Manager sign-off"] },
 ];
 
 const CRM_STAGES = [
   { label:"Contacted", color:"#4A90E2", desc:"Initial call made — send personalised Snap Cell video within 5 minutes of completing the first call" },
   { label:"Pending", color:"#F0A030", desc:"Vehicle confirmed, awaiting callback, or appointment date set — continue BAMFAM sequence if no response" },
-  { label:"Appt Booked", color:"#22C984", desc:"Physical appointment confirmed — log in CRM calendar immediately. Send pre-appointment reinforcement message the day before." },
+  { label:"Appt Booked", color:"#22C984", desc:"Physical appointment confirmed — log in CRM calendar immediately. Inform the Closer of the appointment and arrange a seamless handover, keeping the customer fully informed of the process. Send pre-appointment reinforcement the day before." },
   { label:"Appt Kept ✓", color:"#16A865", desc:"Customer physically attended the showroom. REQUIRED: click the 'Attended' button in Eskimo CRM immediately when the customer arrives. Failure to do this means the appointment is not recorded as kept and will not count towards your show rate KPI." },
   { label:"Quoted", color:"#8B6FE8", desc:"Customer attended, identified the car — quote agreed and deal sheet initiated" },
-  { label:"Deposit Received", color:"#E07840", desc:"Deal committed — update payment type: Cash or Finance. Hand over to F&I with 3 signed deal sheet copies." },
+  { label:"Deposit Received", color:"#E07840", desc:"Deal committed — update payment type: Cash, Finance, or Lease to Own (L2O). Hand to F&I with 3 signed deal sheet copies plus a completed finance enquiry form. All paperwork completed on the same day as the deal." },
   { label:"Finance Approved", color:"#4A90E2", desc:"Bank approved — car enters F&I/Accounts SOP" },
   { label:"F&I Clearance", color:"#7A82A0", desc:"Post F&I clearance — enters Handover SOP" },
   { label:"Sale Complete", color:"#22C984", desc:"Handover done — customer enters Aftersales pipeline. Request Google Review and Trustpilot." },
@@ -255,6 +262,8 @@ export default function App() {
   const [activeSop, setActiveSop] = useState("sales");
   const [activeQuiz, setActiveQuiz] = useState("sales");
   const [quizAnswers, setQuizAnswers] = useState({});
+  const [quizAttempts, setQuizAttempts] = useState({});
+  const [quizBlocked, setQuizBlocked] = useState({});
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -318,6 +327,7 @@ export default function App() {
   const handleQuizAnswer = async (qi, oi) => {
     const key = `${activeQuiz}-${qi}`;
     if (quizAnswers[key] !== undefined) return;
+    if (quizBlocked[activeQuiz]) return;
     const correct = QUIZZES[activeQuiz].questions[qi].correct === oi;
     const newA = { ...quizAnswers, [key]:{ chosen:oi, correct } };
     setQuizAnswers(newA);
@@ -327,8 +337,29 @@ export default function App() {
     if (allDone) {
       const score = Math.round((Array.from({length:total},(_,i)=>newA[`${activeQuiz}-${i}`].correct).filter(Boolean).length/total)*100);
       updated = { ...updated, quizScores:{ ...setterData.quizScores, [activeQuiz]:score } };
+      const passed = score >= 90;
+      if (!passed) {
+        const currentAttempts = (setterData.quizAttempts?.[activeQuiz] || 0) + 1;
+        const newAttempts = { ...(setterData.quizAttempts||{}), [activeQuiz]: currentAttempts };
+        const newBlocked = { ...(setterData.quizBlocked||{}) };
+        if (currentAttempts >= 3) { newBlocked[activeQuiz] = true; }
+        updated = { ...updated, quizAttempts: newAttempts, quizBlocked: newBlocked };
+        setQuizAttempts(newAttempts);
+        setQuizBlocked(newBlocked);
+      }
     }
     await saveData(updated);
+  };
+
+  const handleUnblockQuiz = async (setterId, quizId) => {
+    const d = await sGet(setterId);
+    if (!d) return;
+    const newBlocked = { ...(d.quizBlocked||{}) };
+    const newAttempts = { ...(d.quizAttempts||{}) };
+    delete newBlocked[quizId];
+    delete newAttempts[quizId];
+    await sSet(setterId, { ...d, quizBlocked: newBlocked, quizAttempts: newAttempts, quizAnswers: { ...(d.quizAnswers||{}), ...Object.fromEntries(Object.keys(d.quizAnswers||{}).filter(k=>k.startsWith(quizId+'-')).map(k=>[k,undefined])) } });
+    loadMgmt();
   };
 
   const sendFeedback = async () => {
@@ -568,7 +599,17 @@ export default function App() {
                           <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap" }}>
                             <Btn small onClick={()=>{ navigator.clipboard?.writeText(`${window.location.href.split("#")[0]}#${s.setterId||s.id}`); }}>Copy link</Btn>
                             <Btn small onClick={()=>{ navigator.clipboard?.writeText(s.password||""); }}>Copy password</Btn>
-                            {deleteConfirm===s.id ? (
+                            {Object.keys(s.quizBlocked||{}).filter(k=>s.quizBlocked[k]).length > 0 && (
+                              <div style={{ width:"100%", marginBottom:8, background:T.redBg, border:`1px solid ${T.red}`, borderRadius:8, padding:"8px 12px" }}>
+                                <div style={{ fontSize:11, fontWeight:700, color:T.redTx, marginBottom:6 }}>🔒 Locked assessments — click to unlock</div>
+                                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                                  {Object.entries(QUIZZES).filter(([k])=>s.quizBlocked?.[k]).map(([k,q])=>(
+                                    <Btn key={k} small onClick={()=>handleUnblockQuiz(s.id, k)} style={{ fontSize:11 }}>Unlock {q.icon} {q.label}</Btn>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          {deleteConfirm===s.id ? (
                               <>
                                 <span style={{ fontSize:12, color:T.redTx, fontWeight:600 }}>Are you sure? This cannot be undone.</span>
                                 <Btn small onClick={()=>handleDeleteAccount(s.id)} style={{ background:T.red, color:"#fff", border:"none" }}>Yes, delete</Btn>
@@ -616,7 +657,7 @@ export default function App() {
                       {mgmtSetters.map(s=><option key={s.id} value={s.name}>{s.name}</option>)}
                     </select>
                     <select value={fbType} onChange={e=>setFbType(e.target.value)} style={{ background:T.surf, border:`1px solid ${T.border}`, color:T.text, padding:"8px 12px", fontSize:13, borderRadius:8, flex:1, minWidth:160 }}>
-                      {["General coaching","KPI concern","Great performance","Needs re-training","Stage 1 — verbal warning","Stage 2 — written warning"].map(t=><option key={t}>{t}</option>)}
+                      {["General coaching","KPI concern","Great performance","Needs re-training"].map(t=><option key={t}>{t}</option>)}
                     </select>
                   </div>
                   <textarea value={fbText} onChange={e=>setFbText(e.target.value)} placeholder="Add your coaching note or feedback..."
@@ -788,6 +829,10 @@ export default function App() {
               ))}
             </div>
           </div>
+          <div style={{ background:T.redBg, border:`1px solid ${T.red}`, borderRadius:10, padding:"12px 16px", marginBottom:"1.25rem" }}>
+            <div style={{ fontSize:12, fontWeight:700, color:T.redTx, marginBottom:4 }}>⚠️ Setter rule — pricing</div>
+            <div style={{ fontSize:13, color:T.text, lineHeight:1.65 }}>The <strong>best price will only be discussed in person</strong>. Your job as a setter is to build maximum value, get the appointment booked, and hand over to the Closer. The Closer works with the Sales Manager to get the customer the best deal on the day. Do not quote final prices or negotiate over the phone.</div>
+          </div>
           <SectionLabel style={{ marginTop:0 }}>8-step setter framework — full conversational examples</SectionLabel>
             {[
               ["Step 1 — Connection","Open with energy. Confirm who they are and what they enquired about.",
@@ -807,7 +852,7 @@ Setter: "Perfect. And budget — cash or would you explore finance?"`],
               ["Step 4 — Position RMA","Build trust. Be transparent before they even ask.",
 `Setter: "One thing that matters to a lot of our buyers — we're fully upfront about the car's history before you even come in. Every car is inspected before we list it. No surprises when you arrive. That's the RMA difference."`],
               ["Step 5 — Sell the appointment","Sell the visit, not the car.",
-`Setter: "Here's what I'd suggest — come in, have a proper look, go through the history with me, see how it feels in person. We can also run through finance options if relevant. Takes about 45 minutes and you'll know exactly where you stand."
+`Setter: "Here's what I'd suggest — come in, have a proper look, go through the history with me, see how it feels in person. We can also run through finance options and talk about our RMA PPF paint protection — most of our customers add it to keep the car in showroom condition. Takes about 45 minutes and you'll know exactly where you stand."
 Customer: "Yeah that works."
 Setter: "Great — let's get that locked in."`],
               ["Step 6 — Verbal commitment","Get their word. This is the single biggest lever for improving show rates.",
@@ -830,8 +875,10 @@ Setter: "Perfect — I appreciate that."`],
             <SectionLabel>BAMFAM follow-up sequence — no answer</SectionLabel>
             <div style={{ fontSize:12, color:T.muted, marginBottom:12, lineHeight:1.65 }}>When a lead does not answer after x2 double dial, send these messages in sequence over 15 days. Space them out — do not send all at once.</div>
             {[
-              ["Message 1 — Intro (send immediately)","",
-`"Hi [Name], tried giving you a quick call because I saw you reached out about the [Car Model]. I've got a few minutes now, or later today if that works? If you have any questions, just message me here."`],
+              ["Message 1 — Intro (send immediately) + Snap Cell","Send a personalised Snap Cell video immediately alongside this message.",
+`"Hi [Name], tried giving you a quick call because I saw you reached out about the [Car Model]. I've got a few minutes now, or later today if that works? If you have any questions, just message me here."
+
+→ Send a personalised Snap Cell video immediately — filmed in front of the specific car they enquired about, face visible. This significantly increases the chance of a callback.`],
               ["Message 2 — Education (Day 2)","Send your intro/process video asset.",
 `"Hi [Name], [Your Name] from RMA Motors. Thought this might be useful — shows you how we do business here and the process of buying a car with us. [INSERT ASSET VIDEO]"`],
               ["Message 3 — Authority (Day 4)","Send your 'avoid costly mistakes' video.",
@@ -880,16 +927,25 @@ Setter: "Can I ask — if the prices were the same, which would you choose?"
 Customer: "Probably yours to be honest."
 Setter: "So the question is whether the difference is worth the peace of mind. Here's what's included with ours... [history, inspection, warranty]."
 
-Also try: "That company is cheaper — what's stopping you from just buying from them?"`],
+Also try: "That company is cheaper — what's stopping you from just buying from them?"
+
+DD Pro angle: "I can actually pull up that car's full history right now. [Run DD Pro report] — that car has been in stock for X days compared to ours which has only been here X days. When a car sits that long it usually means something is putting buyers off — could be a hidden issue, could be an overpriced spec. Ours is fresh stock for a reason."`],
               [T.amber,T.amberBg,T.amberTx,"Decision maker — 'Need to speak to my wife/husband'","Include them, don't fight them.",
 `Customer: "I need to run it past my wife first."
 Setter: "Totally understand — big purchase. Would it help if I sent a quick video so she can see exactly what you're looking at?"
 Customer: "Yeah that could work."
 Setter: "And would you want to bring her in when you come? Or a WhatsApp group with the three of us so she can ask questions directly?"
-Goal: keep the conversation alive and include the decision maker.`],
+Goal: keep the conversation alive and include the decision maker.
+
+Luxury item approach:
+Setter: "That's a nice watch/bag — did your husband/wife know you were going to buy that?"
+Customer: "Yes actually."
+Setter: "So if she trusted you to make that purchase, it's fair to assume she trusts you to make this one too — especially since you clearly have great taste." [smile]
+Customer: "Ha — fair point."
+→ Use warmly and with humour. Works well when the customer is clearly confident and the spouse objection feels like an excuse.`],
               [T.green,T.greenBg,T.greenTx,"Show rate — 'I'll try to make it'","'Try' means no commitment. Push for a real yes.",
 `Customer: "Yeah I'll try to come in Thursday."
-Setter: "Can I ask you to give me your word you'll be there? I'll have the car ready for you and won't show it to anyone else at that time. If anything comes up just message me — but I need that commitment."
+Setter: "Okay great — Thursday is actually my day off but I will make sure I am here at [time] to show you the car personally and make sure you get the best deal. Can I get your word you'll be there? I'll have the car ready and won't show it to anyone else at that time. If anything comes up just message me — but I need that commitment."
 Customer: "Yes, I'll be there."
 Setter: "Perfect — you're confirmed for Thursday at [time]."`],
               [T.green,T.greenBg,T.greenTx,"Where did we lose you? — re-engagement","When a customer goes silent after showing interest.",
@@ -937,14 +993,15 @@ If they reply with an objection:
               <StepBlock n="Step 4" title="Appointment setting & show rate" desc="Convert leads into showroom or video appointments. Secure verbal commitment on every appointment: 'Can I get your word that you will show up? If anything changes, just message me and we will reschedule.' Send pre-appointment reinforcement the day before — video or text. Target: minimum 66% appointment show rate." />
               <StepBlock n="Step 5" title="No answer — BAMFAM follow-up sequence" desc="If no answer after x2 double dial: send SMS intro immediately, then follow the structured 6-message sequence over 15 days — educational video, authority/expert video, FAQ video, product with link, social proof, and final reopener. BAMFAM = Book A Meeting From A Meeting. Every interaction must end with a confirmed next step." />
               <StepBlock n="Step 6" title="Lead handover to Closer" desc="After 72 hours without conversion: complete a clean handover to the Closer team. Update all CRM notes, document all interaction history, and brief the Closer on the customer's situation, objections raised, and any commitments made. The Closer takes ownership from this point." />
-              <StepBlock n="Step 7" title="Post-sale & aftersales" desc="24-hour follow-up call after handover — confirm satisfaction. Request Google Review and Trustpilot review. Customer enters the aftersales pipeline: 6, 12, 18, and 24-month check-ins." />
+              <StepBlock n="Step 7" title="Post-sale & aftersales" desc="24-hour follow-up call after handover — check in with the Closer to understand how the experience went and ensure the customer is fully satisfied. Once confirmed, request a Google Review and Trustpilot review. Customer enters the aftersales pipeline: 6, 12, 18, and 24-month check-ins." />
               <Alert variant="warn">⚠️ All discounts must be authorised by GM/Naz (Directors) only. No verbal approvals are valid under any circumstances.</Alert>
               <Alert variant="info">📞 Answer all incoming calls within 3 rings. Complete a minimum of 40 connected outbound calls per day, each lasting at least 1 minute.</Alert>
             </div>)}
             {activeSop==="crm" && (<div><Card style={{ padding:"0.75rem 1.25rem" }}>{CRM_STAGES.map((s,i)=>(<div key={i} style={{ display:"flex", gap:12, padding:"9px 0", borderBottom:i<CRM_STAGES.length-1?`1px solid ${T.border}`:"none", alignItems:"flex-start" }}><div style={{ width:10, height:10, borderRadius:"50%", background:s.color, flexShrink:0, marginTop:4 }} /><div style={{ width:145, flexShrink:0 }}><span style={{ fontSize:12, fontWeight:700, color:s.color }}>{s.label}</span></div><div style={{ fontSize:12, color:T.muted, lineHeight:1.5 }}>{s.desc}</div></div>))}</Card><Alert variant="info">Update CRM stages immediately and accurately. 100% CRM hygiene is a measured KPI.</Alert></div>)}
-            {activeSop==="fi" && (<div><StepBlock n="Step 1" title="Deal handover — Sales to F&I" accent={T.blue} desc="3 signed deal sheet copies (customer, F&I, Accounts) + all customer documents. Must be complete before submission." /><StepBlock n="Steps 2–3" title="Bank quotation & approval" accent={T.blue} desc="F&I prepares quotation exactly as per deal sheet, emails banker. Once approved, F&I applies for insurance." /><StepBlock n="Step 4" title="LPO received → agreements" accent={T.blue} desc="LPO triggers: F&I prepares the Sales Agreement (consignment) or Hayaza mortgage request (RMA-owned)." /><StepBlock n="Steps 5–12" title="PDI → RTA → Car Care → E-Cert → Notify" accent={T.blue} desc="F&I coordinates PDI, RTA inspection, Car Care. Creates E-Certificate in RTA portal. Notifies Sales Rep and customer once registration complete." /></div>)}
-            {activeSop==="handover" && (<div><StepBlock title="Vehicle preparation" desc="Full valet · PDI completed · no warning lights · AC working · min ¼ tank fuel · no paired Bluetooth · clean to showroom standard." /><StepBlock title="Scheduling" desc="ONE customer per hour maximum. Confirm readiness with Car Care. Park in designated handover bay 30 minutes before." /><StepBlock title="The reveal" desc="Marketing present for photos/video. Keys and gift handed over. Manager delivers 'Thank you'. Handover sheet signed off by manager." /><StepBlock title="Post-handover" desc="Call or message within 48 hours. Request Google Review and Trustpilot. Customer enters 6/12/18/24-month check-in pipeline." /></div>)}
-            {activeSop==="stock" && (<div><SectionLabel style={{ marginTop:0 }}>Age-based discount ladder</SectionLabel><Card style={{ padding:"0.75rem 1.25rem", marginBottom:"1rem" }}>{[["0–14 days","Full retail — 0–1% max",T.green],["15–30 days","Soft adjust — 1–2%",T.green],["31–45 days","Tactical — 2–3%",T.amber],["46–60 days","Defensive — 3–5% (must sell soon)",T.amber],["61–75 days","Aggressive — 5–7%",T.red],["75+ days","Exit — whatever clears",T.red]].map(([d,a,c])=>(<div key={d} style={{ display:"flex", gap:10, padding:"7px 0", borderBottom:`1px solid ${T.border}`, fontSize:12 }}><div style={{ width:8, height:8, borderRadius:"50%", background:c, flexShrink:0, marginTop:3 }} /><div style={{ width:90, fontWeight:700, color:T.text, flexShrink:0 }}>{d}</div><div style={{ color:T.muted }}>{a}</div></div>))}</Card><Alert variant="warn">⚠️ Never discount below minimum GP without written approval from the Purchasing Manager or General Manager.</Alert></div>)}
+            {activeSop==="fi" && (<div><StepBlock n="Step 1" title="Deal handover — Sales to F&I" accent={T.blue} desc="3 signed deal sheet copies (customer, F&I, Accounts) + customer Emirates ID + Visa copy + completed finance enquiry form. All must be completed on the same day as the deal. Must be complete before F&I submission." /><StepBlock n="Steps 2–3" title="Bank quotation & approval" accent={T.blue} desc="F&I prepares quotation exactly as per deal sheet, emails banker. Once approved, F&I applies for insurance." /><StepBlock n="Step 4" title="LPO received → upsell + agreements" accent={T.blue} desc="LPO triggers agreed upsell works: PPF, extended warranty, window tints, ceramic coating — all agreed additional works initiated now. F&I prepares the Sales Agreement (consignment) or Hayaza mortgage request (RMA-owned)." /><StepBlock n="Steps 5–12" title="RTA → PDI → Car Care → E-Cert → Notify" accent={T.blue} desc="Vehicle sent for RTA inspection first, then PDI. F&I coordinates Car Care (PPF, ceramics, tints, detailing). Creates E-Certificate in RTA portal. Notifies Sales Rep and customer once registration complete." /></div>)}
+            {activeSop==="handover" && (<div><StepBlock title="Vehicle preparation" desc="Full valet · PDI completed · no warning lights · AC working · min ¼ tank fuel · no paired Bluetooth · no saved driver profiles · no stored satnav locations · no saved radio stations · clean to showroom standard." /><StepBlock title="Scheduling" desc="ONE customer per hour maximum. Confirm readiness with Car Care. Keep the Marketing team updated and ensure they are available for the handover — they must be present for photos and video. Park in designated handover bay 30 minutes before." /><StepBlock title="The reveal" desc="Marketing present for photos and video content. Keys and gift handed over. Manager delivers formal 'Thank you'. Sales Representative must ask for referrals at this stage — friends, family, or colleagues who may be looking for a vehicle. This is a warm introduction opportunity. Handover sheet signed off by the Department Manager." /><StepBlock title="Post-handover" desc="Call or message within 48 hours. Check in with the Closer on how the experience went. Confirm customer satisfaction. Request Google Review and Trustpilot review. Customer enters 6/12/18/24-month check-in pipeline." /></div>)}
+            {activeSop==="stock" && (<div><SectionLabel style={{ marginTop:0 }}>Age-based discount ladder</SectionLabel><Card style={{ padding:"0.75rem 1.25rem", marginBottom:"1rem" }}>{[["0–14 days","Full retail — 0–1% max",T.green],["15–30 days","Soft adjust — 1–2%",T.green],["31–45 days","Tactical — 2–3%",T.amber],["46–60 days","Defensive — 3–5% (must sell soon)",T.amber],["61–75 days","Aggressive — 5–7%",T.red],["75–90 days","Aggressive — 5–7% (capital risk high)",T.red],
+              ["90+ days","Exit — whatever clears. Auction, trade, or wholesale.",T.red]].map(([d,a,c])=>(<div key={d} style={{ display:"flex", gap:10, padding:"7px 0", borderBottom:`1px solid ${T.border}`, fontSize:12 }}><div style={{ width:8, height:8, borderRadius:"50%", background:c, flexShrink:0, marginTop:3 }} /><div style={{ width:90, fontWeight:700, color:T.text, flexShrink:0 }}>{d}</div><div style={{ color:T.muted }}>{a}</div></div>))}</Card><Alert variant="warn">⚠️ Never discount below minimum GP without written approval from the Purchasing Manager or General Manager.</Alert></div>)}
             {activeSop==="disciplinary" && (<div>
               <StepBlock n="Stage 1" title="Verbal Warning" desc="Trigger: 1st offence or 1st-month performance review identifying sub-standard KPI output. Action: Department Manager and Witnessing Manager arrange a formal meeting. Outcome: Verbal Warning issued and documented in employee file. Training needs identified immediately and a formal training plan put in place." />
               <StepBlock n="Stage 2" title="Formal Written Warning" accent={T.amber} desc="Trigger: 2nd offence or 2nd month of underperformance. Action: Department Manager requests a formal Written Warning letter from HR. The letter details data-driven underperformance and is signed by the Department Manager, Witnessing Manager, and the employee. Two copies produced — one for the employee, one for HR. Active on record for 6 months." />
@@ -953,7 +1010,7 @@ If they reply with an objection:
               <Alert variant="warn">Non-gross misconduct examples: repeated lateness, unauthorised absence, poor call quality, failure to meet call KPIs.</Alert>
               <Alert variant="danger">Gross misconduct (immediate investigation): loss of company money due to negligence, aggressive behaviour, insubordination, bringing the company into disrepute, or breaches of UAE PDPL (Personal Data Protection Law).</Alert>
             </div>)}
-            {activeSop==="marketing" && (<div><StepBlock title="Listing goal" accent={T.purple} desc="Live within 24 hours of reconditioning sign-off. Photography requested by Purchaser immediately on vehicle arrival. 'Just Arrived' internal group update posted immediately." /><StepBlock title="Immediate update triggers" accent={T.purple} desc="Car sold or status changes → ALL listings updated/removed immediately across Dubizzle, AutoTrader, Instagram, Google, TikTok, website. No delay whatsoever." /><StepBlock title="Your personal asset library (required)" accent={T.purple} desc="(1) Intro to you and RMA video · (2) 3 FAQ videos answering most common buyer questions · (3) Authority/expert video — 3 things to check before buying a car in the UAE · (4) Vehicle walkaround Snap Cells — specific to each enquiry · (5) Social proof and testimonial videos." /><Alert variant="info">Build and maintain your asset library in your first week. These assets are sent throughout the BAMFAM sequence and directly improve engagement rates.</Alert></div>)}
+            {activeSop==="marketing" && (<div><StepBlock title="Listing goal" accent={T.purple} desc="Live within 24 hours of reconditioning sign-off. Photography requested by Purchaser immediately on vehicle arrival. 'Just Arrived' internal group update posted immediately." /><StepBlock title="Immediate update triggers" accent={T.purple} desc="Car sold or status changes → ALL listings updated/removed immediately across Dubizzle, Dubicars, Yalla Motors, Instagram, Google, TikTok, website. No delay whatsoever." /><StepBlock title="Your personal asset library (required)" accent={T.purple} desc="(1) Intro to you and RMA video · (2) 3 FAQ videos · (3) Authority/expert video · (4) Vehicle walkaround Snap Cells — specific to each enquiry · (5) 30-second video tour per car — ideally filmed with a Sales Rep, used to send to potential customers · (6) Social proof and testimonial videos." /><Alert variant="info">Build and maintain your asset library in your first week. These assets are sent throughout the BAMFAM sequence and directly improve engagement rates.</Alert></div>)}
           </div>
         )}
 
@@ -961,7 +1018,7 @@ If they reply with an objection:
           <div>
             <SectionLabel style={{ marginTop:0 }}>Performance targets</SectionLabel>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(175px,1fr))", gap:10, marginBottom:"1.5rem" }}>
-              {[["⏱","Speed to lead","60 seconds","All inbound leads — no exceptions"],["📅","Lead → appointment","33% min","Responded leads → booked"],["🚪","Show rate","66% min","Booked appointments that attend"],["📹","Snap cells","33% min","Of responded customers"],["📞","Connected calls","40 / day","Min 1 minute each"],["⭐","AI call score","80% avg","CallGear — in & outbound"]].map(([ico,l,v,n])=>(
+              {[["⏱","Speed to lead","60 seconds","All inbound leads — no exceptions"],["📅","Lead → appointment","50% min","Of responded customers"],["📞","Connected calls","40 / day","Min 1 minute each"],["⭐","AI call score","80% avg","CallGear — in & outbound"]].map(([ico,l,v,n])=>(
                 <div key={l} style={{ background:T.surf, borderRadius:10, padding:"1rem", border:`1px solid ${T.border}` }}>
                   <div style={{ fontSize:20, marginBottom:6 }}>{ico}</div>
                   <div style={{ fontSize:11, color:T.muted, marginBottom:4, fontWeight:600 }}>{l}</div>
@@ -999,12 +1056,20 @@ If they reply with an objection:
                 return (
                   <button key={id} className={`sub-tab ${activeQuiz===id?"active":""}`} onClick={()=>{ setActiveQuiz(id); setQuizAnswers(setterData?.quizAnswers||{}); }}>
                     {q.icon} {q.label}
-                    {score!==undefined && <span style={{ marginLeft:6, fontSize:10, color:score>=90?T.greenTx:T.redTx, fontWeight:800 }}>({score}%)</span>}
+                    {quizBlocked[id] && <span style={{ marginLeft:6, fontSize:10, color:T.redTx, fontWeight:800 }}>🔒</span>}
+                  {!quizBlocked[id] && score!==undefined && <span style={{ marginLeft:6, fontSize:10, color:score>=90?T.greenTx:T.redTx, fontWeight:800 }}>({score}%)</span>}
                   </button>
                 );
               })}
             </div>
             {(()=>{
+              if (quizBlocked[activeQuiz]) return (
+                <div style={{ background:T.redBg, border:`1px solid ${T.red}`, borderRadius:12, padding:"2rem", textAlign:"center", marginTop:"1rem" }}>
+                  <div style={{ fontSize:32, marginBottom:12 }}>🔒</div>
+                  <div style={{ fontSize:16, fontWeight:700, color:T.redTx, marginBottom:8 }}>Assessment locked</div>
+                  <div style={{ fontSize:13, color:T.muted, lineHeight:1.65 }}>You have used all 3 attempts for this assessment. Your manager must unlock it before you can retake. Please review the relevant SOP and training materials in the meantime.</div>
+                </div>
+              );
               const quiz=QUIZZES[activeQuiz], savedScore=setterData?.quizScores?.[activeQuiz], total=quiz.questions.length;
               const answeredCount=quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]!==undefined).length;
               const allDone=answeredCount===total;
@@ -1036,20 +1101,24 @@ If they reply with an objection:
                         })}
                         {ans!==undefined && (
                           <div style={{ fontSize:12, padding:"9px 12px", borderRadius:8, marginTop:8, background:ans.correct?T.greenBg:T.redBg, border:`1px solid ${ans.correct?T.green:T.red}`, color:ans.correct?T.greenTx:T.redTx, lineHeight:1.55 }}>
-                            <strong>{ans.correct?"✓ Correct! ":"✗ Not quite. "}</strong>{q.exp}
+                            {ans.correct ? <><strong>✓ Correct!</strong></> : <><strong>✗ Incorrect.</strong> {q.exp}</>}
                           </div>
                         )}
                       </div>
                     );
                   })}
                   {allDone&&displayScore!==null&&(
-                    <div style={{ padding:"1.5rem", borderRadius:14, textAlign:"center", background:displayScore>=90?T.greenBg:T.redBg, border:`1px solid ${displayScore>=90?T.green:T.red}`, marginTop:10 }}>
-                      <div style={{ fontSize:28, fontWeight:800, color:displayScore>=90?T.greenTx:T.redTx }}>{displayScore}%</div>
-                      <div style={{ fontSize:13, color:displayScore>=90?T.greenTx:T.redTx }}>{quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]?.correct).length}/{total} correct</div>
-                      <div style={{ fontSize:12, color:T.muted, marginTop:6 }}>{displayScore>=90?"✓ Passed — your score has been saved and is visible to your manager.":"✗ Below 90% — review the relevant SOP and retake to improve your score."}</div>
+                    <div style={{ padding:"1.5rem", borderRadius:14, textAlign:"center", background:displayScore>=90?T.greenBg:quizBlocked[activeQuiz]?T.redBg:T.amberBg, border:`1px solid ${displayScore>=90?T.green:quizBlocked[activeQuiz]?T.red:T.amber}`, marginTop:10 }}>
+                      <div style={{ fontSize:28, fontWeight:800, color:displayScore>=90?T.greenTx:quizBlocked[activeQuiz]?T.redTx:T.amberTx }}>{displayScore}%</div>
+                      <div style={{ fontSize:13, color:displayScore>=90?T.greenTx:quizBlocked[activeQuiz]?T.redTx:T.amberTx }}>{quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]?.correct).length}/{total} correct</div>
+                      <div style={{ fontSize:12, color:T.muted, marginTop:6 }}>
+                        {displayScore>=90 ? "✓ Passed — your score has been saved and is visible to your manager."
+                        : quizBlocked[activeQuiz] ? "🔒 You have used all 3 attempts. This assessment is now locked. Your manager must unlock it before you can retake."
+                        : `✗ Below 90% — review the relevant SOP and training material, then retake. You have ${3-(quizAttempts[activeQuiz]||0)} attempt${3-(quizAttempts[activeQuiz]||0)===1?"":"s"} remaining.`}
+                      </div>
                     </div>
                   )}
-                  {allDone&&<div style={{ marginTop:10 }}><Btn small primary onClick={()=>setQuizAnswers({})}>Retake quiz</Btn></div>}
+                  {allDone && !quizBlocked[activeQuiz] && displayScore < 90 && <div style={{ marginTop:10 }}><Btn small primary onClick={()=>setQuizAnswers({})}>Retake quiz</Btn></div>}
                 </div>
               );
             })()}

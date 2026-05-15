@@ -201,6 +201,9 @@ export default function App() {
   const [fbType, setFbType] = useState("General coaching");
   const [fbText, setFbText] = useState("");
   const [fbSent, setFbSent] = useState(false);
+  const [resetTarget, setResetTarget] = useState("");
+  const [resetPassword, setResetPassword] = useState("");
+  const [resetDone, setResetDone] = useState(false);
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [genPassword, setGenPassword] = useState("");
@@ -313,6 +316,20 @@ export default function App() {
     const url = `${window.location.href.split("#")[0]}#${id}`;
     setGenLink(url);
     setGenPassword(newPassword.trim());
+    loadMgmt();
+  };
+
+
+  const handleResetPassword = async () => {
+    if (!resetTarget || !resetPassword.trim()) return;
+    const target = mgmtSetters.find(s=>s.name===resetTarget);
+    if (!target) return;
+    const d = await sGet(target.id);
+    if (!d) return;
+    await sSet(target.id, { ...d, password: resetPassword.trim() });
+    setResetDone(true);
+    setResetPassword("");
+    setTimeout(()=>setResetDone(false), 3000);
     loadMgmt();
   };
 
@@ -513,6 +530,20 @@ export default function App() {
                     <Btn small onClick={()=>setFbText("")}>Clear</Btn>
                   </div>
                   {fbSent && <Alert variant="ok" style={{ marginTop:10 }}>✓ Feedback sent and saved to setter's profile.</Alert>}
+                </Card>
+                <SectionLabel>Reset setter password</SectionLabel>
+                <Card>
+                  <div style={{ fontSize:13, color:T.muted, marginBottom:"1rem", lineHeight:1.65 }}>Update a setter's password without affecting their progress, quiz scores, or module completions.</div>
+                  <div style={{ display:"flex", gap:8, marginBottom:10, flexWrap:"wrap" }}>
+                    <select value={resetTarget} onChange={e=>setResetTarget(e.target.value)} style={{ background:T.surf, border:`1px solid ${T.border}`, color:T.text, padding:"8px 12px", fontSize:13, borderRadius:8, flex:1, minWidth:140 }}>
+                      <option value="">Select setter...</option>
+                      {mgmtSetters.map(s=><option key={s.id} value={s.name}>{s.name}</option>)}
+                    </select>
+                  </div>
+                  <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>New password</label>
+                  <Input value={resetPassword} onChange={e=>setResetPassword(e.target.value)} placeholder="Enter new password" style={{ marginBottom:10 }} />
+                  <Btn primary small onClick={handleResetPassword} disabled={!resetPassword.trim()||!resetTarget}>Reset password</Btn>
+                  {resetDone && <Alert variant="ok" style={{ marginTop:10 }}>✓ Password updated. The setter can now log in with their new password.</Alert>}
                 </Card>
               </>
             )}

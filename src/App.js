@@ -7,37 +7,37 @@ const sList = async (prefix) => { try { return Object.keys(localStorage).filter(
 const MGMT_PASSWORD = "RMAmanager2024";
 
 const QUIZZES = {
-  sales: { label:"Sales & CRM", icon:"📋", questions:[
-    { q:"What is the maximum time to contact a lead assigned during your shift?", opts:["Within 60 seconds","Within 5 minutes of assignment","Within 30 minutes","Within 1 hour"], correct:1, exp:"Per the Sales SOP: leads assigned during shift must be contacted within 5 minutes. Overnight leads get 30 minutes from the start of the next shift." },
-    { q:"What must you NEVER change in Eskimo CRM once a lead is created?", opts:["The customer's name","The vehicle of interest","The original lead source","The assigned salesperson"], correct:2, exp:"The original lead source must never be altered. If unknown, ask the customer during first contact and update immediately." },
-    { q:"What must you send within 5 minutes of completing the first call?", opts:["A WhatsApp text with the car price","A personalised Snap Cell video — filmed in front of the specific car they enquired about","A link to the RMA Motors website","A finance pre-qualification form"], correct:1, exp:"A personalised Snap Cell video must be sent within 5 minutes. Must show your face and be recorded in front of the exact car enquired about." },
-    { q:"Who is the ONLY person authorised to approve discounts?", opts:["The Sales Representative handling the deal","Any senior sales rep on the floor","The GM / Naz (Directors) only","The Department Manager"], correct:2, exp:"All discounts must be authorised by GM/Naz (Directors) only. No verbal approvals are valid under any circumstances." },
-    { q:"How long do you own a lead before handover to a Closer?", opts:["24 hours","48 hours","72 hours","7 days"], correct:2, exp:"Per the job description: the Setter owns every lead for the first 72 hours. After that it is handed to a Closer for re-engagement." },
-    { q:"Which three things must a new setter NEVER do in their first month?", opts:["Fail to log CRM activity, over-promise or give inaccurate info, and miss follow-up timeframes","Send Snap Cells, ask qualifying questions, and use scripts","Shadow reps, attend team meetings, and review call recordings","Book appointments, update CRM, and handle objections"], correct:0, exp:"The three critical mistakes: failing to log all CRM activity, over-promising inaccurate information, and not following up within the required timeframe." },
+  sales: { label:"Speed & Response", icon:"⚡", questions:[
+    { q:"What is the maximum time you have to respond to a new inbound lead?", opts:["Within 5 minutes","Within 60 seconds","Within 2 minutes","Within 30 minutes"], correct:1, exp:"Your primary KPI as a Setter: respond to ALL new inbound leads within 60 seconds during your assigned coverage. This is non-negotiable and directly impacts conversion rates." },
+    { q:"What is your minimum target for converting responded leads into booked appointments?", opts:["10%","20%","33%","50%"], correct:2, exp:"Per your KPIs: Responded Lead to Appointment conversion must be a minimum of 33%. Every 3 leads you respond to, at least 1 must result in a booked appointment." },
+    { q:"What is the minimum show rate you must achieve for booked appointments?", opts:["40%","50%","60%","66%"], correct:3, exp:"Your Appointment Show Rate KPI is a minimum of 66%. This means at least 2 out of every 3 booked appointments must physically show up to the showroom." },
+    { q:"How many connected outbound calls must you complete per day?", opts:["20 calls","30 calls","40 calls","50 calls"], correct:2, exp:"You must complete a minimum of 40 connected outbound calls per day, each lasting a minimum of 1 minute. This is a core daily activity KPI." },
+    { q:"What is the minimum percentage of responded customers you must send a Snap Cell to?", opts:["10%","20%","33%","50%"], correct:2, exp:"You must send a personalised Snap Cell video to a minimum of 33% of the customers you respond to. Snap Cells significantly increase engagement and show rates." },
+    { q:"What is the minimum AI Call Score you must maintain on CallGear?", opts:["60%","70%","80%","90%"], correct:2, exp:"You must achieve an average of 80% or above on the CallGear AI Call Scoring System. This measures your call quality, script adherence, and professionalism on every call." },
   ]},
-  finance: { label:"Finance & Admin", icon:"🏦", questions:[
-    { q:"How many copies of the signed deal sheet are created, and where does each go?", opts:["2 copies — customer and F&I","3 copies — customer, F&I, and Accounts","1 copy stored in the customer file","4 copies including workshop"], correct:1, exp:"3 copies always: one for the customer, one for F&I, one for Accounts (with deposit receipt)." },
-    { q:"What does receiving the LPO (Loan Purchase Order) trigger?", opts:["Vehicle immediately handed to customer","F&I prepares Sales Agreement or Hayaza mortgage request, and PDI + car care begins","The sales rep is notified the deal is complete","Vehicle sent directly for RTA registration"], correct:1, exp:"The LPO triggers F&I to prepare the Sales Agreement or the Hayaza request for mortgage. PDI and car care also begin at this stage." },
-    { q:"Why is the customer's Emirates ID collected before handover?", opts:["For the customer loyalty programme","To verify employment status","To register the vehicle in the customer's name through the RTA portal","To comply with insurance requirements"], correct:2, exp:"F&I uses the Emirates ID to create the E-Certificate and register the vehicle in the customer's name through the RTA portal." },
-    { q:"Who coordinates the PDI (Pre-Delivery Inspection)?", opts:["The Sales Representative","The F&I team — by pushing the line to start the PDI","The Marketing team","The customer directly"], correct:1, exp:"Per the F&I SOP: the F&I team coordinates the PDI by pushing the line to the prep team." },
-    { q:"What car care services can F&I coordinate before delivery?", opts:["Only a basic wash","Ceramic coating, PPF, detailing, and window tinting","Engine service and tyre replacement only","Photography and advertising only"], correct:1, exp:"Per the F&I SOP: F&I notifies Car Care to perform ceramic coating, PPF, detailing, and window tinting as required before delivery." },
-    { q:"What are the final steps before vehicle registration is complete?", opts:["Sign the deal sheet and collect deposit","Create the E-Cert in the RTA portal, arrange a driver for registration, then notify Sales Rep and customer","Hand the keys to the customer and request a Google review","F&I sends the finance application to the bank"], correct:1, exp:"F&I creates the E-Certificate in the RTA portal, a driver completes the physical registration, then both the Sales Rep and customer are notified." },
+  crm: { label:"CRM & Process", icon:"📋", questions:[
+    { q:"What must you NEVER do to a lead source once it has been entered in Eskimo CRM?", opts:["View it","Change it — the original lead source must never be altered","Share it with a colleague","Add a note next to it"], correct:1, exp:"The original lead source must never be changed in Eskimo CRM. If it is unknown at the time of creation, ask the customer during first contact and update immediately." },
+    { q:"Within how long must you send a personalised Snap Cell video after completing your first call with a lead?", opts:["Within 30 minutes","Within 1 hour","Within 5 minutes","Within 24 hours"], correct:2, exp:"You must send a personalised Snap Cell video within 5 minutes of completing your first call. It must be recorded in front of the specific car the customer enquired about, with your face clearly visible." },
+    { q:"What is your first action when a new lead comes in during your shift?", opts:["Update the CRM with their details","Send a WhatsApp message","Call the lead within 60 seconds","Email them a brochure"], correct:2, exp:"Speed to lead is your most critical KPI. Your first action is always to call the lead within 60 seconds. Every second of delay reduces your conversion rate significantly." },
+    { q:"What CRM system does RMA Motors use for lead management?", opts:["Salesforce","HubSpot","Eskimo CRM","DealerSocket"], correct:2, exp:"RMA Motors uses Eskimo CRM for all lead management. You must maintain 100% CRM accuracy — updating all notes, tasks, and pipeline stages accurately and in real time." },
+    { q:"What is the correct CRM stage to set immediately after a customer confirms their appointment?", opts:["Contacted","Pending","Appointment Booked","Quoted"], correct:2, exp:"As soon as a customer confirms their appointment, you must immediately update their CRM stage to 'Appointment Booked'. Accurate and timely stage updates are a core KPI." },
+    { q:"Within how many hours must you contact and qualify all new leads?", opts:["12 hours","24 hours","48 hours","72 hours"], correct:1, exp:"Per your job description: you must contact, qualify, and quote all new leads within the first 24 hours. Speed and completeness in this window directly determines conversion rates." },
   ]},
-  marketing: { label:"Marketing", icon:"📣", questions:[
-    { q:"What is the primary function of the Marketing Department at RMA Motors?", opts:["Handling vehicle sales and negotiations","Generating leads, promoting brand visibility, and managing vehicle listings across platforms","Managing inventory and physical logistics","Overseeing finance and accounting"], correct:1, exp:"Marketing's primary function is lead generation, brand visibility, and managing all vehicle listings across digital platforms." },
-    { q:"Which factor requires an IMMEDIATE update or removal across ALL platforms?", opts:["A minor description correction","A new vehicle arrival","The car is sold or its reserved/viewing status changes","A price drop below AED 1,000"], correct:2, exp:"When a car is sold or its reserved/viewing status changes, all listings must be updated or removed immediately across every platform — no delay." },
-    { q:"How quickly should a car be posted live after reconditioning sign-off?", opts:["Same day within 2 hours","Within 24 hours","Within 48 hours","Within 1 week"], correct:1, exp:"The goal is to post live within 24 hours of reconditioning sign-off. Photography is requested by the Purchaser immediately upon vehicle arrival." },
-    { q:"Which departments does Marketing coordinate with most to get cars live?", opts:["HR and Finance only","Sales/Management, Inventory/Logistics, and Purchasing/Management","Workshop and Accounts only","Only the Sales team"], correct:1, exp:"Marketing primarily coordinates with Sales/Management, Inventory/Logistics, and Purchasing/Management." },
-    { q:"As a setter, what personal assets must you build and maintain?", opts:["Only vehicle photos and price lists","Intro to you/RMA video, 3 FAQ videos, authority/expert video, walkaround Snap Cells, and social proof videos","Social media profile and LinkedIn posts only","No personal assets required"], correct:1, exp:"Every setter must build: intro to you and RMA video, 3 FAQ videos, authority/expert video, vehicle walkaround Snap Cells, and social proof/testimonial videos." },
-    { q:"Which platforms does RMA Motors use for marketing?", opts:["LinkedIn and email only","TV and radio only","Instagram/Facebook, Google Ads, TikTok, Dubizzle, and AutoTrader","Cold calling only"], correct:2, exp:"RMA uses Instagram/Facebook, Google Ads, TikTok, Dubizzle, AutoTrader, and the website." },
+  objections: { label:"Objections & Scripts", icon:"🎯", questions:[
+    { q:"A customer says 'I need to think about it.' What is the BEST response?", opts:["'No problem, call me when you are ready.'","'Of course — do you mind if I ask what part of the deal you would like to think about?'","'The price is very competitive, you should decide now.'","'I will send you more information by email.'"], correct:1, exp:"Stall objections usually mean uncertainty or a hidden concern. Your goal is clarity, not pressure. Always ask what specifically they need to think about — this uncovers the real objection and keeps the conversation moving." },
+    { q:"A customer says 'I found it cheaper somewhere else.' What is the BEST approach?", opts:["Immediately offer a lower price","Hang up and mark as lost","'When you say expensive, are you comparing it to a specific car you have seen? If the prices were the same, which would you choose?'","'We cannot match that price, sorry.'"], correct:2, exp:"Price objections rarely mean the customer only cares about price. Your goal is to understand what they are comparing and anchor the value of RMA Motors. Never drop price without management approval." },
+    { q:"A customer says 'I need to speak to my wife first.' What should you do?", opts:["End the call and wait for them to call back","Push harder to book the appointment immediately","Offer to create a group chat so you can share the details with both of them","Tell them the car might not be available if they wait"], correct:2, exp:"Decision maker objections require inclusion, not pressure. Offer to create a group WhatsApp or arrange a call with both parties. This moves the deal forward while respecting their process." },
+    { q:"When booking an appointment, what should you always ask for to improve show rates?", opts:["Their credit score","A verbal commitment — 'Can I get your word that you will show up?'","A non-refundable deposit","Their employer details"], correct:1, exp:"Verbal commitment is a proven technique to improve show rates. Always ask: 'If we book this, can I get your word that you will show up? If anything changes, just message me and we will reschedule.' This creates accountability." },
+    { q:"What is the BAMFAM principle in follow-up?", opts:["Best Always Makes For Amazing Meetings","Book A Meeting From A Meeting — always secure the next step before ending any interaction","Before Appointment Meeting, Follow And Monitor","Build A Message For All Missed calls"], correct:1, exp:"BAMFAM stands for Book A Meeting From A Meeting. Every interaction should end with a confirmed next step — whether that is a booked appointment, a scheduled callback, or a specific follow-up action agreed with the customer." },
+    { q:"How should you handle a customer who repeatedly does not answer your calls?", opts:["Mark the lead as lost immediately","Keep calling every hour until they answer","Follow the BAMFAM 6-message sequence — educational, authority, FAQ, product, social proof, and final reopener","Send one final email and close the lead"], correct:2, exp:"Per the RMA follow-up SOP: when a customer does not answer, follow the structured 6-message BAMFAM sequence over 15 days. Each message adds value and keeps the door open without being pushy." },
   ]},
-  purchasing: { label:"Purchasing", icon:"🚗", questions:[
-    { q:"What is the correct vehicle stocking flow at RMA Motors?", opts:["Buy first, inspect later","Seller contact → inspect → negotiate → buy → DMS entry → prep → marketing → live listing","List online first then purchase","Agree price, buy, send straight to marketing"], correct:1, exp:"Correct flow: Seller contact → Inspect → Negotiate → Buy → DMS stock entry (within 1 hour) → Prep line → Mechanical approvals → Final QC → Marketing → Live listing." },
-    { q:"What is the deadline for entering a vehicle into Titan DMS after it physically arrives?", opts:["Within 24 hours of purchase","Within one hour of physical arrival","Before workshop","After PDI sign-off"], correct:1, exp:"Per the Vehicle Sales Readiness SOP: the vehicle must be uploaded into the DMS within ONE HOUR of physical arrival. No incomplete listings are permitted." },
-    { q:"A car has been in stock for 52 days. What is the correct discount band?", opts:["1–2% (soft adjust)","2–3% (tactical)","3–5% (defensive — must sell soon)","5–7% (aggressive)"], correct:2, exp:"Per the Stock Management SOP: 46–60 days = Defensive stage = 3–5% maximum discount." },
-    { q:"Who must approve all mechanical repair work in writing before it begins?", opts:["The Sales Manager only","Head of Purchasing + Riccardo + the Purchaser — all three, in writing. Verbal approvals are strictly prohibited.","The Workshop team","The General Manager only"], correct:1, exp:"All three — Head of Purchasing, Riccardo, and the Purchaser — must approve the cost estimate in writing. Verbal approvals are strictly prohibited." },
-    { q:"When is payment released to the purchaser?", opts:["Immediately after purchase","Once the car is listed on Dubizzle","Only when DMS listing, sales notes, repair approval trail, and Car Document Check Sheet are all fully signed off","After the customer test drives it"], correct:2, exp:"Payment is held until all four conditions are met: DMS listing complete, sales notes complete, repair approval trail recorded, and Car Document Check Sheet signed off." },
-    { q:"Which brand has the fastest average days to deposit AND highest average profit?", opts:["Mercedes-Benz (37 days, AED 23,967)","Ford (22 days, AED 23,301)","Porsche (15 days, AED 31,541)","Cadillac (8 days, AED 38,748)"], correct:3, exp:"Per RMA Motors stock data: Cadillac averages just 8 days to deposit with AED 38,748 average profit." },
+  knowledge: { label:"RMA Knowledge", icon:"🏢", questions:[
+    { q:"Where is RMA Motors located?", opts:["Business Bay, Dubai","Showroom 6, Speedex Centre, DIP 1, Dubai","Dubai Marina, Dubai","DIFC, Dubai"], correct:1, exp:"RMA Motors is located at Showroom 6, Speedex Centre, Dubai Investment Park 1 (DIP 1), Dubai. As a Setter, you must know this address so you can direct customers and confirm showroom appointments accurately." },
+    { q:"What is the Setter's primary objective in the sales process?", opts:["To close deals and take deposits","To respond fast, build rapport, and book qualified appointments for the Closing team","To manage vehicle listings across online platforms","To handle finance applications and bank submissions"], correct:1, exp:"As a Setter, your primary objective is to respond with extreme urgency, build immediate rapport, and book qualified appointments for the Sales Closer team. You are the critical first point of contact." },
+    { q:"What is the pathway for a high-performing Setter at RMA Motors?", opts:["Move into marketing after 6 months","Become a Purchasing Manager","Progression into a Sales Closer role, assessed at the 3-month review","Move into an HR or admin role"], correct:2, exp:"Per your employment offer: this is an entry-level position with a structured progression pathway into Closing roles for high performers. Your 3-month review assesses your readiness for the Closer pathway." },
+    { q:"What does the Setter role require above all else according to the job description?", opts:["Patience and a slow, methodical approach","Urgency, CRM discipline, and exceptional communication skills","Experience in automotive finance","A background in vehicle purchasing"], correct:2, exp:"Per the RMA Motors job description: the Setter role demands urgency, CRM discipline, and exceptional communication skills. Speed and consistency throughout your shift are what separate top performers from average ones." },
+    { q:"What happens at the end of the 10-day onboarding programme before you go live?", opts:["You start taking calls immediately with no assessment","You must pass a final test of 20 questions (10 marketing + 10 purchasing) and receive a Shop Floor Ready sign-off from the Department Manager","You shadow a Closer for a full week","You complete a written essay about the sales process"], correct:1, exp:"Per the onboarding plan: on Day 10 you complete a final business test (10 marketing questions + 10 purchasing questions) and must receive a formal Shop Floor Ready sign-off from your Department Manager before going live." },
+    { q:"What should you do if a lead comes in outside of your shift hours?", opts:["Ignore it until your next shift","Contact it within 60 seconds regardless of shift hours","Contact it within 30 minutes of the start of your next shift","Pass it to a colleague immediately"], correct:2, exp:"Per the Sales SOP: overnight or out-of-shift leads must be contacted within 30 minutes of the start of your next shift. These leads are still your responsibility and must be treated with the same urgency." },
   ]},
 };
 
@@ -395,7 +395,7 @@ export default function App() {
 
   if (screen==="mgmt" && mgmtAuth) {
     const avgComp = mgmtSetters.length ? Math.round(mgmtSetters.reduce((a,s)=>a+completionPct(s),0)/mgmtSetters.length) : 0;
-    const passed = mgmtSetters.filter(s=>{ const a=avgScore(s); return a!==null&&a>=70; }).length;
+    const passed = mgmtSetters.reduce((total, s) => total + Object.values(s.quizScores||{}).filter(score=>score>=90).length, 0);
     return (
       <div style={{ padding:"2rem", maxWidth:1000, margin:"0 auto", background:T.bg, minHeight:"100vh" }} className="fade">
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.75rem", flexWrap:"wrap", gap:10 }}>
@@ -439,7 +439,7 @@ export default function App() {
         ) : (
           <>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:10, marginBottom:"1.75rem" }}>
-              {[["Active setters",mgmtSetters.length],["Avg completion",`${avgComp}%`],["Quizzes passed",passed],["Shop floor ready",mgmtSetters.filter(s=>completionPct(s)>=90).length]].map(([l,v])=>(
+              {[["Active setters",mgmtSetters.length],["Avg completion",`${avgComp}%`],["Quizzes passed",`${passed}`,],["Shop floor ready",mgmtSetters.filter(s=>completionPct(s)>=90).length]].map(([l,v])=>(
                 <div key={l} style={{ background:T.surf, borderRadius:10, padding:"1rem", border:`1px solid ${T.border}` }}>
                   <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.06em" }}>{l}</div>
                   <div style={{ fontSize:24, fontWeight:800, color:T.text }}>{v}</div>
@@ -452,7 +452,7 @@ export default function App() {
             : (
               <Card style={{ padding:"0.75rem 1.25rem" }}>
                 {mgmtSetters.map((s,i)=>{
-                  const pct=completionPct(s), avg=avgScore(s), good=avg!==null&&avg>=70;
+                  const pct=completionPct(s), avg=avgScore(s), good=avg!==null&&avg>=90;
                   return (
                     <div key={s.id} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 0", borderBottom:i<mgmtSetters.length-1?`1px solid ${T.border}`:"none", flexWrap:"wrap" }}>
                       <Avatar initials={s.initials} size={36} />
@@ -477,7 +477,7 @@ export default function App() {
                 <SectionLabel style={{ marginTop:0 }}>{s.name} — quiz scores</SectionLabel>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:8, marginBottom:10 }}>
                   {Object.entries(QUIZZES).map(([k,q])=>{
-                    const score=s.quizScores?.[k], good=score!==undefined&&score>=70;
+                    const score=s.quizScores?.[k], good=score!==undefined&&score>=90;
                     return (
                       <div key={k} style={{ background:T.surf, borderRadius:10, padding:"0.85rem 1rem", border:`1px solid ${score!==undefined?(good?T.green:T.red):T.border}` }}>
                         <div style={{ fontSize:11, color:T.muted, marginBottom:4 }}>{q.icon} {q.label}</div>
@@ -569,7 +569,7 @@ export default function App() {
               <ProgressBar pct={pct} height={6} />
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(110px,1fr))", gap:8, marginBottom:"1.5rem" }}>
-              {[["Programme","10 days","3 phases"],[`Modules`,`${setterData?.completedModules?.length||0}/${MODULES.length}`,"completed"],[`Quizzes`,`${Object.values(setterData?.quizScores||{}).filter(s=>s>=70).length}/4`,"passed"],["Score",avgScore(setterData)!==null?`${avgScore(setterData)}%`:"—","avg"]].map(([l,v,s])=>(
+              {[["Programme","10 days","3 phases"],[`Modules`,`${setterData?.completedModules?.length||0}/${MODULES.length}`,"completed"],[`Quizzes`,`${Object.values(setterData?.quizScores||{}).filter(s=>s>=90).length}/4`,"passed"],["Score",avgScore(setterData)!==null?`${avgScore(setterData)}%`:"—","avg"]].map(([l,v,s])=>(
                 <div key={l} style={{ background:T.surf, borderRadius:10, padding:"0.9rem 1rem", border:`1px solid ${T.border}` }}>
                   <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
                   <div style={{ fontSize:20, fontWeight:800, color:T.text }}>{v}</div>
@@ -727,7 +727,7 @@ export default function App() {
                 return (
                   <button key={id} className={`sub-tab ${activeQuiz===id?"active":""}`} onClick={()=>{ setActiveQuiz(id); setQuizAnswers(setterData?.quizAnswers||{}); }}>
                     {q.icon} {q.label}
-                    {score!==undefined && <span style={{ marginLeft:6, fontSize:10, color:score>=70?T.greenTx:T.redTx, fontWeight:800 }}>({score}%)</span>}
+                    {score!==undefined && <span style={{ marginLeft:6, fontSize:10, color:score>=90?T.greenTx:T.redTx, fontWeight:800 }}>({score}%)</span>}
                   </button>
                 );
               })}
@@ -742,7 +742,7 @@ export default function App() {
                 <div>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1rem", flexWrap:"wrap", gap:8 }}>
                     <div style={{ fontSize:13, color:T.muted }}>{quiz.label} — {total} questions based on your RMA Motors SOPs.</div>
-                    {savedScore!==undefined && <span style={{ fontSize:12, fontWeight:700, color:savedScore>=70?T.greenTx:T.redTx }}>{savedScore>=70?"✓":"✗"} Best score: {savedScore}%</span>}
+                    {savedScore!==undefined && <span style={{ fontSize:12, fontWeight:700, color:savedScore>=90?T.greenTx:T.redTx }}>{savedScore>=90?"✓":"✗"} Best score: {savedScore}%</span>}
                   </div>
                   {quiz.questions.map((q,qi)=>{
                     const key=`${activeQuiz}-${qi}`, ans=quizAnswers[key];
@@ -771,10 +771,10 @@ export default function App() {
                     );
                   })}
                   {allDone&&displayScore!==null&&(
-                    <div style={{ padding:"1.5rem", borderRadius:14, textAlign:"center", background:displayScore>=70?T.greenBg:T.redBg, border:`1px solid ${displayScore>=70?T.green:T.red}`, marginTop:10 }}>
-                      <div style={{ fontSize:28, fontWeight:800, color:displayScore>=70?T.greenTx:T.redTx }}>{displayScore}%</div>
-                      <div style={{ fontSize:13, color:displayScore>=70?T.greenTx:T.redTx }}>{quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]?.correct).length}/{total} correct</div>
-                      <div style={{ fontSize:12, color:T.muted, marginTop:6 }}>{displayScore>=70?"✓ Passed — your score has been saved and is visible to your manager.":"✗ Below 70% — review the relevant SOP and retake to improve your score."}</div>
+                    <div style={{ padding:"1.5rem", borderRadius:14, textAlign:"center", background:displayScore>=90?T.greenBg:T.redBg, border:`1px solid ${displayScore>=90?T.green:T.red}`, marginTop:10 }}>
+                      <div style={{ fontSize:28, fontWeight:800, color:displayScore>=90?T.greenTx:T.redTx }}>{displayScore}%</div>
+                      <div style={{ fontSize:13, color:displayScore>=90?T.greenTx:T.redTx }}>{quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]?.correct).length}/{total} correct</div>
+                      <div style={{ fontSize:12, color:T.muted, marginTop:6 }}>{displayScore>=90?"✓ Passed — your score has been saved and is visible to your manager.":"✗ Below 90% — review the relevant SOP and retake to improve your score."}</div>
                     </div>
                   )}
                   {allDone&&<div style={{ marginTop:10 }}><Btn small primary onClick={()=>setQuizAnswers({})}>Retake quiz</Btn></div>}
@@ -787,3 +787,4 @@ export default function App() {
     </div>
   );
 }
+

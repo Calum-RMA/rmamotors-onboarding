@@ -315,13 +315,16 @@ export default function App() {
     setLoginError(false);
     setSetterData(data);
     setQuizAnswers(data.quizAnswers||{});
+    setQuizAttempts(data.quizAttempts||{});
+    setQuizBlocked(data.quizBlocked||{});
     setScreen("setter");
   };
 
   const toggleModule = async (mid) => {
     if (!setterData) return;
-    const already = setterData.completedModules.includes(mid);
-    const updated = { ...setterData, completedModules: already ? setterData.completedModules.filter(m=>m!==mid) : [...setterData.completedModules, mid] };
+    const modules = setterData.completedModules || [];
+    const already = modules.includes(mid);
+    const updated = { ...setterData, completedModules: already ? modules.filter(m=>m!==mid) : [...modules, mid] };
     await saveData(updated);
   };
 
@@ -416,7 +419,7 @@ export default function App() {
 
   const completionPct = (d) => d ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/(MODULES.length+4)*100) : 0;
   const avgScore = (d) => { const s = Object.values(d?.quizScores||{}); return s.length ? Math.round(s.reduce((a,b)=>a+b,0)/s.length) : null; };
-  const isUnlocked = (mod, done) => {
+  const isUnlocked = (mod, done=[]) => {
     if (mod.defaultUnlocked) return true;
     const order = ["m1","m2","m3","m4","m5","m6"];
     const idx = order.indexOf(mod.id);

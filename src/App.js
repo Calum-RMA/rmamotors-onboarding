@@ -1149,8 +1149,8 @@ If they reply with an objection:
                             const opt = q.opts[origIdx];
                             let bg=T.surf, border=T.border, color=T.muted, fw=400;
                             if (ans!==undefined) {
-                              if (origIdx===q.correct) { bg=T.greenBg; border=T.green; color=T.greenTx; fw=600; }
-                              else if (origIdx===ans.chosen&&!ans.correct) { bg=T.redBg; border=T.red; color=T.redTx; fw=600; }
+                              if (ans.correct && origIdx===q.correct) { bg=T.greenBg; border=T.green; color=T.greenTx; fw=600; }
+                              else if (!ans.correct && origIdx===ans.chosen) { bg=T.redBg; border=T.red; color=T.redTx; fw=600; }
                             }
                             return (
                               <div key={displayIdx} className={ans===undefined?"quiz-opt":""} onClick={()=>handleQuizAnswer(qi,origIdx)}

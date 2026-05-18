@@ -60,7 +60,7 @@ const QUIZZES = {
     { q:"What is your first action when a new lead comes in during your shift?", opts:["Update the CRM with their details","Send a WhatsApp message","Call the lead within 60 seconds","Email them a brochure"], correct:2, exp:"Refer to the KPIs tab and SOPs tab — Sales Process Step 2." },
     { q:"What CRM system does RMA Motors use for lead management?", opts:["Salesforce","HubSpot","Eskimo CRM","DealerSocket"], correct:2, exp:"Refer to the SOPs tab — CRM Stages section and Day 4 training module." },
     { q:"What is the correct CRM stage to set immediately after a customer confirms their appointment?", opts:["Contacted","Pending","Appointment Booked","Quoted"], correct:2, exp:"Refer to the SOPs tab — CRM Stages section." },
-    { q:"Within how many hours must you contact and qualify all new leads?", opts:["12 hours","24 hours","48 hours","72 hours"], correct:1, exp:"Refer to the SOPs tab — Sales Process and your job description in the Home tab." },
+    { q:"How long do you keep a lead and work it before handing over to the closer/sweeper?", opts:["24 hours","48 hours","72 hours","7 days"], correct:2, exp:"Refer to the SOPs tab — Sales Process Step 6, and your job description in the Home tab." },
   ]},
   objections: { label:"Objections & Scripts", icon:"🎯", questions:[
     { q:"A customer says 'I need to think about it.' What is the BEST response?", opts:["'No problem, call me when you are ready.'","'Of course — do you mind if I ask what part of the deal you would like to think about?'","'The price is very competitive, you should decide now.'","'I will send you more information by email.'"], correct:1, exp:"Refer to the Scripts tab — Objection Handling section." },
@@ -71,7 +71,7 @@ const QUIZZES = {
     { q:"How should you handle a customer who repeatedly does not answer your calls?", opts:["Mark the lead as lost immediately","Keep calling every hour until they answer","Follow the BAMFAM 6-message sequence — educational, authority, FAQ, product, social proof, and final reopener","Send one final email and close the lead"], correct:2, exp:"Refer to the Scripts tab — BAMFAM Follow-up Sequence section." },
   ]},
   knowledge: { label:"RMA Knowledge", icon:"🏢", questions:[
-    { q:"Where is RMA Motors located?", opts:["Business Bay, Dubai","Showroom 6, Speedex Centre, DIP 1, Dubai","Dubai Marina, Dubai","DIFC, Dubai"], correct:1, exp:"Refer to the Home tab — Role Overview section." },
+    { q:"Where is RMA Motors located?", opts:["Business Bay, Dubai","Showroom 3, Speedex Centre, DIP 1, Dubai","Dubai Marina, Dubai","DIFC, Dubai"], correct:1, exp:"Refer to the Home tab — Role Overview section." },
     { q:"What is the Setter's primary objective in the sales process?", opts:["To close deals and take deposits","To respond fast, build rapport, and book qualified appointments for the Closing team","To manage vehicle listings across online platforms","To handle finance applications and bank submissions"], correct:1, exp:"Refer to your job description in the Home tab and Day 1 training module." },
     { q:"What is the pathway for a high-performing Setter at RMA Motors?", opts:["Move into marketing after 6 months","Become a Purchasing Manager","Progression into a Sales Closer role, assessed at the 3-month review","Move into an HR or admin role"], correct:2, exp:"Refer to your employment offer details in the Home tab — Role Overview." },
     { q:"What does the Setter role require above all else according to the job description?", opts:["Patience and a slow, methodical approach","Urgency, CRM discipline, and exceptional communication skills","Experience in automotive finance","A background in vehicle purchasing"], correct:1, exp:"Refer to your job description in the Home tab and Day 1 training module." },
@@ -80,7 +80,7 @@ const QUIZZES = {
   ]},
   sop: { label:"SOP Questions", icon:"📖", questions:[
     { q:"When must you click the 'Attended' button in Eskimo CRM?", opts:["At the end of your shift","When the customer physically arrives at the showroom","After the appointment is confirmed by phone","When the deal sheet is signed"], correct:1, exp:"Refer to the CRM Stages SOP — Appointment Kept section." },
-    { q:"How many signed deal sheet copies must be provided at handover and where does each go?", opts:["1 copy to F&I only","2 copies — customer and F&I","3 copies — customer, F&I, and Accounts","4 copies including the Purchasing team"], correct:2, exp:"Refer to Finance & Admin SOP — Step 1 Deal Handover." },
+    { q:"How many signed deal sheet copies must be provided at point of deposit/reservation and where does each go?", opts:["1 copy to F&I only","2 copies — customer and F&I","3 copies — customer, F&I, and Accounts","4 copies including the Purchasing team"], correct:2, exp:"Refer to Finance & Admin SOP — Step 1 Deal Handover." },
     { q:"What additional document must be completed on the same day as the deal, before the customer leaves?", opts:["Vehicle inspection form","Finance enquiry form","RTA registration form","Customer satisfaction survey"], correct:1, exp:"Refer to Finance & Admin SOP — Step 1 Deal Handover." },
     { q:"For a car that has been in stock for 80 days, what is the correct discount action?", opts:["Full retail — 0–1%","Tactical — 2–3%","Aggressive — 5–7%","Exit — whatever clears. Auction, trade, or wholesale."], correct:2, exp:"Refer to Stock & Pricing SOP — Age-Based Discount Ladder. 75–90 days = Aggressive 5–7%." },
     { q:"What is the maximum time a car should take to go live on all platforms after reconditioning sign-off?", opts:["6 hours","12 hours","24 hours","48 hours"], correct:2, exp:"Refer to Marketing SOP — Listing Goal section." },
@@ -263,6 +263,22 @@ export default function App() {
   const [activeSop, setActiveSop] = useState("sales");
   const [activeQuiz, setActiveQuiz] = useState("sales");
   const [quizAnswers, setQuizAnswers] = useState({});
+  const [shuffledOpts, setShuffledOpts] = useState({});
+
+  const getShuffled = (quizId, qi, opts) => {
+    const key = `${quizId}-${qi}`;
+    if (!shuffledOpts[key]) {
+      const indices = opts.map((_,i)=>i);
+      for (let i = indices.length-1; i > 0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [indices[i],indices[j]] = [indices[j],indices[i]];
+      }
+      const newShuffled = {...shuffledOpts, [key]: indices};
+      setShuffledOpts(newShuffled);
+      return indices;
+    }
+    return shuffledOpts[key];
+  };
   const [quizAttempts, setQuizAttempts] = useState({});
   const [quizBlocked, setQuizBlocked] = useState({});
 
@@ -761,7 +777,7 @@ export default function App() {
             </div>
             <SectionLabel style={{ marginTop:0 }}>Role overview</SectionLabel>
             <Card>
-              {[["Position","Sales Executive (Setter Role)"],["Location","Showroom 6, Speedex Centre, DIP 1, Dubai"],["Reports to","Sales Manager"],["Shifts","06:00–15:00 or 15:00–00:00"],["Probation","6 months"],["Lead handover","To Closer after 72 hours"],["3-month review","Pathway to Closer assessed"]].map(([l,v],i,a)=>(
+              {[["Position","Sales Executive (Setter Role)"],["Location","Showroom 3, Speedex Centre, DIP 1, Dubai"],["Reports to","Sales Manager"],["Shifts","06:00–15:00 or 15:00–00:00"],["Probation","6 months"],["Lead handover","To Closer after 72 hours"],["3-month review","Pathway to Closer assessed"]].map(([l,v],i,a)=>(
                 <InfoRow key={l} label={l} value={v} last={i===a.length-1} />
               ))}
             </Card>
@@ -874,7 +890,7 @@ Setter: "Great — let's get that locked in."`],
 Customer: "Yes, I'll be there."
 Setter: "Perfect — I appreciate that."`],
               ["Step 7 — Confirmation","Lock in all details and update CRM immediately.",
-`Setter: "So we're confirmed — [Day] at [Time], Showroom 6, Speedex Centre, DIP 1. I'll send you the location on WhatsApp now. Car will be ready and waiting. Any questions before then, message me directly on this number."
+`Setter: "So we're confirmed — [Day] at [Time], Showroom 3, Speedex Centre, DIP 1. I'll send you the location on WhatsApp now. Car will be ready and waiting. Any questions before then, message me directly on this number."
 → Update CRM to 'Appointment Booked' immediately. Set reminder for pre-appointment message.`],
               ["Step 8 — Pre-appointment reinforcement","Send the day before. Video is more personal than text.",
 `"Hey [Name] — just confirming we're on for tomorrow at [time]. The [Car Model] is ready for you. You mentioned [what they said] — I think you'll like it. See you tomorrow. Any issues, message me here."
@@ -1010,6 +1026,33 @@ If they reply with an objection:
               <StepBlock n="Step 7" title="Post-sale & aftersales" desc="24-hour follow-up call after handover — check in with the Closer to understand how the experience went and ensure the customer is fully satisfied. Once confirmed, request a Google Review and Trustpilot review. Customer enters the aftersales pipeline: 6, 12, 18, and 24-month check-ins." />
               <Alert variant="warn">⚠️ All discounts must be authorised by GM/Naz (Directors) only. No verbal approvals are valid under any circumstances.</Alert>
               <Alert variant="info">📞 Answer all incoming calls within 3 rings. Complete a minimum of 40 connected outbound calls per day, each lasting at least 1 minute.</Alert>
+              <div style={{ marginTop:"1rem" }}>
+                <SectionLabel style={{ marginTop:0 }}>AI Call Scoring — Inbound Leads</SectionLabel>
+                <div style={{ fontSize:13, color:T.muted, marginBottom:10, lineHeight:1.65 }}>Every inbound call is monitored and scored by the CallGear AI system. You must maintain an average score of <strong style={{ color:T.gold }}>80% or above</strong>. The AI tracks the following 10 key points on every inbound lead call:</div>
+                <div style={{ background:T.surf, borderRadius:10, padding:"1rem", border:`1px solid ${T.border}`, marginBottom:10 }}>
+                  {[
+                    ["1","Employee Introduction","Introduced yourself by time of day (morning, afternoon, or evening), stated the business name, and gave your name."],
+                    ["2","Establish Customer Name","The customer's name is clearly established and used appropriately throughout the call."],
+                    ["3","Build Rapport — Get to Know the Customer","Found out information about the customer — where they are from, location (Dubai, Abu Dhabi, etc.), what they do for work, and general conversation to build rapport."],
+                    ["4","Part Exchange & Finance","Found out if there is a part exchange and whether the customer requires finance or not."],
+                    ["5","Lead Source","Asked the customer where they saw RMA Motors advertised — which platform or source brought them to us."],
+                    ["6","Vehicle of Interest","Identified the specific car the customer is interested in. If that vehicle is unavailable, offered a suitable alternative."],
+                    ["7","Book the Appointment","Asked for the appointment — the setter books and sets the appointment. The sales person is responsible for confirming and managing it."],
+                    ["8","Offered a Video Walkthrough","Offered the customer a full video walk-through of the car to build excitement and engagement before the visit."],
+                    ["9","Sent the Location","Sent the customer the showroom location details — Showroom 3, Speedex Centre, DIP 1, Dubai."],
+                    ["10","Qualify and Reserve","If the customer is qualified, asked if they would like to reserve the car and leave a deposit to secure it."],
+                  ].map(([n,title,desc])=>(
+                    <div key={n} style={{ display:"flex", gap:12, padding:"8px 0", borderBottom:`1px solid ${T.border}`, fontSize:12 }}>
+                      <div style={{ width:24, height:24, borderRadius:"50%", background:T.goldBg, color:T.gold, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, flexShrink:0 }}>{n}</div>
+                      <div style={{ flex:1 }}>
+                        <div style={{ fontWeight:700, color:T.text, marginBottom:2 }}>{title}</div>
+                        <div style={{ color:T.muted, lineHeight:1.55 }}>{desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <Alert variant="gold">Your Communication Score is calculated from these 10 points and reviewed by management. Scores below 80% average will trigger coaching and retraining.</Alert>
+              </div>
             </div>)}
             {activeSop==="crm" && (<div><Card style={{ padding:"0.75rem 1.25rem" }}>{CRM_STAGES.map((s,i)=>(<div key={i} style={{ display:"flex", gap:12, padding:"9px 0", borderBottom:i<CRM_STAGES.length-1?`1px solid ${T.border}`:"none", alignItems:"flex-start" }}><div style={{ width:10, height:10, borderRadius:"50%", background:s.color, flexShrink:0, marginTop:4 }} /><div style={{ width:145, flexShrink:0 }}><span style={{ fontSize:12, fontWeight:700, color:s.color }}>{s.label}</span></div><div style={{ fontSize:12, color:T.muted, lineHeight:1.5 }}>{s.desc}</div></div>))}</Card><Alert variant="info">Update CRM stages immediately and accurately. 100% CRM hygiene is a measured KPI.</Alert></div>)}
             {activeSop==="fi" && (<div><StepBlock n="Step 1" title="Deal handover — Sales to F&I" accent={T.blue} desc="3 signed deal sheet copies (customer, F&I, Accounts) + customer Emirates ID + Visa copy + completed finance enquiry form. All must be completed on the same day as the deal. Must be complete before F&I submission." /><StepBlock n="Steps 2–3" title="Bank quotation & approval" accent={T.blue} desc="F&I prepares quotation exactly as per deal sheet, emails banker. Once approved, F&I applies for insurance." /><StepBlock n="Step 4" title="LPO received → upsell + agreements" accent={T.blue} desc="LPO triggers agreed upsell works: PPF, extended warranty, window tints, ceramic coating — all agreed additional works initiated now. F&I prepares the Sales Agreement (consignment) or Hayaza mortgage request (RMA-owned)." /><StepBlock n="Steps 5–12" title="RTA → PDI → Car Care → E-Cert → Notify" accent={T.blue} desc="Vehicle sent for RTA inspection first, then PDI. F&I coordinates Car Care (PPF, ceramics, tints, detailing). Creates E-Certificate in RTA portal. Notifies Sales Rep and customer once registration complete." /></div>)}
@@ -1100,22 +1143,26 @@ If they reply with an objection:
                     return (
                       <div key={qi} style={{ background:T.card, borderRadius:12, border:`1px solid ${T.border}`, padding:"1rem 1.25rem", marginBottom:"0.75rem" }}>
                         <div style={{ fontSize:13, fontWeight:700, marginBottom:"0.85rem", lineHeight:1.55, color:T.text }}>{qi+1}. {q.q}</div>
-                        {q.opts.map((opt,oi)=>{
-                          let bg=T.surf, border=T.border, color=T.muted, fw=400;
-                          if (ans!==undefined) {
-                            if (oi===q.correct) { bg=T.greenBg; border=T.green; color=T.greenTx; fw=600; }
-                            else if (oi===ans.chosen&&!ans.correct) { bg=T.redBg; border=T.red; color=T.redTx; fw=600; }
-                          }
-                          return (
-                            <div key={oi} className={ans===undefined?"quiz-opt":""} onClick={()=>handleQuizAnswer(qi,oi)}
-                              style={{ padding:"9px 14px", border:`1px solid ${border}`, borderRadius:8, marginBottom:6, cursor:ans?"default":"pointer", fontSize:13, lineHeight:1.5, background:bg, color, fontWeight:fw }}>
-                              {opt}
-                            </div>
-                          );
-                        })}
+                        {(()=>{
+                          const order = getShuffled(activeQuiz, qi, q.opts);
+                          return order.map((origIdx, displayIdx) => {
+                            const opt = q.opts[origIdx];
+                            let bg=T.surf, border=T.border, color=T.muted, fw=400;
+                            if (ans!==undefined) {
+                              if (origIdx===q.correct) { bg=T.greenBg; border=T.green; color=T.greenTx; fw=600; }
+                              else if (origIdx===ans.chosen&&!ans.correct) { bg=T.redBg; border=T.red; color=T.redTx; fw=600; }
+                            }
+                            return (
+                              <div key={displayIdx} className={ans===undefined?"quiz-opt":""} onClick={()=>handleQuizAnswer(qi,origIdx)}
+                                style={{ padding:"9px 14px", border:`1px solid ${border}`, borderRadius:8, marginBottom:6, cursor:ans?"default":"pointer", fontSize:13, lineHeight:1.5, background:bg, color, fontWeight:fw }}>
+                                {opt}
+                              </div>
+                            );
+                          });
+                        })()}
                         {ans!==undefined && (
                           <div style={{ fontSize:12, padding:"9px 12px", borderRadius:8, marginTop:8, background:ans.correct?T.greenBg:T.redBg, border:`1px solid ${ans.correct?T.green:T.red}`, color:ans.correct?T.greenTx:T.redTx, lineHeight:1.55 }}>
-                            {ans.correct ? <><strong>✓ Correct!</strong></> : <><strong>✗ Incorrect.</strong> {q.exp.startsWith("Refer") ? ` ${q.exp}` : ` Refer to your training materials and SOPs to find the correct answer.`}</>}
+                            {ans.correct ? <><strong>✓ Correct!</strong></> : <><strong>✗ Incorrect.</strong> {" "}{q.exp}</>}
                           </div>
                         )}
                       </div>
@@ -1132,7 +1179,7 @@ If they reply with an objection:
                       </div>
                     </div>
                   )}
-                  {allDone && !quizBlocked[activeQuiz] && displayScore < 90 && <div style={{ marginTop:10 }}><Btn small primary onClick={()=>setQuizAnswers({})}>Retake quiz</Btn></div>}
+                  {allDone && !quizBlocked[activeQuiz] && displayScore < 90 && <div style={{ marginTop:10 }}><Btn small primary onClick={()=>{ setQuizAnswers({}); setShuffledOpts({}); }}>Retake quiz</Btn></div>}
                 </div>
               );
             })()}

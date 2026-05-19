@@ -1023,18 +1023,32 @@ export default function App() {
 
         {activeTab==="home" && (
           <div>
-            <div style={{ background:`linear-gradient(135deg,${T.card},#1E2335)`, borderRadius:16, border:`1px solid ${T.border}`, padding:"1.75rem", marginBottom:"1.25rem", position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:-30, right:-30, width:120, height:120, borderRadius:"50%", background:T.goldBg, filter:"blur(40px)", pointerEvents:"none" }} />
-              <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:"1.25rem" }}>
+            <div style={{ background:role==="closer"?`linear-gradient(135deg,${T.card},#241B3A)`:`linear-gradient(135deg,${T.card},#1E2335)`, borderRadius:16, border:`1px solid ${role==="closer"?T.purple:T.border}`, padding:"1.75rem", marginBottom:"1.25rem", position:"relative", overflow:"hidden" }}>
+              <div style={{ position:"absolute", top:-30, right:-30, width:140, height:140, borderRadius:"50%", background:role==="closer"?T.purpleBg:T.goldBg, filter:"blur(40px)", pointerEvents:"none" }} />
+              <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:role==="closer"?"1rem":"1.25rem" }}>
                 <Avatar initials={setterData?.initials} size={52} />
-                <div>
-                  <div style={{ fontSize:20, fontWeight:800, color:T.text }}>Welcome, {setterData?.name?.split(" ")[0]}.</div>
+                <div style={{ flex:1 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
+                    <div style={{ fontSize:20, fontWeight:800, color:T.text }}>
+                      {role==="closer"?`Congratulations, ${setterData?.name?.split(" ")[0]}.`:`Welcome, ${setterData?.name?.split(" ")[0]}.`}
+                    </div>
+                    {role==="closer" && (
+                      <span style={{ fontSize:9, fontWeight:800, padding:"3px 8px", borderRadius:99, background:T.purple, color:"#fff", textTransform:"uppercase", letterSpacing:"0.08em" }}>
+                        ★ Elite Role
+                      </span>
+                    )}
+                  </div>
                   <div style={{ fontSize:12, color:T.muted, marginTop:2 }}>{role==="closer"?"Sales Closer Onboarding · 9-Module Programme":"Sales Setter Onboarding · 10-Day Programme"}</div>
                 </div>
               </div>
+              {role==="closer" && (
+                <div style={{ background:"rgba(146,109,222,0.08)", border:`1px solid ${T.purple}`, borderRadius:10, padding:"12px 14px", marginBottom:"1.25rem", fontSize:13, color:T.text, lineHeight:1.6 }}>
+                  You've earned a place in RMA Motors' Closer team — a premium, elite role reserved for our highest performers. You'll own the customer relationship from first appointment through to delivery and beyond. Standards are high, and so are the rewards.
+                </div>
+              )}
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
                 <span style={{ fontSize:12, color:T.muted, fontWeight:600 }}>Overall progress</span>
-                <span style={{ fontSize:13, fontWeight:800, color:T.gold }}>{pct}%</span>
+                <span style={{ fontSize:13, fontWeight:800, color:role==="closer"?T.purpleTx:T.gold }}>{pct}%</span>
               </div>
               <ProgressBar pct={pct} height={6} />
             </div>

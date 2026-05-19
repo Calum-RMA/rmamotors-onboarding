@@ -583,7 +583,9 @@ export default function App() {
     loadMgmt();
   };
 
-  const completionPct = (d) => d ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/(MODULES.length+Object.keys(activeQuizzes).length)*100) : 0;
+  const activeModules = role==="closer" ? CLOSER_MODULES : MODULES;
+  const activeQuizzes = role==="closer" ? CLOSER_QUIZZES : QUIZZES;
+  const completionPct = (d) => d ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/((role==="closer"?CLOSER_MODULES:MODULES).length+Object.keys(role==="closer"?CLOSER_QUIZZES:QUIZZES).length)*100) : 0;
   const avgScore = (d) => { const s = Object.values(d?.quizScores||{}); return s.length ? Math.round(s.reduce((a,b)=>a+b,0)/s.length) : null; };
   const isUnlocked = (mod, done=[]) => {
     if (mod.defaultUnlocked) return true;
@@ -908,8 +910,6 @@ export default function App() {
   const TABS = [{id:"home",label:"Home"},{id:"training",label:"Training"},{id:"scripts",label:"Scripts"},{id:"sops",label:"SOPs"},{id:"kpis",label:"KPIs"},{id:"assessments",label:"Assessments"}];
   const totalItems = (role==="closer" ? CLOSER_MODULES.length + Object.keys(CLOSER_QUIZZES).length : MODULES.length + Object.keys(activeQuizzes).length);
   const doneItems = (setterData?.completedModules?.length||0)+Object.keys(setterData?.quizScores||{}).length;
-  const activeModules = role==="closer" ? CLOSER_MODULES : MODULES;
-  const activeQuizzes = role==="closer" ? CLOSER_QUIZZES : QUIZZES;
   const pct = Math.round((doneItems/totalItems)*100);
 
   return (

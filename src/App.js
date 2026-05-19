@@ -282,6 +282,7 @@ export default function App() {
   const [linkCopied, setLinkCopied] = useState(false);
   const [expandedMod, setExpandedMod] = useState(null);
   const [activeSop, setActiveSop] = useState("sales");
+  const [openStep, setOpenStep] = useState(null);
   const [activeQuiz, setActiveQuiz] = useState("sales");
   const [quizAnswers, setQuizAnswers] = useState({});
   const [shuffledOpts, setShuffledOpts] = useState({});
@@ -1038,31 +1039,107 @@ If they reply with an objection:
               ))}
             </div>
             {activeSop==="sales" && (<div>
-              <StepBlock n="Step 1" title="Lead entry & data integrity" desc="ALL leads must be entered into Eskimo CRM immediately upon receipt. Full contact details, enquiry source, and vehicle interest are required. The original lead source must NEVER be changed. If unknown, ask the customer during first contact and update immediately. 100% CRM hygiene is a KPI — every note, task, and pipeline stage must be updated accurately and in real time." />
-              <StepBlock n="Step 2" title="Rapid lead response — 60 seconds" desc="Respond to ALL new inbound leads within 60 seconds during your assigned coverage shift. For overnight or out-of-shift leads: contact within 30 minutes of the start of your next shift. Use approved sales messaging frameworks across WhatsApp, phone, and social media. Send a personalised Snap Cell video within 5 minutes of the first call — filmed in front of the specific car, face visible." />
-              <StepBlock n="Step 3" title="Qualification & discovery" desc="Follow the setter framework: respond within 60 seconds, send a personalised Snap Cell and intro message immediately. Work the lead using the 8-step framework — qualify, build rapport, and book the appointment. To make appointment booking frictionless, send the customer a WhatsApp poll with 3–4 specific day and time options (e.g. Tuesday 2:15pm, Wednesday 3:40pm, Thursday 4:20pm) — this removes the back-and-forth and makes it easy for the customer to commit. Use the BAMFAM follow-up sequence if there is no immediate response. If there is still no conversion after 72 hours, pass the lead cleanly to a Closer or Sweeper — ensure all CRM notes are fully updated before handover. Your conversion target: minimum 33% of responded leads result in a booked appointment." />
-              <StepBlock n="Step 4" title="Appointment setting & show rate" desc="Convert leads into showroom or video appointments. Always book at a specific, unusual time — e.g. 2:15pm, 3:20pm, 4:40pm rather than on the hour. This makes the appointment feel more deliberate and personal, and significantly improves show rates. Once a time is agreed, create a WhatsApp Event in the group chat with the customer — set the title (e.g. 'Your RMA Motors Appointment'), date, time, and location. The customer can then RSVP directly which dramatically increases accountability and show rates. Secure verbal commitment on every appointment: 'Can I get your word that you will show up? If anything changes, just message me and we will reschedule.' Send pre-appointment reinforcement the day before — video or text. Target: minimum 66% appointment show rate." />
-              <StepBlock n="Step 5" title="No answer — BAMFAM follow-up sequence" desc="If no answer after x2 double dial: send SMS intro immediately, then follow the structured 6-message sequence over 15 days — educational video, authority/expert video, FAQ video, product with link, social proof, and final reopener. BAMFAM = Book A Meeting From A Meeting. Every interaction must end with a confirmed next step." />
-              <StepBlock n="Step 6" title="Lead handover to Closer" desc="After 72 hours without conversion, follow this exact handover process:" />
-              <div style={{ marginLeft:16, marginBottom:8 }}>
-                {[
-                  ["6.1","Inform the Closer","Brief the Closer fully before any customer contact — share the customer's name, vehicle interest, objections raised, any commitments made, and the full CRM note history. The Closer must know the full picture before they make contact."],
-                  ["6.2","Create a handover WhatsApp group","Create a group with the Closer, the Setter, and the customer. The Setter introduces the Closer personally in the group — this keeps the relationship warm and avoids the customer feeling passed around."],
-                  ["6.3","Ensure a warm introduction","The Setter makes the introduction: 'Hi [Customer Name], I wanted to personally introduce you to [Closer Name] who is going to be taking great care of you from here. [Closer], meet [Customer] — they've been looking at the [Car Model] and are a great fit.' Never do a cold handover."],
-                  ["6.4","Let the customer know the next steps","Make it clear what happens next: 'From here, [Closer Name] will be your main point of contact. They'll walk you through everything — the car, any finance options, and getting you the best possible deal.'"],
-                  ["6.5","Personal video from Closer to customer","The Closer sends a personalised video message to the customer — ideally filmed in front of the car. The video should cover: a warm introduction, a quick walkthrough of the car, confirmation of next steps, and how to reach them directly."],
-                ].map(([n,title,desc])=>(
-                  <div key={n} style={{ display:"flex", gap:12, padding:"8px 0", borderBottom:`1px solid ${T.border}`, fontSize:12, alignItems:"flex-start" }}>
-                    <div style={{ width:32, height:24, borderRadius:6, background:T.goldBg, color:T.gold, display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:700, flexShrink:0 }}>{n}</div>
-                    <div style={{ flex:1 }}>
-                      <div style={{ fontWeight:700, color:T.text, marginBottom:2 }}>{title}</div>
-                      <div style={{ color:T.muted, lineHeight:1.55 }}>{desc}</div>
+              {[
+                { n:"Step 1", title:"Lead entry & data integrity", points:[
+                  "ALL leads must be entered into Eskimo CRM immediately upon receipt.",
+                  "Full contact details, enquiry source, and vehicle interest are required.",
+                  "The original lead source must NEVER be changed once entered.",
+                  "If the source is unknown, ask the customer during first contact and update immediately.",
+                  "100% CRM hygiene is a KPI — every note, task, and pipeline stage must be updated accurately and in real time.",
+                ]},
+                { n:"Step 2", title:"Rapid lead response — 60 seconds", points:[
+                  "Respond to ALL new inbound leads within 60 seconds during your assigned coverage shift.",
+                  "For overnight or out-of-shift leads: contact within 30 minutes of the start of your next shift.",
+                  "Use approved sales messaging frameworks across WhatsApp, phone, and social media.",
+                  "Send a personalised Snap Cell video within 5 minutes of the first call — filmed in front of the specific car, face visible.",
+                ]},
+                { n:"Step 3", title:"Qualification & discovery", points:[
+                  "Follow the setter framework: respond within 60 seconds, send a personalised Snap Cell and intro message immediately.",
+                  "Work the lead using the 8-step framework — qualify, build rapport, and book the appointment.",
+                  "Send the customer a WhatsApp poll with 3–4 specific day and time options (e.g. Tuesday 2:15pm, Wednesday 3:40pm, Thursday 4:20pm) — this removes back-and-forth and makes it easy for the customer to commit.",
+                  "Use the BAMFAM follow-up sequence if there is no immediate response.",
+                  "If there is still no conversion after 72 hours, pass the lead cleanly to a Closer or Sweeper.",
+                  "Ensure all CRM notes are fully updated before handover.",
+                  "Conversion target: minimum 33% of responded leads result in a booked appointment.",
+                ]},
+                { n:"Step 4", title:"Appointment setting & show rate", points:[
+                  "Convert leads into showroom or video appointments.",
+                  "Always book at a specific, unusual time — e.g. 2:15pm, 3:20pm, 4:40pm — never on the hour. This makes the appointment feel more deliberate and personal.",
+                  "Once a time is agreed, create a WhatsApp Event in the group chat — set the title (e.g. 'Your RMA Motors Appointment'), date, time, and location. The customer can RSVP directly, which dramatically increases accountability.",
+                  "Secure verbal commitment: 'Can I get your word that you will show up? If anything changes, just message me and we will reschedule.'",
+                  "Send pre-appointment reinforcement the day before — video or text.",
+                  "Target: minimum 66% appointment show rate.",
+                ]},
+                { n:"Step 5", title:"No answer — BAMFAM follow-up sequence", points:[
+                  "After x2 double dial with no answer: send SMS intro immediately.",
+                  "Follow the structured 6-message sequence over 15 days: educational video, authority/expert video, FAQ video, product with link, social proof, and final reopener.",
+                  "BAMFAM = Book A Meeting From A Meeting.",
+                  "Every interaction must end with a confirmed next step.",
+                  "See the Scripts tab for full message templates.",
+                ]},
+              ].map(({n, title, points}) => {
+                const key = n;
+                const isOpen = openStep === key;
+                return (
+                  <div key={key} style={{ background:T.surf, borderRadius:10, marginBottom:6, borderLeft:`2px solid ${isOpen?T.gold:T.border}`, borderTopLeftRadius:0, borderBottomLeftRadius:0, transition:"border-color .2s" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:12, padding:"0.85rem 1rem", cursor:"pointer" }} onClick={()=>setOpenStep(isOpen?null:key)}>
+                      <div style={{ fontSize:9, fontWeight:700, color:T.faint, textTransform:"uppercase", letterSpacing:"0.08em", width:44, flexShrink:0 }}>{n}</div>
+                      <div style={{ fontSize:13, fontWeight:700, color:T.text, flex:1 }}>{title}</div>
+                      <div style={{ color:T.faint, fontSize:11, transition:"transform .2s", transform:isOpen?"rotate(180deg)":"none" }}>▾</div>
                     </div>
+                    {isOpen && (
+                      <div style={{ padding:"0 1rem 0.85rem", borderTop:`1px solid ${T.border}` }}>
+                        <ul style={{ listStyle:"none", padding:0, margin:"0.75rem 0 0" }}>
+                          {points.map((pt,i)=>(
+                            <li key={i} style={{ display:"flex", gap:8, fontSize:12, padding:"5px 0", borderBottom:i<points.length-1?`1px solid ${T.border}`:"none", color:T.muted, lineHeight:1.6, alignItems:"flex-start" }}>
+                              <span style={{ color:T.gold, flexShrink:0, fontWeight:700, marginTop:1 }}>→</span>
+                              <span>{pt}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
-              <Alert variant="gold">A warm handover protects the relationship built during the setter phase. Never do a cold transfer — the customer should feel looked after throughout the entire process.</Alert>
-              <StepBlock n="Step 7" title="Post-sale & aftersales" desc="24-hour follow-up call after handover — check in with the Closer to understand how the experience went and ensure the customer is fully satisfied. Once confirmed, request a Google Review and Trustpilot review. Customer enters the aftersales pipeline: 6, 12, 18, and 24-month check-ins." />
+                );
+              })}
+              {[
+                { n:"Step 6", title:"Lead handover to Closer", points:[
+                  "Brief the Closer fully before any customer contact — share the customer's name, vehicle interest, objections raised, any commitments made, and the full CRM note history.",
+                  "Create a WhatsApp group with the Closer, the Setter, and the customer. The Setter introduces the Closer personally — this keeps the relationship warm.",
+                  "Warm introduction script: 'Hi [Customer Name], I wanted to personally introduce you to [Closer Name] who is going to be taking great care of you from here. [Closer], meet [Customer] — they've been looking at the [Car Model] and are a great fit.' Never do a cold handover.",
+                  "Let the customer know the next steps: 'From here, [Closer Name] will be your main point of contact. They'll walk you through everything — the car, any finance options, and getting you the best possible deal.'",
+                  "The Closer sends a personalised video message to the customer — filmed in front of the car. Covering: warm intro, quick walkthrough, confirmation of next steps, and how to reach them directly.",
+                ]},
+                { n:"Step 7", title:"Post-sale & aftersales", points:[
+                  "24-hour follow-up call after handover — check in with the Closer to understand how the experience went.",
+                  "Confirm the customer is fully satisfied before requesting any reviews.",
+                  "Request a Google Review and Trustpilot review.",
+                  "Customer enters the aftersales pipeline: 6, 12, 18, and 24-month check-ins.",
+                ]},
+              ].map(({n, title, points}) => {
+                const isOpen = openStep === n;
+                return (
+                  <div key={n} style={{ background:T.surf, borderRadius:10, marginBottom:6, borderLeft:`2px solid ${isOpen?T.gold:T.border}`, borderTopLeftRadius:0, borderBottomLeftRadius:0, transition:"border-color .2s" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:12, padding:"0.85rem 1rem", cursor:"pointer" }} onClick={()=>setOpenStep(isOpen?null:n)}>
+                      <div style={{ fontSize:9, fontWeight:700, color:T.faint, textTransform:"uppercase", letterSpacing:"0.08em", width:44, flexShrink:0 }}>{n}</div>
+                      <div style={{ fontSize:13, fontWeight:700, color:T.text, flex:1 }}>{title}</div>
+                      <div style={{ color:T.faint, fontSize:11, transition:"transform .2s", transform:isOpen?"rotate(180deg)":"none" }}>▾</div>
+                    </div>
+                    {isOpen && (
+                      <div style={{ padding:"0 1rem 0.85rem", borderTop:`1px solid ${T.border}` }}>
+                        <ul style={{ listStyle:"none", padding:0, margin:"0.75rem 0 0" }}>
+                          {points.map((pt,i)=>(
+                            <li key={i} style={{ display:"flex", gap:8, fontSize:12, padding:"5px 0", borderBottom:i<points.length-1?`1px solid ${T.border}`:"none", color:T.muted, lineHeight:1.6, alignItems:"flex-start" }}>
+                              <span style={{ color:T.gold, flexShrink:0, fontWeight:700, marginTop:1 }}>→</span>
+                              <span>{pt}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
               <Alert variant="warn">⚠️ All discounts must be authorised by GM/Naz (Directors) only. No verbal approvals are valid under any circumstances.</Alert>
               <Alert variant="info">📞 Answer all incoming calls within 3 rings. Complete a minimum of 40 connected outbound calls per day, each lasting at least 1 minute.</Alert>
               <div style={{ marginTop:"1rem" }}>

@@ -1109,7 +1109,7 @@ If hesitant: "What would need to happen for you to feel completely comfortable m
               ))}
             </div>
           ) : (
-            <div style={{ fontSize:12, fontWeight:700, color:T.gold, marginBottom:4 }}>📹 Training videos</div>
+            <>
             <div style={{ fontSize:12, color:T.muted, marginBottom:10, lineHeight:1.6 }}>Paste a YouTube or Vimeo URL to add training videos to this section. Videos are added by your manager — ask them to update the platform when new videos are available.</div>
             <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
               {[{label:"Setter Framework walkthrough",url:""},{label:"Objection handling masterclass",url:""},{label:"CRM live demo",url:""},{label:"BAMFAM sequence explained",url:""}].map(v=>(
@@ -1256,6 +1256,7 @@ If they reply with an objection:
               </div>
             ))}
           </div>
+          </>
           )}
         )}
 

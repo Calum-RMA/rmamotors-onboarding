@@ -993,7 +993,7 @@ export default function App() {
               <ProgressBar pct={pct} height={6} />
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(110px,1fr))", gap:8, marginBottom:"1.5rem" }}>
-              {[["Programme","10 days","3 phases"],[`Modules`,`${setterData?.completedModules?.length||0}/${MODULES.length}`,"completed"],[`Quizzes`,`${Object.values(setterData?.quizScores||{}).filter(s=>s>=90).length}/${Object.keys(activeQuizzes).length}`,"passed"],["Score",avgScore(setterData)!==null?`${avgScore(setterData)}%`:"—","avg"]].map(([l,v,s])=>(
+              {[role==="closer"?["Programme","9 modules","3 phases"]:["Programme","10 days","3 phases"],[`Modules`,`${setterData?.completedModules?.length||0}/${activeModules.length}`,"completed"],[`Quizzes`,`${Object.values(setterData?.quizScores||{}).filter(s=>s>=90).length}/${Object.keys(activeQuizzes).length}`,"passed"],["Score",avgScore(setterData)!==null?`${avgScore(setterData)}%`:"—","avg"]].map(([l,v,s])=>(
                 <div key={l} style={{ background:T.surf, borderRadius:10, padding:"0.9rem 1rem", border:`1px solid ${T.border}` }}>
                   <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
                   <div style={{ fontSize:20, fontWeight:800, color:T.text }}>{v}</div>
@@ -1003,7 +1003,7 @@ export default function App() {
             </div>
             <SectionLabel style={{ marginTop:0 }}>Role overview</SectionLabel>
             <Card>
-              {[["Position","Sales Executive (Setter Role)"],["Location","Showroom 3, Speedex Centre, DIP 1, Dubai"],["Reports to","Sales Manager"],["Shifts","06:00–15:00 or 15:00–00:00"],["Probation","6 months"],["Lead handover","To Closer after 72 hours"],["3-month review","Pathway to Closer assessed"]].map(([l,v],i,a)=>(
+              {(role==="closer" ? [["Position","Sales Executive (Closer Role)"],["Location","Showroom 3, Speedex Centre, DIP 1, Dubai"],["Reports to","Sales Manager"],["Shifts","Variable week to week · business hours 09:00–21:00"],["Probation","6 months"],["Lead handover","From Setter after 72 hours or appointment booked"],["Performance review","Monthly KPI review — 2 consecutive months below KPI may result in demotion to Setter or Cleaner"]] : [["Position","Sales Executive (Setter Role)"],["Location","Showroom 3, Speedex Centre, DIP 1, Dubai"],["Reports to","Sales Manager"],["Shifts","06:00–15:00 or 15:00–00:00"],["Probation","6 months"],["Lead handover","To Closer after 72 hours"],["3-month review","Pathway to Closer assessed"]]).map(([l,v],i,a)=>(
                 <InfoRow key={l} label={l} value={v} last={i===a.length-1} />
               ))}
             </Card>

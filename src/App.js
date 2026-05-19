@@ -1017,14 +1017,14 @@ If they reply with an objection:
         {activeTab==="sops" && (
           <div>
             <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"0.75rem" }}>
-              {[["sales","Sales process"],["crm","CRM stages"],["fi","Finance & admin"],["handover","Handover"],["stock","Stock & pricing"],["marketing","Marketing"],["disciplinary","Disciplinary"]].map(([id,label])=>(
+              {[["sales","Sales process"],["crm","CRM stages"],["fi","Finance & admin"],["handover","Handover"],["stock","Stock & pricing"],["marketing","Marketing"],["ppf","RMA PPF"],["disciplinary","Disciplinary"]].map(([id,label])=>(
                 <button key={id} className={`sub-tab ${activeSop===id?"active":""}`} onClick={()=>setActiveSop(id)}>{label}</button>
               ))}
             </div>
             <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:"1.25rem", padding:"10px 12px", background:T.goldBg, borderRadius:8, border:`1px solid ${T.goldDim}` }}>
               <div style={{ fontSize:11, fontWeight:700, color:T.gold, width:"100%", marginBottom:4 }}>📄 Download SOP documents — open, save, and print</div>
               {[
-                ["Sales Process","RMA-Motors-Sales-Process-SOP.docx"],
+                ["Sales Process","RMA-Motors-Sales-Process-SOP.docx"],["RMA PPF Upsell","RMA-Motors-PPF-Upsell-SOP.docx"],
                 ["CRM Stages","RMA-Motors-CRM-Stages-SOP.docx"],
                 ["Finance & Admin","RMA-Motors-Finance-Admin-SOP.docx"],
                 ["Handover","RMA-Motors-Vehicle-Handover-SOP.docx"],
@@ -1080,6 +1080,57 @@ If they reply with an objection:
             {activeSop==="handover" && (<div><StepBlock title="Vehicle preparation" desc="Full valet · PDI completed · no warning lights · AC working · min ¼ tank fuel · no paired Bluetooth · no saved driver profiles · no stored satnav locations · no saved radio stations · clean to showroom standard." /><StepBlock title="Scheduling" desc="ONE customer per hour maximum. Confirm readiness with Car Care. Keep the Marketing team updated and ensure they are available for the handover — they must be present for photos and video. Park in designated handover bay 30 minutes before." /><StepBlock title="The reveal" desc="Marketing present for photos and video content. Keys and gift handed over. Manager delivers formal 'Thank you'. Sales Representative must ask for referrals at this stage — friends, family, or colleagues who may be looking for a vehicle. This is a warm introduction opportunity. Handover sheet signed off by the Department Manager." /><StepBlock title="Post-handover" desc="Call or message within 48 hours. Check in with the Closer on how the experience went. Confirm customer satisfaction. Request Google Review and Trustpilot review. Customer enters 6/12/18/24-month check-in pipeline." /></div>)}
             {activeSop==="stock" && (<div><SectionLabel style={{ marginTop:0 }}>Age-based discount ladder</SectionLabel><Card style={{ padding:"0.75rem 1.25rem", marginBottom:"1rem" }}>{[["0–14 days","Full retail — 0–1% max",T.green],["15–30 days","Soft adjust — 1–2%",T.green],["31–45 days","Tactical — 2–3%",T.amber],["46–60 days","Defensive — 3–5% (must sell soon)",T.amber],["61–75 days","Aggressive — 5–7%",T.red],["75–90 days","Aggressive — 5–7% (capital risk high)",T.red],
               ["90+ days","Exit — whatever clears. Auction, trade, or wholesale.",T.red]].map(([d,a,c])=>(<div key={d} style={{ display:"flex", gap:10, padding:"7px 0", borderBottom:`1px solid ${T.border}`, fontSize:12 }}><div style={{ width:8, height:8, borderRadius:"50%", background:c, flexShrink:0, marginTop:3 }} /><div style={{ width:90, fontWeight:700, color:T.text, flexShrink:0 }}>{d}</div><div style={{ color:T.muted }}>{a}</div></div>))}</Card><Alert variant="warn">⚠️ Never discount below minimum GP without written approval from the Purchasing Manager or General Manager.</Alert></div>)}
+            {activeSop==="ppf" && (<div>
+              <div style={{ background:T.goldBg, border:`1px solid ${T.goldDim}`, borderRadius:10, padding:"12px 16px", marginBottom:"1rem" }}>
+                <div style={{ fontSize:13, fontWeight:700, color:T.gold, marginBottom:4 }}>RMA PPF — Paint Protection Film</div>
+                <div style={{ fontSize:12, color:T.muted, lineHeight:1.65 }}>RMA PPF is a key upsell/SPV opportunity on every vehicle sale. Introduce it during every appointment as part of the handover and closing conversation. Best price discussed in person only.</div>
+              </div>
+              <SectionLabel style={{ marginTop:0 }}>Protection packages</SectionLabel>
+              <Card style={{ padding:"0.75rem 1.25rem", marginBottom:10 }}>
+                {[
+                  ["Essential","Full Body PPF only. Entry-level protection for budget-conscious buyers.","—","—"],
+                  ["Elite","Full Body PPF + Interior PPF + Leather & Fabric Coating + Window Tint + Halo Ceramic + Glass Ceramic + Wheel Armour + 0% Windscreen Film.","Saves AED 4,000+","10 years"],
+                  ["Signature","Everything in Elite + Windscreen Protection Film + Panoramic Sunroof Protection + 12 Safe Washes + 5 Panel Replacements in 12 months.","Saves AED 10,000+","10 years"],
+                ].map(([pkg,desc,saving,warranty],i,a)=>(
+                  <div key={pkg} style={{ display:"flex", gap:12, padding:"10px 0", borderBottom:i<a.length-1?`1px solid ${T.border}`:"none", alignItems:"flex-start" }}>
+                    <div style={{ width:90, fontWeight:700, color:T.gold, fontSize:12, flexShrink:0 }}>{pkg}</div>
+                    <div style={{ flex:1, fontSize:12, color:T.muted, lineHeight:1.55 }}>{desc}</div>
+                    <div style={{ width:110, fontSize:11, color:T.greenTx, fontWeight:600, flexShrink:0, textAlign:"right" }}>{saving}</div>
+                    <div style={{ width:60, fontSize:11, color:T.muted, flexShrink:0, textAlign:"right" }}>{warranty}</div>
+                  </div>
+                ))}
+              </Card>
+              <SectionLabel>Pricing by vehicle type</SectionLabel>
+              <Card style={{ padding:"0.75rem 1.25rem", marginBottom:10 }}>
+                <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1fr", gap:8, marginBottom:6 }}>
+                  {["Vehicle","Essential","Elite","Signature"].map(h=><div key={h} style={{ fontSize:11, fontWeight:700, color:T.faint, textTransform:"uppercase", letterSpacing:"0.06em" }}>{h}</div>)}
+                </div>
+                {[
+                  ["Coupe","AED 14,000","AED 17,950","AED 22,950"],
+                  ["Small SUV / Saloon","AED 14,495","AED 18,950","AED 23,950"],
+                  ["Large SUV","AED 16,950","AED 20,950","AED 26,950"],
+                  ["Hypercar / Exotic","AED 19,000","AED 23,950","AED 28,950"],
+                ].map(([v,e,el,s],i,a)=>(
+                  <div key={v} style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1fr", gap:8, padding:"7px 0", borderTop:`1px solid ${T.border}` }}>
+                    <div style={{ fontSize:12, fontWeight:600, color:T.text }}>{v}</div>
+                    <div style={{ fontSize:12, color:T.muted }}>{e}</div>
+                    <div style={{ fontSize:12, color:T.muted }}>{el}</div>
+                    <div style={{ fontSize:12, color:T.gold, fontWeight:600 }}>{s}</div>
+                  </div>
+                ))}
+              </Card>
+              <SectionLabel>Shogun PPF product range</SectionLabel>
+              <StepBlock title="Gloss Films" desc="X8 Plus — SIGNATURE PRODUCT. Engineered for Middle East climate. Over 90 GU gloss, anti-yellowing, 10-year warranty. Track — racing-grade, 9.7mil thick. Obsidian Black — stylish black gloss. X7 — quality and affordability." />
+              <StepBlock title="Matte Films" accent={T.purple} desc="Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU." />
+              <StepBlock title="Specialist Films" accent={T.blue} desc="Panorama — glass sunroof protection, 98% UV rejection, 95% IR rejection, self-healing. WPF-7 — windshield protection, shatter-resistant and self-healing." />
+              <Alert variant="info">All Shogun PPF: 10-year warranty against fading, bubbling, discolouration, cracking, peeling, and adhesion failure. All films tested for chemical and stain resistance. TPU film manufactured in Nagoya, Japan.</Alert>
+              <SectionLabel>Upsell process</SectionLabel>
+              <StepBlock n="Step 1" title="Introduce PPF during the appointment" desc="After building rapport and before or during the test drive, introduce the RMA PPF concept: most buyers add protection to keep the car in showroom condition long-term." />
+              <StepBlock n="Step 2" title="Recommend the Elite package first" desc="The Elite is the most popular — it saves the customer over AED 4,000 compared to buying services separately and comes with a 10-year warranty. Describe what is included: full body PPF, interior protection, tints, ceramic coating." />
+              <StepBlock n="Step 3" title="Mention the Signature for high-value vehicles" desc="For Hypercars, Exotics, and premium SUVs: the Signature package adds 5 panel replacements and 12 professional safe washes — over AED 10,000 in extra value. Well suited to buyers who want complete peace of mind." />
+              <StepBlock n="Step 4" title="Hand to the PPF team for consultation" desc="Never quote a final price over the phone or without the PPF team present. Hand the customer to the PPF team for a full in-person consultation, colour/finish selection, and formal quote." />
+              <Alert variant="warn">The best price will only be discussed in person. Never give final PPF pricing over the phone or before the PPF team consultation.</Alert>
+            </div>)}
             {activeSop==="disciplinary" && (<div>
               <StepBlock n="Stage 1" title="Verbal Warning" desc="Trigger: 1st offence or 1st-month performance review identifying sub-standard KPI output. Action: Department Manager and Witnessing Manager arrange a formal meeting. Outcome: Verbal Warning issued and documented in employee file. Training needs identified immediately and a formal training plan put in place." />
               <StepBlock n="Stage 2" title="Formal Written Warning" accent={T.amber} desc="Trigger: 2nd offence or 2nd month of underperformance. Action: Department Manager requests a formal Written Warning letter from HR. The letter details data-driven underperformance and is signed by the Department Manager, Witnessing Manager, and the employee. Two copies produced — one for the employee, one for HR. Active on record for 6 months." />

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Firebase Test</title>
+<style>
+body { font-family: monospace; background: #111; color: #eee; padding: 20px; }
+.ok { color: #22C984; } .err { color: #F05454; } .info { color: #C9A84C; }
+button { background: #C9A84C; color: #000; border: none; padding: 10px 20px; margin: 5px; cursor: pointer; font-size: 14px; border-radius: 6px; }
+input { background: #222; color: #eee; border: 1px solid #444; padding: 8px; margin: 5px; width: 300px; border-radius: 4px; }
+#log { margin-top: 20px; white-space: pre-wrap; line-height: 1.8; }
+</style>
+</head>
+<body>
+<h2 style="color:#C9A84C">Firebase Diagnostic v2</h2>
+<p style="color:#aaa">Open this file, then also open it at: <a href="https://rma-motors-onboarding.netlify.app/firebase-test.html" style="color:#C9A84C">netlify version</a></p>
+
+<button onclick="testAll()">Run All Tests</button>
+<button onclick="clearLog()">Clear</button>
+
+<div id="log"></div>
+
+<script>
+const URLS = [
+  "https://rma-motors-onboarding-default-rtdb.firebaseio.com/staff",
+  "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/staff",
+];
+
+function log(msg, cls='') {
+  const d = document.getElementById('log');
+  d.innerHTML += `<span class="${cls}">${msg}</span>\n`;
+}
+function clearLog() { document.getElementById('log').innerHTML = ''; }
+
+async function testAll() {
+  clearLog();
+  log(`Running from: ${window.location.href}`, 'info');
+  log('');
+
+  for (const url of URLS) {
+    log(`Testing: ${url}`, 'info');
+    try {
+      const r = await fetch(`${url}.json`);
+      log(`  Status: ${r.status} ${r.statusText}`, r.ok ? 'ok' : 'err');
+      if (r.ok) {
+        const text = await r.text();
+        log(`  Response: ${text.substring(0, 200)}`, 'ok');
+        try {
+          const json = JSON.parse(text);
+          if (json && typeof json === 'object') {
+            const names = Object.values(json).map(v => v?.name).filter(Boolean);
+            log(`  Names found: ${names.join(', ')}`, 'ok');
+          } else {
+            log(`  No data (null)`, 'err');
+          }
+        } catch(e) { log(`  Parse error: ${e.message}`, 'err'); }
+      }
+    } catch(e) {
+      log(`  FAILED: ${e.message}`, 'err');
+    }
+    log('');
+  }
+}
+</script>
+</body>
+</html>

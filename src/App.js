@@ -384,7 +384,7 @@ export default function App() {
   const [setterId, setSetterId] = useState(null);
   const [nameInput, setNameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
-  const [loginError, setLoginError] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
   const [mgmtSetters, setMgmtSetters] = useState([]);
   const [mgmtLoading, setMgmtLoading] = useState(false);
@@ -473,15 +473,17 @@ export default function App() {
 
   const handleLogin = async () => {
     if (!nameInput.trim() || !passwordInput.trim()) return;
+    setLoginLoading(true);
+    setLoginError(false);
     const data = await sGet(setterId);
-    if (!data) { setLoginError(true); return; }
-    if (data.password !== passwordInput.trim()) { setLoginError(true); return; }
+    setLoginLoading(false);
+    if (!data) { setLoginError("account_not_found"); return; }
+    if (data.password !== passwordInput.trim()) { setLoginError("wrong_password"); return; }
     setLoginError(false);
     setSetterData(data);
     setQuizAnswers(data.quizAnswers||{});
     setQuizAttempts(data.quizAttempts||{});
     setQuizBlocked(data.quizBlocked||{});
-    // If role already saved, go straight to app; otherwise show role selector
     if (data.role) { setRole(data.role); setScreen("setter"); }
     else setScreen("role_select");
   };
@@ -658,12 +660,13 @@ export default function App() {
         <div style={{ background:T.card, borderRadius:16, border:`1px solid ${T.border}`, padding:"2rem", boxShadow:"0 0 40px rgba(201,168,76,0.06)" }}>
           <div style={{ fontSize:20, fontWeight:800, marginBottom:6, color:T.text }}>Welcome to the team.</div>
           <div style={{ fontSize:13, color:T.muted, marginBottom:"1.5rem", lineHeight:1.65 }}>Sign in using the credentials sent to you by your manager.</div>
-          {loginError && <Alert variant="danger" style={{ marginBottom:12 }}>Incorrect password. Please check with your manager.</Alert>}
+          {loginError==="account_not_found" && <Alert variant="danger" style={{ marginBottom:12 }}>Account not found. Please ask your manager to recreate your account and send you a new link.</Alert>}
+          {loginError==="wrong_password" && <Alert variant="danger" style={{ marginBottom:12 }}>Incorrect password. Please check with your manager.</Alert>}
           <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Your full name</label>
           <Input value={nameInput} onChange={e=>setNameInput(e.target.value)} placeholder="e.g. Jordan Smith" style={{ marginBottom:"1rem" }} />
           <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Password</label>
           <Input type="password" value={passwordInput} onChange={e=>setPasswordInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()} placeholder="Enter your password" style={{ marginBottom:"1.25rem" }} />
-          <Btn primary full onClick={handleLogin} disabled={!nameInput.trim()||!passwordInput.trim()} style={{ fontSize:14, padding:12 }}>Sign in →</Btn>
+          <Btn primary full onClick={handleLogin} disabled={!nameInput.trim()||!passwordInput.trim()||loginLoading} style={{ fontSize:14, padding:12 }}>{loginLoading?"Signing in...":"Sign in →"}</Btn>
         </div>
         <div style={{ textAlign:"center", marginTop:16 }}>
           {!setterId && <button onClick={()=>{ window.location.hash="mgmt"; setScreen("mgmt"); }} style={{ fontSize:12, color:T.faint, background:"none", border:"none", cursor:"pointer", fontFamily:"'DM Sans',system-ui,sans-serif" }}>Management access →</button>}

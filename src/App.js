@@ -1296,24 +1296,6 @@ If they reply with an objection:
                 </div>
               ))}
             </div>
-            <SectionLabel>Commission — 35% setter split</SectionLabel>
-            <Card>
-              <div style={{ fontSize:13, color:T.muted, marginBottom:"1rem", lineHeight:1.65 }}>Based on GP of each car sold from your leads. You receive <span style={{ color:T.gold, fontWeight:700 }}>35%</span> when you set the appointment and the Closer closes.</div>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8 }}>
-                {[["0–AED 250k GP","1.40%",T.surf,T.text],["AED 250k–450k GP","1.75%",T.surf,T.text],["Above AED 450k GP","2.10%",T.goldBg,T.gold]].map(([l,v,bg,tc])=>(
-                  <div key={l} style={{ background:bg, borderRadius:8, padding:"0.85rem", textAlign:"center", border:`1px solid ${bg===T.goldBg?T.goldDim:T.border}` }}>
-                    <div style={{ fontSize:10, color:T.muted, marginBottom:4, fontWeight:600 }}>{l}</div>
-                    <div style={{ fontSize:20, fontWeight:800, color:tc }}>{v}</div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-            <SectionLabel>Monthly fixed salary</SectionLabel>
-            <Card>
-              {[["Basic salary","AED 4,000"],["Housing allowance","AED 2,000"],["Travel allowance","AED 2,000"],["Total fixed monthly","AED 8,000"]].map(([l,v],i,a)=>(
-                <InfoRow key={l} label={l} value={<span style={{ color:i===a.length-1?T.gold:T.text, fontWeight:i===a.length-1?800:600 }}>{v}</span>} last={i===a.length-1} />
-              ))}
-            </Card>
           </div>
         )}
 

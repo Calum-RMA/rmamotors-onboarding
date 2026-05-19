@@ -430,16 +430,6 @@ export default function App() {
   const [quizAttempts, setQuizAttempts] = useState({});
   const [quizBlocked, setQuizBlocked] = useState({});
 
-  useEffect(() => {
-    const style = document.createElement("style");
-    style.textContent = G;
-    document.head.appendChild(style);
-    const hash = window.location.hash.replace("#","");
-    if (hash === "mgmt") { setScreen("mgmt"); return; }
-    if (hash?.startsWith("setter-")) { setSetterId(hash); loadSetter(hash); }
-    else { setScreen("mgmt"); }
-  }, []);
-
   const loadSetter = async (id) => {
     const data = await sGet(id);
     if (data) {
@@ -450,6 +440,16 @@ export default function App() {
       setScreen("invalid");
     }
   };
+
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = G;
+    document.head.appendChild(style);
+    const hash = window.location.hash.replace("#","");
+    if (hash === "mgmt") { setScreen("mgmt"); return; }
+    if (hash?.startsWith("setter-")) { setSetterId(hash); loadSetter(hash); }
+    else { setScreen("mgmt"); }
+  }, []);
 
   const loadMgmt = async () => {
     setMgmtLoading(true);

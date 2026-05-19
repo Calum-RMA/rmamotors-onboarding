@@ -96,6 +96,132 @@ const QUIZZES = {
   ]},
 };
 
+
+const CLOSER_MODULES = [
+  { id:"c1", day:"Module 1", title:"Appointment Communications", phase:1, defaultUnlocked:true, items:[
+    "Understand your role: the Closer takes over from the Setter after the warm handover — you own the relationship from first appointment through to deposit and beyond",
+    "Appointment confirmation call: call the customer within 1 hour of the appointment being booked — confirm the time, reconfirm their interest, and build excitement",
+    "WhatsApp confirmation message: send a confirmation text immediately after the call with date, time, and location (Showroom 3, Speedex Centre, DIP 1)",
+    "Day-before reinforcement: send a personalised message or video the evening before — reference what they are coming to see and what to expect",
+    "Morning-of confirmation: on the day of the appointment, send a short check-in message — 'Looking forward to seeing you at [time] today. The [Car] is ready and waiting.'",
+    "If no response to confirmation attempts: escalate to manager and notify the Setter to attempt contact via their channel",
+    "Always confirm the appointment at a specific, unusual time — e.g. 2:15pm, 3:40pm — never on the hour",
+    "Create a WhatsApp Event for the appointment so the customer can RSVP — this significantly improves show rates",
+  ]},
+  { id:"c2", day:"Module 2", title:"Snap Cells — Post-Setter Introduction", phase:1, defaultUnlocked:true, items:[
+    "Your Snap Cell comes AFTER the Setter has made the warm introduction — not before",
+    "Record a personalised video filmed in front of the specific car the customer enquired about — face clearly visible",
+    "Introduce yourself by name and confirm you are their dedicated contact from this point forward",
+    "Reference something the customer mentioned to the Setter — show you have been fully briefed",
+    "Walk around the car briefly — highlight 2-3 key features relevant to what the customer is looking for",
+    "End with a clear call to action: confirm the appointment time or invite them to message you directly with any questions",
+    "Send within 30 minutes of the Setter introduction being made — speed shows professionalism",
+    "Use Snap Cell for: post-introduction, pre-appointment reminder, after a no-show re-engagement, post-test-drive follow-up",
+  ]},
+  { id:"c3", day:"Module 3", title:"No Show Communications", phase:1, defaultUnlocked:true, items:[
+    "A no-show is not a lost deal — it is a follow-up opportunity. React immediately and professionally",
+    "Immediate (within 5 minutes of missed appointment): send a WhatsApp message — 'Hi [Name], I was looking forward to meeting you today at [time]. I hope everything is okay — would you like to reschedule? I have kept the car available for you.'",
+    "30 minutes after no-show: attempt a phone call. If no answer, leave a brief voicemail — warm, not pushy",
+    "2 hours after no-show: send a Snap Cell video — filmed in front of the car. Keep it light and genuine: 'The [Car] is still here and I'd love to show it to you. Let me know when works.'",
+    "Same day (evening): send a final message — 'No worries at all if something came up. I am happy to rearrange at a time that suits you. Just reply here and we will get it sorted.'",
+    "Following day: notify the Setter to attempt re-engagement through their channel — Setter sends a BAMFAM message",
+    "After 48 hours with no response: update CRM to 'No Show' and mark for sweeper follow-up. Do not chase more than this — it becomes counter-productive",
+    "Never express frustration or guilt-trip the customer — always be warm, professional, and solution-focused",
+  ]},
+  { id:"c4", day:"Module 4", title:"Staff Appearance — First Impressions", phase:1, defaultUnlocked:true, items:[
+    "Dress code: smart business attire at all times when on the shop floor or in customer-facing situations. Company uniform guidelines apply — refer to the Company Policy Handbook",
+    "Grooming: hair must be neat and clean. Facial hair should be well-groomed. No extreme hairstyles or colours",
+    "Fragrance: subtle and professional. No overpowering cologne or perfume",
+    "Shoes: clean, polished, smart footwear at all times — no trainers unless specifically approved",
+    "Posture: stand tall, shoulders back, open body language. No slouching, leaning on cars, or hands in pockets when greeting customers",
+    "Mobile phones: never on the shop floor during customer interactions — phone should be on your person but not visible or in use",
+    "Greeting: when a customer arrives, move towards them immediately — do not wait for them to come to you. Smile, make eye contact, and extend a firm handshake",
+    "Greeting script: 'Good [morning/afternoon], welcome to RMA Motors. I am [Name] — I have been looking forward to meeting you. You must be [Customer Name]?'",
+    "Energy: match the customer's energy but lead it upwards. Be warm, confident, and genuinely enthusiastic — not scripted or robotic",
+    "First impression sets the tone for the entire visit — the customer decides within seconds whether they trust you",
+  ]},
+  { id:"c5", day:"Module 5", title:"Welcome into the Showroom", phase:2, defaultUnlocked:false, items:[
+    "WARM WELCOME: greet the customer at the entrance, not from behind a desk. Use their name immediately — it was confirmed by the Setter in the introduction",
+    "Confirm their name and the car they are here to see: 'Great to have you here [Name] — you've come to see the [Car Model], right? I have it ready for you.'",
+    "SHOWROOM TOUR: walk them through the showroom briefly before going to the car — give them a sense of the space, introduce the environment, and make them feel comfortable",
+    "THE CAR: walk to the car together. Reveal it properly — open it up, invite them to sit inside. Start with what THEY mentioned they care about, not a generic pitch",
+    "TEST DRIVE: offer the test drive early — before price discussions. 'The best way to know if this is the right car is to drive it. Shall we take it out now?'",
+    "During test drive: be quiet. Let them experience the car. Ask open questions: 'How does it feel?' 'Does this match what you had in mind?'",
+    "OBJECTION HANDLING — Price: 'I completely understand. Can I ask — is it the total number, or more about how it fits your budget each month?' Never drop price without manager approval.",
+    "OBJECTION HANDLING — Thinking about it: 'Of course. Can I ask what specifically you'd like to think about? Sometimes I can help clarify things right now.'",
+    "OBJECTION HANDLING — Partner/spouse: 'Totally understand. Would it help to get them on a quick call now so they can be part of the decision?'",
+    "DEPOSIT: trial close after test drive — 'Based on what you've seen and felt today, is this the car for you?' If yes: 'The next step is to secure it with a deposit — this takes it off the market and we begin the process. Shall we do that now?'",
+    "Deposit amount and process: follow manager's guidance on deposit amount. Complete the deal sheet fully and accurately. Update CRM to 'Deposit Received' immediately.",
+  ]},
+  { id:"c6", day:"Module 6", title:"Post Deposit — Document Collection", phase:2, defaultUnlocked:false, items:[
+    "Document collection is NON-NEGOTIABLE — all documents must be collected before the customer leaves the building on the day of deposit",
+    "Required documents from every customer: Emirates ID (original + copy), Passport copy (photo page), Visa copy (if applicable)",
+    "For finance customers additionally: completed finance enquiry form, 3 months bank statements (some banks require 6), salary certificate or employment letter, proof of address (utility bill or tenancy agreement)",
+    "Deal sheet: must be fully completed and signed by both the customer and the Sales Manager. Three copies: customer, F&I, Accounts",
+    "If any documents are missing: do not let the customer leave without a firm commitment and a time by which they will send them — same day only",
+    "Hand all documents to F&I immediately after the customer leaves — do not hold onto them overnight",
+    "Update CRM with all document receipt notes — log what was received, what is outstanding, and the agreed deadline",
+    "Finance enquiry form must be completed in full — no blank fields. F&I cannot proceed without this",
+    "Passport and Emirates ID copies to be taken on the day — do not rely on the customer sending them later",
+  ]},
+  { id:"c7", day:"Module 7", title:"Uploading onto Titan DMS", phase:2, defaultUnlocked:false, items:[
+    "Titan DMS is the primary Dealer Management System — all deal information must be entered accurately and in real time",
+    "After deposit is received: open the deal in Titan DMS and update the status to reflect deposit taken",
+    "Customer profile: verify the customer's details are correct in the system — name, contact number, Emirates ID number",
+    "Vehicle details: confirm the correct VIN, registration, and stock number are linked to the deal",
+    "Deal sheet upload: scan and attach the signed deal sheet to the customer's file in Titan",
+    "Document checklist: update the document status in Titan — mark what has been received and what is outstanding",
+    "Finance details: enter the payment method (cash, finance, L2O) and any relevant finance reference numbers",
+    "Notes: add a comprehensive deal summary note — how the deal was done, any special arrangements, customer preferences for delivery",
+    "Notify F&I through Titan: raise the F&I handover task so the F&I team are alerted and can begin the bank quotation process",
+    "Never leave Titan entries incomplete — every field that applies to the deal must be filled before end of day",
+  ]},
+  { id:"c8", day:"Module 8", title:"How to Push a Line — PDI, Prep & Handover", phase:3, defaultUnlocked:false, items:[
+    "'Pushing a line' means initiating the Pre-Delivery Inspection and preparation process in the DMS once a deal is confirmed",
+    "When to push: immediately after deposit is received and deal is entered into Titan DMS",
+    "Who to notify: F&I team (to begin F&I SOP), Car Care team (to begin prep, PPF, tints, ceramic if agreed), Workshop (if any mechanical work is outstanding)",
+    "PDI process: raise a PDI request in Titan DMS for the technical team. The car is inspected thoroughly — mechanical, electrical, cosmetic. Any issues flagged must be resolved before handover.",
+    "Prep checklist: full valet inside and out, no warning lights, AC working, minimum quarter tank fuel, no paired Bluetooth, no saved driver profiles, no stored satnav locations, no saved radio stations",
+    "RTA inspection: vehicle must pass RTA before registration. Co-ordinated by F&I.",
+    "Car Care: any agreed upsells (PPF, tints, ceramic coating) begin at this stage. Inform Car Care of what has been sold and the target delivery date.",
+    "Timeline: from point of deposit to customer delivery is targeted at 6 days. Update the customer every 2 days with a progress message.",
+    "Keeping the customer informed: send a message after pushing the line — 'Great news [Name], we have started the preparation process on your car. We are targeting delivery by [date]. I will keep you updated every step of the way.'",
+    "Escalation: if any department is holding up the process beyond the 6-day target, escalate immediately to the Department Manager",
+  ]},
+  { id:"c9", day:"Module 9", title:"Handover & Testimonial", phase:3, defaultUnlocked:false, items:[
+    "The handover is the most important moment in the customer journey — it sets the tone for the review, referral, and repeat business",
+    "Scheduling: book ONE handover per hour maximum. Confirm with Car Care the vehicle is ready 30 minutes before arrival. Park in the designated handover bay.",
+    "Preparation: place the completed handover pack and sunshade inside the vehicle. Handover pack includes: registration documents, insurance policy, warranty documentation, PPF/service info if applicable",
+    "Coordinate with Marketing: ensure the Marketing team are available and briefed — they must be present for photos and video content",
+    "Staff appearance: dress to impress. The reveal is a moment — treat it that way",
+    "THE REVEAL: use the reveal curtain for a dramatic presentation. Keys and any gift handed over. Manager delivers a formal 'Thank you for choosing RMA Motors.'",
+    "REFERRALS: immediately after the reveal, while the energy is high — 'We would love to help more people like you. Is there anyone in your circle — family, friends, colleagues — who is looking for a car? We'd love an introduction.'",
+    "TESTIMONIAL VIDEO: ask the customer to record a short video testimonial on the spot — 'Would you mind sharing a quick 30-second video about your experience? It means a lot to us and helps other buyers feel confident choosing RMA.'",
+    "Google Review: ask for a Google Review before the customer leaves — send the link directly to their WhatsApp. Target: 5 Google reviews per month minimum.",
+    "Handover video: film a short customer handover video for social media — customer with the car, smiling, sharing their experience. Must be done at every handover.",
+    "Post-handover: call or message within 48 hours to confirm satisfaction. Log in CRM. Customer enters the aftersales pipeline: 6, 12, 18, 24-month check-ins.",
+  ]},
+];
+
+const CLOSER_QUIZZES = {
+  closer_comms: { label:"Appointment & Comms", icon:"📅", questions:[
+    { q:"How quickly must you send your personal Snap Cell after the Setter makes the introduction?", opts:["Same day","Within 2 hours","Within 30 minutes","Within 5 minutes"], correct:2, exp:"Refer to Training Module 2 — Snap Cells." },
+    { q:"What should you do within 5 minutes of a customer not showing up for their appointment?", opts:["Mark the lead as lost","Call the manager","Send a warm WhatsApp message and offer to reschedule","Wait until the end of the day"], correct:2, exp:"Refer to Training Module 3 — No Show Communications." },
+    { q:"What is the correct greeting when a customer arrives at the showroom?", opts:["Wait for them to approach you at the desk","Call their name from across the room","Move towards them immediately, smile, make eye contact and extend a handshake","Ask them to sign in at reception first"], correct:2, exp:"Refer to Training Module 4 — Staff Appearance and Module 5 — Welcome into the Showroom." },
+    { q:"How many days after no-show with no response should you stop chasing and update CRM?", opts:["Same day","24 hours","48 hours","1 week"], correct:2, exp:"Refer to Training Module 3 — No Show Communications." },
+    { q:"When should you offer the test drive?", opts:["After discussing price","After the customer has been in the showroom for 30 minutes","Early — before price discussions, to let them experience the car first","Only if the customer asks"], correct:2, exp:"Refer to Training Module 5 — Welcome into the Showroom." },
+    { q:"What is the ROI timeline target from point of deposit to delivery?", opts:["3 days","6 days","10 days","14 days"], correct:1, exp:"Refer to the KPIs tab — ROI Timeline." },
+  ]},
+  closer_process: { label:"Process & Documents", icon:"📋", questions:[
+    { q:"Which documents must be collected before the customer leaves on the day of deposit?", opts:["Just the deal sheet","Emirates ID, Passport copy, and finance enquiry form (where applicable)","Only the finance form","Documents can be collected the following day"], correct:1, exp:"Refer to Training Module 6 — Post Deposit Document Collection." },
+    { q:"How many copies of the signed deal sheet are created and where does each go?", opts:["1 copy to F&I only","2 copies — customer and manager","3 copies — customer, F&I, and Accounts","4 copies including workshop"], correct:2, exp:"Refer to Training Module 6 — Post Deposit Document Collection." },
+    { q:"When should you 'push a line' in Titan DMS?", opts:["At end of day","After the customer leaves","Immediately after deposit is received and deal is entered in Titan","Only after F&I confirms they are ready"], correct:2, exp:"Refer to Training Module 8 — How to Push a Line." },
+    { q:"What is the prep checklist item regarding the car's entertainment system before handover?", opts:["Pre-set 3 radio stations for the customer","Connect your phone to demonstrate Bluetooth","No paired Bluetooth, no saved driver profiles, no stored satnav locations, no saved radio stations","Leave it as it is — do not touch the settings"], correct:2, exp:"Refer to Training Module 8 — How to Push a Line, prep checklist." },
+    { q:"What must you do immediately after receiving the deposit?", opts:["Call the customer to confirm","Update CRM to Deposit Received and enter deal into Titan DMS","Send the deal sheet to the customer by email","Notify the workshop"], correct:1, exp:"Refer to Training Module 5 — Welcome into the Showroom, deposit section, and Module 7 — Titan DMS." },
+    { q:"What is the minimum number of Google reviews a Closer must generate per month?", opts:["1","3","5","10"], correct:2, exp:"Refer to the KPIs tab — Google Reviews target." },
+  ]},
+};
+
 const MODULES = [
   { id:"m1", day:"Day 1", title:"Welcome & HR Induction", phase:1, defaultUnlocked:true, items:["Department Manager meet & greet — full site introduction to all staff and showroom tour","HR session: finalise laptop, uniform, work phone, and complete all document sign-offs","Systems setup: Callgear, Eskimo CRM, and Bayzat logins activated and tested","Receive notepad and pen — written tests will be implemented throughout training","Read, understand, and sign: Sales SOP, Disciplinary & Performance Management Procedure, and Company Policy","Understand your role: you are the first point of contact for ALL inbound leads — speed, precision, and communication directly influence revenue","Review your KPIs: 60-second response, 33% conversion, 66% show rate, 40 calls/day, 80% AI score","Understand shift patterns: 06:00–15:00 or 15:00–00:00 — flexibility is essential for the under-60-second standard","Review probation terms: 6-month probation, monthly KPI reviews, 3-month Closer pathway assessment"] },
   { id:"m2", day:"Day 2", title:"Sales Process & Setter Framework", phase:1, defaultUnlocked:true, items:["Understand the full setter role: own all new inbound leads for the critical first 24 hours and up to 7 days","Speed to lead: respond to ALL new inbound leads within 60 seconds during your assigned coverage shift — no exceptions","Study and memorise the 8-step Setter Framework from the Scripts tab","Qualification & discovery: thoroughly qualify each lead — budget, timeline, vehicle preference, finance readiness","Use approved messaging frameworks across WhatsApp, phone, and social media to build instant rapport","Send a personalised Snap Cell video within 5 minutes of completing the first call — filmed in front of the specific car enquired about, face visible","If no answer: x2 double dial immediately, then send SMS intro, then follow the 6-message BAMFAM sequence over 15 days","Appointment booked: update CRM stage to 'Appointment Booked' immediately and trigger the pre-appointment reinforcement sequence","Contact, qualify, and quote all new leads within the first 24 hours of receipt","Lead handover: after 72 hours without conversion, complete a clean handover to the Closer team","Maintain 100% CRM accuracy — every note, task, and pipeline stage must be updated in real time","Understand the BAMFAM principle: every interaction ends with a confirmed next step — Book A Meeting From A Meeting"] },
@@ -355,7 +481,9 @@ export default function App() {
     setQuizAnswers(data.quizAnswers||{});
     setQuizAttempts(data.quizAttempts||{});
     setQuizBlocked(data.quizBlocked||{});
-    setScreen("setter");
+    // If role already saved, go straight to app; otherwise show role selector
+    if (data.role) { setRole(data.role); setScreen("setter"); }
+    else setScreen("role_select");
   };
 
   const toggleModule = async (mid) => {
@@ -455,7 +583,7 @@ export default function App() {
     loadMgmt();
   };
 
-  const completionPct = (d) => d ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/(MODULES.length+Object.keys(QUIZZES).length)*100) : 0;
+  const completionPct = (d) => d ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/(MODULES.length+Object.keys(activeQuizzes).length)*100) : 0;
   const avgScore = (d) => { const s = Object.values(d?.quizScores||{}); return s.length ? Math.round(s.reduce((a,b)=>a+b,0)/s.length) : null; };
   const isUnlocked = (mod, done=[]) => {
     if (mod.defaultUnlocked) return true;
@@ -463,6 +591,38 @@ export default function App() {
     const idx = order.indexOf(mod.id);
     return idx > 0 && done.includes(order[idx-1]);
   };
+
+
+  if (screen==="role_select") return (
+    <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"2rem 1rem", background:T.bg }} className="fade">
+      <div style={{ width:"100%", maxWidth:480 }}>
+        <div style={{ textAlign:"center", marginBottom:"2rem" }}><RMALogo size={28} /></div>
+        <div style={{ background:T.card, borderRadius:16, border:`1px solid ${T.border}`, padding:"2rem", boxShadow:"0 0 40px rgba(201,168,76,0.06)" }}>
+          <div style={{ fontSize:20, fontWeight:800, color:T.text, marginBottom:6 }}>Welcome, {setterData?.name}.</div>
+          <div style={{ fontSize:13, color:T.muted, marginBottom:"1.75rem", lineHeight:1.65 }}>Please select your role to load the correct training programme, KPIs, and assessments.</div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+            {[
+              { r:"setter", label:"Setter", icon:"⚡", desc:"Lead response, appointment setting, CRM management" },
+              { r:"closer", label:"Closer", icon:"🤝", desc:"Appointment closing, deposit, handover, post-sale" },
+            ].map(({r, label, icon, desc})=>(
+              <button key={r} onClick={async ()=>{
+                const updated = { ...setterData, role: r };
+                await saveData(updated);
+                setRole(r);
+                setScreen("setter");
+              }} style={{ background:T.surf, border:`1px solid ${T.border}`, borderRadius:12, padding:"1.25rem 1rem", cursor:"pointer", textAlign:"left", fontFamily:"'DM Sans',system-ui,sans-serif", transition:"border-color .2s, background .2s" }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor=T.gold; e.currentTarget.style.background=T.goldBg;}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor=T.border; e.currentTarget.style.background=T.surf;}}>
+                <div style={{ fontSize:28, marginBottom:8 }}>{icon}</div>
+                <div style={{ fontSize:15, fontWeight:700, color:T.text, marginBottom:4 }}>{label}</div>
+                <div style={{ fontSize:11, color:T.muted, lineHeight:1.5 }}>{desc}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   if (screen==="invalid") return (
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"2rem 1rem", background:T.bg }} className="fade">
@@ -593,14 +753,17 @@ export default function App() {
                 {mgmtSetters.map((s,i)=>{
                   const pct=completionPct(s), avg=avgScore(s), good=avg!==null&&avg>=90;
                   const isExpanded = expandedSetter === s.id;
-                  const lockedQuizzes = Object.entries(QUIZZES).filter(([k])=>s.quizBlocked?.[k]);
+                  const lockedQuizzes = Object.entries(activeQuizzes).filter(([k])=>s.quizBlocked?.[k]);
                   const hasLocked = lockedQuizzes.length > 0;
                   return (
                     <div key={s.id} style={{ borderBottom:i<mgmtSetters.length-1?`1px solid ${T.border}`:"none", borderLeft:hasLocked?`3px solid ${T.red}`:"3px solid transparent", borderTopLeftRadius:0, borderBottomLeftRadius:0 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 0", flexWrap:"wrap", cursor:"pointer" }} onClick={()=>setExpandedSetter(isExpanded?null:s.id)}>
                         <Avatar initials={s.initials} size={36} />
                         <div style={{ flex:1, minWidth:100 }}>
-                          <div style={{ fontSize:13, fontWeight:700, color:T.text }}>{s.name}</div>
+                          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                            <div style={{ fontSize:13, fontWeight:700, color:T.text }}>{s.name}</div>
+                            {s.role && <span style={{ fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:99, background:s.role==="closer"?T.purpleBg:T.goldBg, color:s.role==="closer"?T.purpleTx:T.gold, textTransform:"uppercase" }}>{s.role}</span>}
+                          </div>
                           <div style={{ fontSize:11, color:T.muted }}>Started {s.startDate} · {s.completedModules?.length||0}/{MODULES.length} modules</div>
                         </div>
                         {hasLocked && (
@@ -743,8 +906,10 @@ export default function App() {
   }
 
   const TABS = [{id:"home",label:"Home"},{id:"training",label:"Training"},{id:"scripts",label:"Scripts"},{id:"sops",label:"SOPs"},{id:"kpis",label:"KPIs"},{id:"assessments",label:"Assessments"}];
-  const totalItems = MODULES.length + Object.keys(QUIZZES).length;
+  const totalItems = (role==="closer" ? CLOSER_MODULES.length + Object.keys(CLOSER_QUIZZES).length : MODULES.length + Object.keys(activeQuizzes).length);
   const doneItems = (setterData?.completedModules?.length||0)+Object.keys(setterData?.quizScores||{}).length;
+  const activeModules = role==="closer" ? CLOSER_MODULES : MODULES;
+  const activeQuizzes = role==="closer" ? CLOSER_QUIZZES : QUIZZES;
   const pct = Math.round((doneItems/totalItems)*100);
 
   return (
@@ -766,6 +931,7 @@ export default function App() {
               onMouseEnter={e=>{ e.currentTarget.style.borderColor=T.gold; e.currentTarget.style.color=T.gold; }}
               onMouseLeave={e=>{ e.currentTarget.style.borderColor=T.border; e.currentTarget.style.color=T.faint; }}
             >🔒</button>
+            <button onClick={()=>setScreen("role_select")} style={{ fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:99, background:role==="closer"?T.purpleBg:T.goldBg, color:role==="closer"?T.purpleTx:T.gold, border:"none", cursor:"pointer", fontFamily:"'DM Sans',system-ui,sans-serif" }}>{role==="closer"?"🤝 Closer":"⚡ Setter"}</button>
             <Avatar initials={setterData?.initials} size={30} />
             <div style={{ fontSize:12, fontWeight:600, color:T.muted }}>{setterData?.name}</div>
           </div>
@@ -779,7 +945,7 @@ export default function App() {
                 <Avatar initials={setterData?.initials} size={52} />
                 <div>
                   <div style={{ fontSize:20, fontWeight:800, color:T.text }}>Welcome, {setterData?.name?.split(" ")[0]}.</div>
-                  <div style={{ fontSize:12, color:T.muted, marginTop:2 }}>Sales Setter Onboarding · 10-Day Programme</div>
+                  <div style={{ fontSize:12, color:T.muted, marginTop:2 }}>{role==="closer"?"Sales Closer Onboarding · 9-Module Programme":"Sales Setter Onboarding · 10-Day Programme"}</div>
                 </div>
               </div>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
@@ -789,7 +955,7 @@ export default function App() {
               <ProgressBar pct={pct} height={6} />
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(110px,1fr))", gap:8, marginBottom:"1.5rem" }}>
-              {[["Programme","10 days","3 phases"],[`Modules`,`${setterData?.completedModules?.length||0}/${MODULES.length}`,"completed"],[`Quizzes`,`${Object.values(setterData?.quizScores||{}).filter(s=>s>=90).length}/${Object.keys(QUIZZES).length}`,"passed"],["Score",avgScore(setterData)!==null?`${avgScore(setterData)}%`:"—","avg"]].map(([l,v,s])=>(
+              {[["Programme","10 days","3 phases"],[`Modules`,`${setterData?.completedModules?.length||0}/${MODULES.length}`,"completed"],[`Quizzes`,`${Object.values(setterData?.quizScores||{}).filter(s=>s>=90).length}/${Object.keys(activeQuizzes).length}`,"passed"],["Score",avgScore(setterData)!==null?`${avgScore(setterData)}%`:"—","avg"]].map(([l,v,s])=>(
                 <div key={l} style={{ background:T.surf, borderRadius:10, padding:"0.9rem 1rem", border:`1px solid ${T.border}` }}>
                   <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
                   <div style={{ fontSize:20, fontWeight:800, color:T.text }}>{v}</div>
@@ -1302,7 +1468,7 @@ If they reply with an objection:
         {activeTab==="assessments" && (
           <div>
             <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"1.25rem" }}>
-              {Object.entries(QUIZZES).map(([id,q])=>{
+              {Object.entries(activeQuizzes).map(([id,q])=>{
                 const score=setterData?.quizScores?.[id];
                 return (
                   <button key={id} className={`sub-tab ${activeQuiz===id?"active":""}`} onClick={()=>{ setActiveQuiz(id); setQuizAnswers(setterData?.quizAnswers||{}); }}>
@@ -1321,7 +1487,7 @@ If they reply with an objection:
                   <div style={{ fontSize:13, color:T.muted, lineHeight:1.65 }}>You have used all 3 attempts for this assessment. Your manager must unlock it before you can retake. Please review the relevant SOP and training materials in the meantime.</div>
                 </div>
               );
-              const quiz=QUIZZES[activeQuiz], savedScore=setterData?.quizScores?.[activeQuiz], total=quiz.questions.length;
+              const quiz=activeQuizzes[activeQuiz], savedScore=setterData?.quizScores?.[activeQuiz], total=quiz.questions.length;
               const answeredCount=quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]!==undefined).length;
               const allDone=answeredCount===total;
               const liveScore=allDone?Math.round((quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]?.correct).length/total)*100):null;

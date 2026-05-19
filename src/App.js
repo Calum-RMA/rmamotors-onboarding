@@ -454,13 +454,13 @@ export default function App() {
     document.head.appendChild(style);
     const hash = window.location.hash.replace("#","");
     if (hash === "mgmt") { setScreen("mgmt"); return; }
-    if (hash?.startsWith("setter") || hash === "login") { setScreen("login"); }
+    if (hash?.startsWith("setter") || hash === "login" || hash === "") { setScreen("login"); }
     else { setScreen("mgmt"); }
   }, []);
 
   const loadMgmt = async () => {
     setMgmtLoading(true);
-    const keys = await sList("setter-");
+    const keys = await sList("setter");
     const all = [];
     for (const k of keys) { const d = await sGet(k); if (d) all.push({id:k,...d}); }
     setMgmtSetters(all);

@@ -1558,6 +1558,8 @@ If they reply with an objection:
               })}
             </div>
             {(()=>{
+              const validQuizId = activeQuizzes[activeQuiz] ? activeQuiz : Object.keys(activeQuizzes)[0];
+              if (validQuizId !== activeQuiz) { setActiveQuiz(validQuizId); return null; }
               if (quizBlocked[activeQuiz]) return (
                 <div style={{ background:T.redBg, border:`1px solid ${T.red}`, borderRadius:12, padding:"2rem", textAlign:"center", marginTop:"1rem" }}>
                   <div style={{ fontSize:32, marginBottom:12 }}>🔒</div>
@@ -1565,7 +1567,8 @@ If they reply with an objection:
                   <div style={{ fontSize:13, color:T.muted, lineHeight:1.65 }}>You have used all 3 attempts for this assessment. Your manager must unlock it before you can retake. Please review the relevant SOP and training materials in the meantime.</div>
                 </div>
               );
-              const quiz=activeQuizzes[activeQuiz], savedScore=setterData?.quizScores?.[activeQuiz], total=quiz.questions.length;
+              const quiz=activeQuizzes[activeQuiz], savedScore=setterData?.quizScores?.[activeQuiz], total=quiz?.questions?.length||0;
+              if (!quiz) return null;
               const answeredCount=quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]!==undefined).length;
               const allDone=answeredCount===total;
               const liveScore=allDone?Math.round((quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]?.correct).length/total)*100):null;

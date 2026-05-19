@@ -411,6 +411,7 @@ export default function App() {
   const [screen, setScreen] = useState("loading");
   const [role, setRole] = useState(null);
   const [setterId, setSetterId] = useState(null);
+  const [setterData, setSetterData] = useState(null);
   const [nameInput, setNameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [loginError, setLoginError] = useState(false);

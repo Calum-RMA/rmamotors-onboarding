@@ -41,11 +41,15 @@ const dbDelete = async (key) => {
 const dbFindByName = async (name) => {
   try {
     const res = await fetch(`${DB}.json`);
-    const json = await res.json();
+    if (!res.ok) return null;
+    const text = await res.text();
+    if (!text || text === "null") return null;
+    const json = JSON.parse(text);
     if (!json || typeof json !== "object") return null;
-    const entry = Object.entries(json).find(([k,v]) => v?.name?.toLowerCase() === name.trim().toLowerCase());
+    const entries = Object.entries(json);
+    const entry = entries.find(([k,v]) => v && v.name && v.name.toLowerCase().trim() === name.toLowerCase().trim());
     return entry ? { ...entry[1], _key: entry[0] } : null;
-  } catch { return null; }
+  } catch(e) { return null; }
 };
 
 // Aliases for compatibility

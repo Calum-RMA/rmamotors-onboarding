@@ -384,6 +384,7 @@ export default function App() {
   const [setterId, setSetterId] = useState(null);
   const [nameInput, setNameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+  const [loginError, setLoginError] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
   const [mgmtSetters, setMgmtSetters] = useState([]);

@@ -1256,6 +1256,7 @@ If they reply with an objection:
             ))}
           </>
           )}
+          </div>
         )}
 
         {activeTab==="sops" && (

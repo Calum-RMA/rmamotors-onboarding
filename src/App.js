@@ -431,6 +431,7 @@ export default function App() {
   const [resetPassword, setResetPassword] = useState("");
   const [resetDone, setResetDone] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [roleChangeConfirm, setRoleChangeConfirm] = useState(null); // { id, newRole } | null
   const [expandedSetter, setExpandedSetter] = useState(null);
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -601,6 +602,24 @@ export default function App() {
   const handleDeleteAccount = async (setterId) => {
     await sDelete(setterId);
     setDeleteConfirm("");
+    loadMgmt();
+  };
+
+  const handleChangeRole = async (setterId, newRole) => {
+    const d = await sGet(setterId);
+    if (!d) return;
+    // Reset module/quiz progress when role changes — curriculum differs
+    await sSet(setterId, {
+      ...d,
+      role: newRole,
+      completedModules: [],
+      quizScores: {},
+      quizAnswers: {},
+      quizAttempts: {},
+      quizBlocked: {},
+      roleHistory: [...(d.roleHistory||[]), { from: d.role||"setter", to: newRole, date: new Date().toISOString().slice(0,10) }],
+    });
+    setRoleChangeConfirm(null);
     loadMgmt();
   };
 
@@ -860,6 +879,33 @@ export default function App() {
                               <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Quiz average</div>
                               <div style={{ fontSize:13, fontWeight:600, color:avg!==null?(good?T.greenTx:T.redTx):T.faint }}>{avg!==null?`${avg}%`:"No quizzes taken"}</div>
                             </div>
+                          </div>
+                          <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", padding:"10px 12px", background:s.role==="closer"?T.purpleBg:T.goldBg, border:`1px solid ${s.role==="closer"?T.purple:T.gold}`, borderRadius:10, marginBottom:10 }}>
+                            <span style={{ fontSize:11, fontWeight:700, color:s.role==="closer"?T.purpleTx:T.gold, textTransform:"uppercase", letterSpacing:"0.06em" }}>
+                              Current role: {s.role==="closer"?"🤝 Closer (Elite)":"⚡ Setter"}
+                            </span>
+                            <div style={{ flex:1 }} />
+                            {roleChangeConfirm?.id===s.id ? (
+                              <>
+                                <span style={{ fontSize:12, fontWeight:600, color:T.text }}>
+                                  {roleChangeConfirm.newRole==="closer"
+                                    ? "Promote to Closer? Module & quiz progress will reset for the new curriculum."
+                                    : "Demote to Setter? Module & quiz progress will reset for the new curriculum."}
+                                </span>
+                                <Btn small onClick={()=>handleChangeRole(s.id, roleChangeConfirm.newRole)} style={{ background:roleChangeConfirm.newRole==="closer"?T.purple:T.red, color:"#fff", border:"none" }}>
+                                  Yes, {roleChangeConfirm.newRole==="closer"?"promote":"demote"}
+                                </Btn>
+                                <Btn small onClick={()=>setRoleChangeConfirm(null)}>Cancel</Btn>
+                              </>
+                            ) : s.role==="closer" ? (
+                              <Btn small onClick={()=>setRoleChangeConfirm({id:s.id, newRole:"setter"})} style={{ color:T.faint }}>
+                                ↓ Demote to Setter
+                              </Btn>
+                            ) : (
+                              <Btn small onClick={()=>setRoleChangeConfirm({id:s.id, newRole:"closer"})} style={{ background:T.purple, color:"#fff", border:"none" }}>
+                                ↑ Promote to Closer
+                              </Btn>
+                            )}
                           </div>
                           <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap" }}>
                             <Btn small onClick={()=>{ navigator.clipboard?.writeText(`${window.location.href.split("#")[0]}#${s.setterId||s.id}`); }}>Copy link</Btn>

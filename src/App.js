@@ -1,12 +1,47 @@
 import React, { useState, useEffect } from "react";
 
-// ── Storage — localStorage (persists permanently on Netlify across all redeployments) ──
-const sGet = async (key) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; } };
-const sSet = async (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch { return false; } };
-const sList = async (prefix) => { try { return Object.keys(localStorage).filter(k => k.startsWith(prefix)); } catch { return []; } };
-const sDelete = async (key) => { try { localStorage.removeItem(key); return true; } catch { return false; } };
+// ── Firebase Realtime Database Storage ──────────────────────────────────────
+const FIREBASE_URL = "https://rma-motors-onboarding-default-rtdb.firebaseio.com";
 
-const MGMT_PASSWORD = "RMAmanager2024";
+const sGet = async (key) => {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rma/${encodeURIComponent(key)}.json`);
+    if (!r.ok) { console.error('Firebase GET failed:', r.status, r.statusText); return null; }
+    const data = await r.json();
+    return data;
+  } catch(e) { console.error('Firebase GET error:', e); return null; }
+};
+
+const sSet = async (key, val) => {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rma/${encodeURIComponent(key)}.json`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(val)
+    });
+    if (!r.ok) console.error('Firebase SET failed:', r.status, r.statusText);
+    return r.ok;
+  } catch(e) { console.error('Firebase SET error:', e); return false; }
+};
+
+const sList = async (prefix) => {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rma.json?shallow=true`);
+    if (!r.ok) { console.error('Firebase LIST failed:', r.status, r.statusText); return []; }
+    const data = await r.json();
+    if (!data) return [];
+    return Object.keys(data).map(k => decodeURIComponent(k)).filter(k => k.startsWith(prefix));
+  } catch(e) { console.error('Firebase LIST error:', e); return []; }
+};
+
+const sDelete = async (key) => {
+  try {
+    await fetch(`${FIREBASE_URL}/rma/${encodeURIComponent(key)}.json`, { method: "DELETE" });
+    return true;
+  } catch { return false; }
+};
+
+const MGMT_PASSWORD = "RMAmanager2026";
 
 const QUIZZES = {
   sales: { label:"Speed & Response", icon:"⚡", questions:[
@@ -624,8 +659,9 @@ export default function App() {
         <div style={{ background:T.card, borderRadius:16, border:`1px solid ${T.border}`, padding:"2rem", boxShadow:"0 0 40px rgba(201,168,76,0.06)" }}>
           <div style={{ fontSize:20, fontWeight:800, marginBottom:6, color:T.text }}>Welcome to the team.</div>
           <div style={{ fontSize:13, color:T.muted, marginBottom:"1.5rem", lineHeight:1.65 }}>Sign in using the credentials sent to you by your manager.</div>
-          {loginError==="account_not_found" && <Alert variant="danger" style={{ marginBottom:12 }}>Account not found. Please ask your manager to recreate your account and send you a new link.</Alert>}
+          {loginError==="account_not_found" && <Alert variant="danger" style={{ marginBottom:12 }}>Account not found. Your manager may need to recreate your account — ask them to delete and recreate it from the management dashboard.</Alert>}
           {loginError==="wrong_password" && <Alert variant="danger" style={{ marginBottom:12 }}>Incorrect password. Please check with your manager.</Alert>}
+          {loginError==="firebase_error" && <Alert variant="danger" style={{ marginBottom:12 }}>Connection error. Please check your internet connection and try again. If the problem persists, ask your manager.</Alert>}
           <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Your full name</label>
           <Input value={nameInput} onChange={e=>setNameInput(e.target.value)} placeholder="e.g. Jordan Smith" style={{ marginBottom:"1rem" }} />
           <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Password</label>

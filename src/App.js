@@ -1069,7 +1069,46 @@ export default function App() {
 
         {activeTab==="scripts" && (
           <div>
-            <div style={{ background:T.goldBg, border:`1px solid ${T.goldDim}`, borderRadius:10, padding:"12px 16px", marginBottom:"1.25rem" }}>
+          {role==="closer" ? (
+            <div>
+              <SectionLabel style={{ marginTop:0 }}>Closer scripts & frameworks</SectionLabel>
+              {[
+                ["Appointment confirmation call","Use this script when confirming an appointment after the Setter has booked it.",
+`"Hi [Name], it's [Your Name] from RMA Motors — I'm the Sales Closer who's going to be looking after you when you come in. [Setter Name] mentioned you're coming in at [time] to see the [Car Model] — I just wanted to personally reach out and confirm that, and let you know the car is ready and waiting for you. Is there anything you'd like me to prepare before you arrive?"`],
+                ["Post-Setter introduction Snap Cell","Send within 30 minutes of the Setter's warm introduction.",
+`Record in front of the specific car. Include:
+1. "Hi [Name], I'm [Your Name] — I'll be looking after you from here."
+2. Brief walk around the car — highlight 2-3 features relevant to what they mentioned.
+3. "I'm looking forward to meeting you at [time]. Any questions before then, message me directly."`],
+                ["No show — immediate response (within 5 mins)","Warm, not pushy.",
+`"Hi [Name], I was looking forward to meeting you today at [time] — I hope everything is okay. The [Car Model] is still here and I'd love to show it to you. Would you like to reschedule? Just reply here and we'll sort something that works for you."`],
+                ["No show — 2 hour follow-up Snap Cell","Film in front of the car.",
+`"Hey [Name] — just wanted to reach out. The [Car] is still here and I genuinely think you're going to love it. No pressure at all — if something came up today that's totally fine. Just let me know when works and I'll make sure it's ready for you."`],
+                ["Trial close — after test drive","Use after the customer has experienced the car.",
+`Closer: "Based on what you've seen and felt today — is this the car for you?"
+Customer: "Yes, I think so."
+Closer: "The next step is to secure it with a deposit — this takes it off the market and we begin the process. Shall we do that now?"
+
+If hesitant: "What would need to happen for you to feel completely comfortable moving forward today?"`],
+                ["Deposit close","When the customer is ready.",
+`Closer: "Let's get this locked in for you. We'll need a deposit today to secure the car — what works better for you, card or bank transfer?"
+→ Always offer two options, never ask open-ended "how would you like to pay?"
+→ Complete deal sheet immediately. Three signed copies: customer, F&I, Accounts.
+→ Update CRM to 'Deposit Received' immediately.`],
+                ["Post-handover Google Review request","Ask at the reveal while energy is high.",
+`"[Name], it's been an absolute pleasure getting this sorted for you. Would you mind doing us a huge favour? If you could leave us a quick Google Review — it genuinely helps other buyers feel confident choosing RMA. I'll send you the link right now."
+→ Send the Google Review link to WhatsApp immediately. Don't wait.`],
+                ["Referral ask at handover","At the point of the reveal.",
+`"While I have you here in the best mood — is there anyone in your circle, family, friends, colleagues, who is looking for a car? We'd love an introduction. We'll make sure they're looked after just as well as you've been."`],
+              ].map(([title, sub, script]) => (
+                <div key={title} style={{ borderLeft:`2px solid ${T.gold}`, padding:"0.9rem 1rem", marginBottom:8, borderRadius:"0 8px 8px 0", background:T.goldBg, border:`1px solid ${T.goldDim}`, borderLeftWidth:2 }}>
+                  <div style={{ fontSize:11, fontWeight:700, color:T.gold, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.08em" }}>{title}</div>
+                  <div style={{ fontSize:11, color:T.goldLt, marginBottom:6, fontWeight:500 }}>{sub}</div>
+                  <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{script}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
             <div style={{ fontSize:12, fontWeight:700, color:T.gold, marginBottom:4 }}>📹 Training videos</div>
             <div style={{ fontSize:12, color:T.muted, marginBottom:10, lineHeight:1.6 }}>Paste a YouTube or Vimeo URL to add training videos to this section. Videos are added by your manager — ask them to update the platform when new videos are available.</div>
             <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
@@ -1217,6 +1256,7 @@ If they reply with an objection:
               </div>
             ))}
           </div>
+          )}
         )}
 
         {activeTab==="sops" && (

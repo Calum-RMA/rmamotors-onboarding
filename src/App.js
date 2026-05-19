@@ -1139,7 +1139,52 @@ If they reply with an objection:
               <Alert variant="warn">Non-gross misconduct examples: repeated lateness, unauthorised absence, poor call quality, failure to meet call KPIs.</Alert>
               <Alert variant="danger">Gross misconduct (immediate investigation): loss of company money due to negligence, aggressive behaviour, insubordination, bringing the company into disrepute, or breaches of UAE PDPL (Personal Data Protection Law).</Alert>
             </div>)}
-            {activeSop==="marketing" && (<div><StepBlock title="Listing goal" accent={T.purple} desc="Live within 24 hours of reconditioning sign-off. Photography requested by Purchaser immediately on vehicle arrival. 'Just Arrived' internal group update posted immediately." /><StepBlock title="Immediate update triggers" accent={T.purple} desc="Car sold or status changes → ALL listings updated/removed immediately across Dubizzle, Dubicars, Yalla Motors, Instagram, Google, TikTok, website. No delay whatsoever." /><StepBlock title="Your personal asset library (required)" accent={T.purple} desc="(1) Intro to you and RMA video · (2) 3 FAQ videos · (3) Authority/expert video · (4) Vehicle walkaround Snap Cells — specific to each enquiry · (5) 30-second video tour per car — ideally filmed with a Sales Rep, used to send to potential customers · (6) Social proof and testimonial videos." /><Alert variant="info">Build and maintain your asset library in your first week. These assets are sent throughout the BAMFAM sequence and directly improve engagement rates.</Alert></div>)}
+            {activeSop==="marketing" && (<div>
+              <SectionLabel style={{ marginTop:0 }}>1. Vehicle listing & inventory management</SectionLabel>
+              <StepBlock n="Goal" title="All vehicles live within 24 hours of reconditioning sign-off" accent={T.purple} desc="Every new vehicle must be advertised across all designated platforms within 24 hours. Photography is requested by the Purchaser immediately on vehicle arrival." />
+              <StepBlock title="Platform management" accent={T.purple} desc="Listings managed across: RMA Website, Dubizzle, Yalla Motors, and DubiCars. Premium and Featured ads managed on Dubizzle and Yalla for maximum visibility." />
+              <StepBlock title="Ad content workflow" accent={T.purple} desc="Sales Team members provide ad content via the 'ADS ONLY' group by midday. Marketing approves or rejects with comments. Approved content is then listed across all platforms." />
+              <Alert variant="warn">Car sold or status changes → ALL listings updated or removed immediately across every platform. No delay whatsoever — this is non-negotiable.</Alert>
+
+              <SectionLabel>2. Content creation — photography & video</SectionLabel>
+              <StepBlock title="Photography standards" accent={T.purple} desc="Minimum of 15 high-quality photos per vehicle using company-standard angles. Vehicles must be staged and positioned correctly in the photo bay in the Car Care Showroom before photography begins." />
+              <StepBlock title="Editing workflow" accent={T.purple} desc="Photos uploaded to the shared network drive. Marketing coordinates with the external photo editor. Final images reviewed before going live." />
+              <StepBlock title="Video content" accent={T.purple} desc="30-second video tour per car — ideally filmed with a Sales Rep and used to send to potential customers. Also used for 'Just Arrived' social posts and BAMFAM follow-up sequences." />
+              <StepBlock title="Milanote" accent={T.purple} desc="Used for mood boards, campaign storyboards, and organising visual assets. All campaign ideas presented weekly in the Marketing Team meeting." />
+
+              <SectionLabel>3. Pricing, reservations & status updates</SectionLabel>
+              <StepBlock title="Change request process" accent={T.blue} desc="All platform amendments must go through the mandatory 'Website/Platform Change Requests' form. No informal requests accepted." />
+              {[
+                ["Price changes","Directed by Purchasing and Management. Update all platforms immediately."],
+                ["Vehicle reservations","Update reserved/viewing status across all platforms immediately when status changes."],
+                ["Bombed deals","Remove vehicles from all platforms immediately if a deal falls through or status changes."],
+                ["Sold vehicles","Immediate removal across every platform — no exceptions and no delays."],
+              ].map(([t,d])=>(
+                <div key={t} style={{ display:"flex", gap:12, padding:"7px 0", borderBottom:`1px solid ${T.border}`, fontSize:12 }}>
+                  <div style={{ width:160, fontWeight:700, color:T.amber, flexShrink:0 }}>{t}</div>
+                  <div style={{ color:T.muted, lineHeight:1.5 }}>{d}</div>
+                </div>
+              ))}
+              <div style={{ height:8 }} />
+
+              <SectionLabel>4. Social media & organic growth</SectionLabel>
+              <StepBlock title="Daily 'Just Arrived' content" accent={T.purple} desc="Request three vehicles from the Purchasing Team daily to feature on social media stories and groups. Post across Instagram, Facebook, and TikTok." />
+              <StepBlock title="Platform content" accent={T.purple} desc="Instagram and Facebook: high-volume behind-the-scenes content, vehicle reveals, testimonials. TikTok: short-form engaging content. All scheduled and managed via Meta Business Suite." />
+              <StepBlock title="Testimonials" accent={T.purple} desc="Capture and format customer reviews and testimonials at the point of handover. Use to build brand trust across all platforms and in the BAMFAM follow-up sequence." />
+
+              <SectionLabel>5. Ad campaigns & lead generation</SectionLabel>
+              <StepBlock title="Ad strategy" accent={T.blue} desc="Bi-weekly campaign meetings with Calum Siddons and Dean Frost. Two key campaign types: 'Buy your car' and 'Sell your car' lead generation." />
+              <StepBlock title="Google Ads & reviews" accent={T.blue} desc="Google Search and Display ads drive inbound buyer and seller leads. High-volume Google Reviews are critical to ad performance and organic visibility. Every setter and sales rep must request a Google Review at the point of handover." />
+
+              <SectionLabel>6. Your personal asset library (required)</SectionLabel>
+              <div style={{ fontSize:12, color:T.muted, marginBottom:10, lineHeight:1.65 }}>Build and maintain your personal asset library in your first week. These assets are sent throughout the BAMFAM sequence and directly improve engagement rates and show rates.</div>
+              {["Intro to you and RMA Motors video","3 FAQ videos — answering the most common buyer questions","Authority/expert video — 'How to avoid costly mistakes when buying a car in the UAE'","Vehicle walkaround Snap Cells — specific to each customer enquiry","30-second video tour per car — ideally filmed with a Sales Rep","Social proof and testimonial videos"].map((item,i)=>(
+                <div key={i} style={{ display:"flex", gap:10, padding:"6px 0", borderBottom:`1px solid ${T.border}`, fontSize:12 }}>
+                  <div style={{ width:24, height:24, borderRadius:"50%", background:T.purpleBg, color:T.purpleTx, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, flexShrink:0 }}>{i+1}</div>
+                  <div style={{ color:T.muted, lineHeight:1.55 }}>{item}</div>
+                </div>
+              ))}
+            </div>)}
           </div>
         )}
 

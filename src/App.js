@@ -3,9 +3,13 @@ import React, { useState, useEffect } from "react";
 // ── Firebase Realtime Database Storage ──────────────────────────────────────
 const FIREBASE_URL = "https://rma-motors-onboarding-default-rtdb.firebaseio.com";
 
+// Firebase path-safe key — replace hyphens with underscores for the path
+const toFirebaseKey = (key) => key.replace(/-/g, "_");
+
 const sGet = async (key) => {
   try {
-    const r = await fetch(`${FIREBASE_URL}/rma/${encodeURIComponent(key)}.json`);
+    const fkey = toFirebaseKey(key);
+    const r = await fetch(`${FIREBASE_URL}/rma/${fkey}.json`);
     if (!r.ok) { console.error('Firebase GET failed:', r.status, r.statusText); return null; }
     const data = await r.json();
     return data;
@@ -14,7 +18,8 @@ const sGet = async (key) => {
 
 const sSet = async (key, val) => {
   try {
-    const r = await fetch(`${FIREBASE_URL}/rma/${encodeURIComponent(key)}.json`, {
+    const fkey = toFirebaseKey(key);
+    const r = await fetch(`${FIREBASE_URL}/rma/${fkey}.json`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(val)
@@ -30,13 +35,15 @@ const sList = async (prefix) => {
     if (!r.ok) { console.error('Firebase LIST failed:', r.status, r.statusText); return []; }
     const data = await r.json();
     if (!data) return [];
-    return Object.keys(data).map(k => decodeURIComponent(k)).filter(k => k.startsWith(prefix));
+    // Convert underscore keys back to hyphen format
+    return Object.keys(data).map(k => k.replace(/_/g, "-")).filter(k => k.startsWith(prefix));
   } catch(e) { console.error('Firebase LIST error:', e); return []; }
 };
 
 const sDelete = async (key) => {
   try {
-    await fetch(`${FIREBASE_URL}/rma/${encodeURIComponent(key)}.json`, { method: "DELETE" });
+    const fkey = toFirebaseKey(key);
+    await fetch(`${FIREBASE_URL}/rma/${fkey}.json`, { method: "DELETE" });
     return true;
   } catch { return false; }
 };

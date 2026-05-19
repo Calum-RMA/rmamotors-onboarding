@@ -410,6 +410,7 @@ const Input = ({ value, onChange, onKeyDown, placeholder, type="text", style={} 
 export default function App() {
   const [screen, setScreen] = useState("loading");
   const [role, setRole] = useState(null);
+  const [viewRole, setViewRole] = useState(null); // Which view is active. Closers can toggle setter/closer; Setters always === role.
   const [setterId, setSetterId] = useState(null);
   const [setterData, setSetterData] = useState(null);
   const [nameInput, setNameInput] = useState("");
@@ -435,6 +436,7 @@ export default function App() {
   const [expandedSetter, setExpandedSetter] = useState(null);
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [newRole, setNewRole] = useState("setter"); // Role assigned at account creation
   const [genPassword, setGenPassword] = useState("");
   const [genLink, setGenLink] = useState("");
   const [linkCopied, setLinkCopied] = useState(false);
@@ -461,6 +463,36 @@ export default function App() {
   };
   const [quizAttempts, setQuizAttempts] = useState({});
   const [quizBlocked, setQuizBlocked] = useState({});
+
+  // Role-scoped progress access.
+  // For a user, progress for their PRIMARY role lives at the top level (legacy shape).
+  // Progress for a Closer's SECONDARY (setter) view lives under `secondaryProgress`.
+  // This keeps backward compatibility — no migration needed.
+  const isPrimaryView = (data, view) => !data || data.role === view || (!data.role && view === "setter");
+  const getProgress = (data, view) => {
+    if (!data) return { completedModules:[], quizScores:{}, quizAnswers:{}, quizAttempts:{}, quizBlocked:{} };
+    if (isPrimaryView(data, view)) {
+      return {
+        completedModules: data.completedModules || [],
+        quizScores: data.quizScores || {},
+        quizAnswers: data.quizAnswers || {},
+        quizAttempts: data.quizAttempts || {},
+        quizBlocked: data.quizBlocked || {},
+      };
+    }
+    const sp = data.secondaryProgress || {};
+    return {
+      completedModules: sp.completedModules || [],
+      quizScores: sp.quizScores || {},
+      quizAnswers: sp.quizAnswers || {},
+      quizAttempts: sp.quizAttempts || {},
+      quizBlocked: sp.quizBlocked || {},
+    };
+  };
+  const writeProgress = (data, view, updates) => {
+    if (isPrimaryView(data, view)) return { ...data, ...updates };
+    return { ...data, secondaryProgress: { ...(data.secondaryProgress||{}), ...updates } };
+  };
 
   const loadSetter = async (id) => {
     // Just show the login screen — actual lookup happens by name on login
@@ -510,9 +542,13 @@ export default function App() {
       const id = result._key;
       setSetterId(id);
       setSetterData(result);
-      setQuizAnswers(result.quizAnswers||{});
-      setQuizAttempts(result.quizAttempts||{});
-      setQuizBlocked(result.quizBlocked||{});
+      // Closers default to their own (closer) view on login; setters always view setter.
+      const initialView = result.role || "setter";
+      setViewRole(initialView);
+      const initialProgress = (result.role && result.role !== initialView) ? (result.secondaryProgress||{}) : result;
+      setQuizAnswers(initialProgress.quizAnswers||{});
+      setQuizAttempts(initialProgress.quizAttempts||{});
+      setQuizBlocked(initialProgress.quizBlocked||{});
       if (result.role) { setRole(result.role); setScreen("setter"); }
       else setScreen("role_select");
     } catch(e) {
@@ -523,9 +559,10 @@ export default function App() {
 
   const toggleModule = async (mid) => {
     if (!setterData) return;
-    const modules = setterData.completedModules || [];
-    const already = modules.includes(mid);
-    const updated = { ...setterData, completedModules: already ? modules.filter(m=>m!==mid) : [...modules, mid] };
+    const prog = getProgress(setterData, viewRole);
+    const already = prog.completedModules.includes(mid);
+    const newModules = already ? prog.completedModules.filter(m=>m!==mid) : [...prog.completedModules, mid];
+    const updated = writeProgress(setterData, viewRole, { completedModules: newModules });
     await saveData(updated);
   };
 
@@ -533,26 +570,31 @@ export default function App() {
     const key = `${activeQuiz}-${qi}`;
     if (quizAnswers[key] !== undefined) return;
     if (quizBlocked[activeQuiz]) return;
-    const correct = QUIZZES[activeQuiz].questions[qi].correct === oi;
+    // Use the quiz set corresponding to the active view
+    const quizSet = viewRole === "closer" ? CLOSER_QUIZZES : QUIZZES;
+    const correct = quizSet[activeQuiz].questions[qi].correct === oi;
     const newA = { ...quizAnswers, [key]:{ chosen:oi, correct } };
     setQuizAnswers(newA);
-    const total = QUIZZES[activeQuiz].questions.length;
+    const total = quizSet[activeQuiz].questions.length;
     const allDone = Array.from({length:total},(_,i)=>newA[`${activeQuiz}-${i}`]).every(Boolean);
-    let updated = { ...setterData, quizAnswers:newA };
+    const prog = getProgress(setterData, viewRole);
+    let updates = { quizAnswers: newA };
     if (allDone) {
       const score = Math.round((Array.from({length:total},(_,i)=>newA[`${activeQuiz}-${i}`].correct).filter(Boolean).length/total)*100);
-      updated = { ...updated, quizScores:{ ...setterData.quizScores, [activeQuiz]:score } };
+      updates.quizScores = { ...prog.quizScores, [activeQuiz]: score };
       const passed = score >= 90;
       if (!passed) {
-        const currentAttempts = (setterData.quizAttempts?.[activeQuiz] || 0) + 1;
-        const newAttempts = { ...(setterData.quizAttempts||{}), [activeQuiz]: currentAttempts };
-        const newBlocked = { ...(setterData.quizBlocked||{}) };
+        const currentAttempts = (prog.quizAttempts[activeQuiz] || 0) + 1;
+        const newAttempts = { ...prog.quizAttempts, [activeQuiz]: currentAttempts };
+        const newBlocked = { ...prog.quizBlocked };
         if (currentAttempts >= 3) { newBlocked[activeQuiz] = true; }
-        updated = { ...updated, quizAttempts: newAttempts, quizBlocked: newBlocked };
+        updates.quizAttempts = newAttempts;
+        updates.quizBlocked = newBlocked;
         setQuizAttempts(newAttempts);
         setQuizBlocked(newBlocked);
       }
     }
+    const updated = writeProgress(setterData, viewRole, updates);
     await saveData(updated);
   };
 
@@ -588,6 +630,7 @@ export default function App() {
     const setterRecord = {
       name: newName.trim(), initials, password: newPassword.trim(),
       startDate: new Date().toISOString().split("T")[0],
+      role: newRole,
       completedModules:[], quizScores:{}, quizAnswers:{}, feedback:[], setterId:id
     };
     await sSet(id, setterRecord);
@@ -608,7 +651,8 @@ export default function App() {
   const handleChangeRole = async (setterId, newRole) => {
     const d = await sGet(setterId);
     if (!d) return;
-    // Reset module/quiz progress when role changes — curriculum differs
+    // Reset module/quiz progress when role changes — curriculum differs.
+    // Also clear secondaryProgress (it was for the OPPOSITE role of their old primary).
     await sSet(setterId, {
       ...d,
       role: newRole,
@@ -617,6 +661,7 @@ export default function App() {
       quizAnswers: {},
       quizAttempts: {},
       quizBlocked: {},
+      secondaryProgress: {},
       roleHistory: [...(d.roleHistory||[]), { from: d.role||"setter", to: newRole, date: new Date().toISOString().slice(0,10) }],
     });
     setRoleChangeConfirm(null);
@@ -636,8 +681,11 @@ export default function App() {
     loadMgmt();
   };
 
-  const activeModules = role==="closer" ? CLOSER_MODULES : MODULES;
-  const activeQuizzes = role==="closer" ? CLOSER_QUIZZES : QUIZZES;
+  // Active content depends on the VIEW (which a Closer can toggle).
+  // The manager-dashboard helpers below depend on the user's PRIMARY role.
+  const activeModules = viewRole==="closer" ? CLOSER_MODULES : MODULES;
+  const activeQuizzes = viewRole==="closer" ? CLOSER_QUIZZES : QUIZZES;
+  const activeProgress = getProgress(setterData, viewRole);
   const safeModuleCount = (s) => s?.role==="closer" ? CLOSER_MODULES.length : MODULES.length;
   const completionPct = (d) => { if (!d) return 0; const mods = d.role==="closer" ? CLOSER_MODULES : MODULES; const qzs = d.role==="closer" ? CLOSER_QUIZZES : QUIZZES; const total = mods.length + Object.keys(qzs).length; return total > 0 ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/total*100) : 0; };
   const avgScore = (d) => { const s = Object.values(d?.quizScores||{}); return s.length ? Math.round(s.reduce((a,b)=>a+b,0)/s.length) : null; };
@@ -665,6 +713,7 @@ export default function App() {
                 const updated = { ...setterData, role: r };
                 await saveData(updated);
                 setRole(r);
+                setViewRole(r);
                 setScreen("setter");
               }} style={{ background:T.surf, border:`1px solid ${T.border}`, borderRadius:12, padding:"1.25rem 1rem", cursor:"pointer", textAlign:"left", fontFamily:"'DM Sans',system-ui,sans-serif", transition:"border-color .2s, background .2s" }}
                 onMouseEnter={e=>{e.currentTarget.style.borderColor=T.gold; e.currentTarget.style.background=T.goldBg;}}
@@ -767,22 +816,44 @@ export default function App() {
           </div>
           <div style={{ display:"flex", gap:8 }}>
             <Btn small onClick={loadMgmt}>↻ Refresh</Btn>
-            <Btn small primary onClick={()=>setMgmtTab(mgmtTab==="links"?"overview":"links")}>{mgmtTab==="links"?"← Overview":"+ New setter link"}</Btn>
+            <Btn small primary onClick={()=>setMgmtTab(mgmtTab==="links"?"overview":"links")}>{mgmtTab==="links"?"← Overview":"+ New account"}</Btn>
             <Btn small onClick={()=>{ setMgmtAuth(false); setMgmtPassword(""); }}>Sign out</Btn>
           </div>
         </div>
         {mgmtTab==="links" ? (
           <Card>
-            <div style={{ fontSize:15, fontWeight:700, marginBottom:6, color:T.text }}>Create a new setter account</div>
-            <div style={{ fontSize:13, color:T.muted, marginBottom:"1.25rem", lineHeight:1.65 }}>Enter the setter's name and set a password for them. Send them their unique link and password — they will need both to sign in.</div>
-            <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Setter's full name</label>
+            <div style={{ fontSize:15, fontWeight:700, marginBottom:6, color:T.text }}>Create a new staff account</div>
+            <div style={{ fontSize:13, color:T.muted, marginBottom:"1.25rem", lineHeight:1.65 }}>Choose the role, enter their name, and set a password. Send them the unique link and password — they will need both to sign in.</div>
+            <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Assigned role</label>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:14 }}>
+              {[
+                { r:"setter", label:"Setter", icon:"⚡", desc:"Inbound leads, appointment setting" },
+                { r:"closer", label:"Closer", icon:"🤝", desc:"Appointments, deposit, handover · Elite" },
+              ].map(({r, label, icon, desc})=>{
+                const selected = newRole === r;
+                const accent = r === "closer" ? T.purple : T.gold;
+                const accentBg = r === "closer" ? T.purpleBg : T.goldBg;
+                return (
+                  <button key={r} type="button" onClick={()=>setNewRole(r)}
+                    style={{ background:selected?accentBg:T.surf, border:`1px solid ${selected?accent:T.border}`, borderRadius:10, padding:"12px 14px", cursor:"pointer", textAlign:"left", fontFamily:"'DM Sans',system-ui,sans-serif", transition:"all .15s" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
+                      <span style={{ fontSize:16 }}>{icon}</span>
+                      <span style={{ fontSize:13, fontWeight:700, color:T.text }}>{label}</span>
+                      {selected && <span style={{ fontSize:10, fontWeight:700, marginLeft:"auto", color:r==="closer"?T.purpleTx:T.gold }}>✓ Selected</span>}
+                    </div>
+                    <div style={{ fontSize:11, color:T.muted, lineHeight:1.45 }}>{desc}</div>
+                  </button>
+                );
+              })}
+            </div>
+            <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>{newRole==="closer"?"Closer's":"Setter's"} full name</label>
             <Input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="e.g. Alex Mitchell" style={{ marginBottom:10 }} />
             <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Set their password</label>
             <Input value={newPassword} onChange={e=>setNewPassword(e.target.value)} placeholder="e.g. RMA2024Alex" style={{ marginBottom:14 }} />
-            <Btn primary small onClick={generateLink} disabled={!newName.trim()||!newPassword.trim()}>Create setter account →</Btn>
+            <Btn primary small onClick={generateLink} disabled={!newName.trim()||!newPassword.trim()}>Create {newRole==="closer"?"Closer":"Setter"} account →</Btn>
             {genLink && (
               <div style={{ marginTop:14, background:T.surf, borderRadius:10, padding:"14px 16px", border:`1px solid ${T.border}` }}>
-                <div style={{ fontSize:11, fontWeight:700, color:T.greenTx, marginBottom:10 }}>✓ Setter account created — share these details with {newName}</div>
+                <div style={{ fontSize:11, fontWeight:700, color:T.greenTx, marginBottom:10 }}>✓ {newRole==="closer"?"Closer":"Setter"} account created — share these details with {newName}</div>
                 <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.1em" }}>Their unique link</div>
                 <div style={{ fontSize:12, color:T.gold, wordBreak:"break-all", marginBottom:10, fontFamily:"monospace", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{genLink}</div>
                 <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.1em" }}>Their password</div>
@@ -812,7 +883,8 @@ export default function App() {
                 {mgmtSetters.map((s,i)=>{
                   const pct=completionPct(s), avg=avgScore(s), good=avg!==null&&avg>=90;
                   const isExpanded = expandedSetter === s.id;
-                  const lockedQuizzes = Object.entries(activeQuizzes).filter(([k])=>s.quizBlocked?.[k]);
+                  const staffQuizzes = s.role==="closer" ? CLOSER_QUIZZES : QUIZZES;
+                  const lockedQuizzes = Object.entries(staffQuizzes).filter(([k])=>s.quizBlocked?.[k]);
                   const hasLocked = lockedQuizzes.length > 0;
                   return (
                     <div key={s.id} style={{ borderBottom:i<mgmtSetters.length-1?`1px solid ${T.border}`:"none", borderLeft:hasLocked?`3px solid ${T.red}`:"3px solid transparent", borderTopLeftRadius:0, borderBottomLeftRadius:0 }}>
@@ -873,7 +945,7 @@ export default function App() {
                             </div>
                             <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
                               <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Modules completed</div>
-                              <div style={{ fontSize:13, fontWeight:600, color:T.text }}>{s.completedModules?.length||0} / {MODULES.length}</div>
+                              <div style={{ fontSize:13, fontWeight:600, color:T.text }}>{s.completedModules?.length||0} / {safeModuleCount(s)}</div>
                             </div>
                             <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
                               <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Quiz average</div>
@@ -931,7 +1003,7 @@ export default function App() {
               <div key={s.id} style={{ marginTop:"1.25rem" }}>
                 <SectionLabel style={{ marginTop:0 }}>{s.name} — quiz scores</SectionLabel>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:8, marginBottom:10 }}>
-                  {Object.entries(QUIZZES).map(([k,q])=>{
+                  {Object.entries(s.role==="closer"?CLOSER_QUIZZES:QUIZZES).map(([k,q])=>{
                     const score=s.quizScores?.[k], good=score!==undefined&&score>=90;
                     return (
                       <div key={k} style={{ background:T.surf, borderRadius:10, padding:"0.85rem 1rem", border:`1px solid ${score!==undefined?(good?T.green:T.red):T.border}` }}>
@@ -992,8 +1064,8 @@ export default function App() {
   }
 
   const TABS = [{id:"home",label:"Home"},{id:"training",label:"Training"},{id:"scripts",label:"Scripts"},{id:"sops",label:"SOPs"},{id:"kpis",label:"KPIs"},{id:"assessments",label:"Assessments"}];
-  const totalItems = role==="closer" ? (CLOSER_MODULES.length + Object.keys(CLOSER_QUIZZES).length) : (MODULES.length + Object.keys(QUIZZES).length);
-  const doneItems = (setterData?.completedModules?.length||0)+Object.keys(setterData?.quizScores||{}).length;
+  const totalItems = viewRole==="closer" ? (CLOSER_MODULES.length + Object.keys(CLOSER_QUIZZES).length) : (MODULES.length + Object.keys(QUIZZES).length);
+  const doneItems = (activeProgress.completedModules?.length||0)+Object.keys(activeProgress.quizScores||{}).length;
   const pct = totalItems > 0 ? Math.round((doneItems/totalItems)*100) : 0;
 
   return (
@@ -1015,7 +1087,34 @@ export default function App() {
               onMouseEnter={e=>{ e.currentTarget.style.borderColor=T.gold; e.currentTarget.style.color=T.gold; }}
               onMouseLeave={e=>{ e.currentTarget.style.borderColor=T.border; e.currentTarget.style.color=T.faint; }}
             >🔒</button>
-            <button onClick={()=>setScreen("role_select")} style={{ fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:99, background:role==="closer"?T.purpleBg:T.goldBg, color:role==="closer"?T.purpleTx:T.gold, border:"none", cursor:"pointer", fontFamily:"'DM Sans',system-ui,sans-serif" }}>{role==="closer"?"🤝 Closer":"⚡ Setter"}</button>
+            {role==="closer" ? (
+              <div style={{ display:"flex", alignItems:"center", background:T.surf, border:`1px solid ${T.border}`, borderRadius:99, padding:2 }} title="Switch view">
+                {[
+                  { v:"closer", label:"🤝 Closer", accentBg:T.purple, accentTx:"#fff" },
+                  { v:"setter", label:"⚡ Setter", accentBg:T.gold, accentTx:"#1A1F2E" },
+                ].map(({v, label, accentBg, accentTx})=>{
+                  const active = viewRole === v;
+                  return (
+                    <button key={v}
+                      onClick={()=>{
+                        if (viewRole === v) return;
+                        setViewRole(v);
+                        const sliceProgress = getProgress(setterData, v);
+                        setQuizAnswers(sliceProgress.quizAnswers||{});
+                        setQuizAttempts(sliceProgress.quizAttempts||{});
+                        setQuizBlocked(sliceProgress.quizBlocked||{});
+                        setActiveQuiz(Object.keys(v==="closer"?CLOSER_QUIZZES:QUIZZES)[0]);
+                        setExpandedMod(null);
+                      }}
+                      style={{ fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:99, background:active?accentBg:"transparent", color:active?accentTx:T.faint, border:"none", cursor:"pointer", fontFamily:"'DM Sans',system-ui,sans-serif", transition:"all .15s" }}>
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div style={{ fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:99, background:T.goldBg, color:T.gold, fontFamily:"'DM Sans',system-ui,sans-serif" }}>⚡ Setter</div>
+            )}
             <Avatar initials={setterData?.initials} size={30} />
             <div style={{ fontSize:12, fontWeight:600, color:T.muted }}>{setterData?.name}</div>
           </div>
@@ -1023,37 +1122,43 @@ export default function App() {
 
         {activeTab==="home" && (
           <div>
-            <div style={{ background:role==="closer"?`linear-gradient(135deg,${T.card},#241B3A)`:`linear-gradient(135deg,${T.card},#1E2335)`, borderRadius:16, border:`1px solid ${role==="closer"?T.purple:T.border}`, padding:"1.75rem", marginBottom:"1.25rem", position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:-30, right:-30, width:140, height:140, borderRadius:"50%", background:role==="closer"?T.purpleBg:T.goldBg, filter:"blur(40px)", pointerEvents:"none" }} />
-              <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:role==="closer"?"1rem":"1.25rem" }}>
+            <div style={{ background:viewRole==="closer"?`linear-gradient(135deg,${T.card},#241B3A)`:`linear-gradient(135deg,${T.card},#1E2335)`, borderRadius:16, border:`1px solid ${viewRole==="closer"?T.purple:T.border}`, padding:"1.75rem", marginBottom:"1.25rem", position:"relative", overflow:"hidden" }}>
+              <div style={{ position:"absolute", top:-30, right:-30, width:140, height:140, borderRadius:"50%", background:viewRole==="closer"?T.purpleBg:T.goldBg, filter:"blur(40px)", pointerEvents:"none" }} />
+              <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:viewRole==="closer"?"1rem":"1.25rem" }}>
                 <Avatar initials={setterData?.initials} size={52} />
                 <div style={{ flex:1 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
                     <div style={{ fontSize:20, fontWeight:800, color:T.text }}>
-                      {role==="closer"?`Congratulations, ${setterData?.name?.split(" ")[0]}.`:`Welcome, ${setterData?.name?.split(" ")[0]}.`}
+                      {viewRole==="closer"?`Congratulations, ${setterData?.name?.split(" ")[0]}.`:`Welcome, ${setterData?.name?.split(" ")[0]}.`}
                     </div>
-                    {role==="closer" && (
+                    {viewRole==="closer" && (
                       <span style={{ fontSize:9, fontWeight:800, padding:"3px 8px", borderRadius:99, background:T.purple, color:"#fff", textTransform:"uppercase", letterSpacing:"0.08em" }}>
                         ★ Elite Role
                       </span>
                     )}
                   </div>
-                  <div style={{ fontSize:12, color:T.muted, marginTop:2 }}>{role==="closer"?"Sales Closer Onboarding · 9-Module Programme":"Sales Setter Onboarding · 10-Day Programme"}</div>
+                  <div style={{ fontSize:12, color:T.muted, marginTop:2 }}>{viewRole==="closer"?"Sales Closer Onboarding · 9-Module Programme":"Sales Setter Onboarding · 10-Day Programme"}</div>
                 </div>
               </div>
-              {role==="closer" && (
+              {viewRole==="closer" && (
                 <div style={{ background:"rgba(146,109,222,0.08)", border:`1px solid ${T.purple}`, borderRadius:10, padding:"12px 14px", marginBottom:"1.25rem", fontSize:13, color:T.text, lineHeight:1.6 }}>
                   You've earned a place in RMA Motors' Closer team — a premium, elite role reserved for our highest performers. You'll own the customer relationship from first appointment through to delivery and beyond. Standards are high, and so are the rewards.
                 </div>
               )}
+              {role==="closer" && viewRole==="setter" && (
+                <div style={{ background:T.goldBg, border:`1px solid ${T.gold}`, borderRadius:10, padding:"10px 14px", marginBottom:"1.25rem", fontSize:12, color:T.text, lineHeight:1.55, display:"flex", alignItems:"center", gap:10 }}>
+                  <span style={{ fontSize:14 }}>👁</span>
+                  <span>You're viewing the <strong>Setter section</strong> for reference. Your Closer progress is preserved — switch back any time using the role badge above.</span>
+                </div>
+              )}
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
                 <span style={{ fontSize:12, color:T.muted, fontWeight:600 }}>Overall progress</span>
-                <span style={{ fontSize:13, fontWeight:800, color:role==="closer"?T.purpleTx:T.gold }}>{pct}%</span>
+                <span style={{ fontSize:13, fontWeight:800, color:viewRole==="closer"?T.purpleTx:T.gold }}>{pct}%</span>
               </div>
               <ProgressBar pct={pct} height={6} />
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(110px,1fr))", gap:8, marginBottom:"1.5rem" }}>
-              {[role==="closer"?["Programme","9 modules","3 phases"]:["Programme","10 days","3 phases"],[`Modules`,`${setterData?.completedModules?.length||0}/${activeModules.length}`,"completed"],[`Quizzes`,`${Object.values(setterData?.quizScores||{}).filter(s=>s>=90).length}/${Object.keys(activeQuizzes).length}`,"passed"],["Score",avgScore(setterData)!==null?`${avgScore(setterData)}%`:"—","avg"]].map(([l,v,s])=>(
+              {[viewRole==="closer"?["Programme","9 modules","3 phases"]:["Programme","10 days","3 phases"],[`Modules`,`${activeProgress.completedModules?.length||0}/${activeModules.length}`,"completed"],[`Quizzes`,`${Object.values(activeProgress.quizScores||{}).filter(s=>s>=90).length}/${Object.keys(activeQuizzes).length}`,"passed"],["Score",avgScore(activeProgress)!==null?`${avgScore(activeProgress)}%`:"—","avg"]].map(([l,v,s])=>(
                 <div key={l} style={{ background:T.surf, borderRadius:10, padding:"0.9rem 1rem", border:`1px solid ${T.border}` }}>
                   <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
                   <div style={{ fontSize:20, fontWeight:800, color:T.text }}>{v}</div>
@@ -1063,7 +1168,7 @@ export default function App() {
             </div>
             <SectionLabel style={{ marginTop:0 }}>Role overview</SectionLabel>
             <Card>
-              {(role==="closer" ? [["Position","Sales Executive (Closer Role)"],["Location","Showroom 3, Speedex Centre, DIP 1, Dubai"],["Reports to","Sales Manager"],["Shifts","Variable week to week · business hours 09:00–21:00"],["Probation","6 months"],["Lead handover","From Setter after 72 hours or appointment booked"],["Performance review","Monthly KPI review — 2 consecutive months below KPI may result in demotion to Setter or Cleaner"]] : [["Position","Sales Executive (Setter Role)"],["Location","Showroom 3, Speedex Centre, DIP 1, Dubai"],["Reports to","Sales Manager"],["Shifts","06:00–15:00 or 15:00–00:00"],["Probation","6 months"],["Lead handover","To Closer after 72 hours"],["3-month review","Pathway to Closer assessed"]]).map(([l,v],i,a)=>(
+              {(viewRole==="closer" ? [["Position","Sales Executive (Closer Role)"],["Location","Showroom 3, Speedex Centre, DIP 1, Dubai"],["Reports to","Sales Manager"],["Shifts","Variable week to week · business hours 09:00–21:00"],["Probation","6 months"],["Lead handover","From Setter after 72 hours or appointment booked"],["Performance review","Monthly KPI review — 2 consecutive months below KPI may result in demotion to Setter or Cleaner"]] : [["Position","Sales Executive (Setter Role)"],["Location","Showroom 3, Speedex Centre, DIP 1, Dubai"],["Reports to","Sales Manager"],["Shifts","06:00–15:00 or 15:00–00:00"],["Probation","6 months"],["Lead handover","To Closer after 72 hours"],["3-month review","Pathway to Closer assessed"]]).map(([l,v],i,a)=>(
                 <InfoRow key={l} label={l} value={v} last={i===a.length-1} />
               ))}
             </Card>
@@ -1091,7 +1196,7 @@ export default function App() {
                     <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.1em", color:T.gold, textTransform:"uppercase" }}>{labels[phase-1]}</div>
                   </div>
                   {MODULES.filter(m=>m.phase===phase).map(mod=>{
-                    const done=setterData?.completedModules?.includes(mod.id), unlocked=isUnlocked(mod,setterData?.completedModules||[]), open=expandedMod===mod.id;
+                    const done=activeProgress.completedModules?.includes(mod.id), unlocked=isUnlocked(mod,activeProgress.completedModules||[]), open=expandedMod===mod.id;
                     return (
                       <div key={mod.id} className="mod-card" style={{ background:T.card, borderRadius:12, marginBottom:8, border:`1px solid ${open?T.borderLt:T.border}`, borderLeft:`3px solid ${done?T.green:open?T.gold:T.border}`, borderTopLeftRadius:0, borderBottomLeftRadius:0 }}>
                         <div style={{ display:"flex", alignItems:"center", gap:12, padding:"0.9rem 1.1rem" }} onClick={()=>setExpandedMod(open?null:mod.id)}>
@@ -1129,7 +1234,7 @@ export default function App() {
 
         {activeTab==="scripts" && (
           <div>
-          {role==="closer" ? (
+          {viewRole==="closer" ? (
             <div>
               <SectionLabel style={{ marginTop:0 }}>Closer scripts & frameworks</SectionLabel>
               {[
@@ -1607,9 +1712,9 @@ If they reply with an objection:
           <div>
             <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"1.25rem" }}>
               {Object.entries(activeQuizzes).map(([id,q])=>{
-                const score=setterData?.quizScores?.[id];
+                const score=activeProgress.quizScores?.[id];
                 return (
-                  <button key={id} className={`sub-tab ${activeQuiz===id?"active":""}`} onClick={()=>{ setActiveQuiz(id); setQuizAnswers(setterData?.quizAnswers||{}); }}>
+                  <button key={id} className={`sub-tab ${activeQuiz===id?"active":""}`} onClick={()=>{ setActiveQuiz(id); setQuizAnswers(activeProgress.quizAnswers||{}); }}>
                     {q.icon} {q.label}
                     {quizBlocked[id] && <span style={{ marginLeft:6, fontSize:10, color:T.redTx, fontWeight:800 }}>🔒</span>}
                   {!quizBlocked[id] && score!==undefined && <span style={{ marginLeft:6, fontSize:10, color:score>=90?T.greenTx:T.redTx, fontWeight:800 }}>({score}%)</span>}
@@ -1627,7 +1732,7 @@ If they reply with an objection:
                   <div style={{ fontSize:13, color:T.muted, lineHeight:1.65 }}>You have used all 3 attempts for this assessment. Your manager must unlock it before you can retake. Please review the relevant SOP and training materials in the meantime.</div>
                 </div>
               );
-              const quiz=activeQuizzes[activeQuiz], savedScore=setterData?.quizScores?.[activeQuiz], total=quiz?.questions?.length||0;
+              const quiz=activeQuizzes[activeQuiz], savedScore=activeProgress.quizScores?.[activeQuiz], total=quiz?.questions?.length||0;
               if (!quiz) return null;
               const answeredCount=quiz.questions.filter((_,i)=>quizAnswers[`${activeQuiz}-${i}`]!==undefined).length;
               const allDone=answeredCount===total;

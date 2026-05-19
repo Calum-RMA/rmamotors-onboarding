@@ -454,7 +454,7 @@ export default function App() {
     loadMgmt();
   };
 
-  const completionPct = (d) => d ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/(MODULES.length+4)*100) : 0;
+  const completionPct = (d) => d ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/(MODULES.length+Object.keys(QUIZZES).length)*100) : 0;
   const avgScore = (d) => { const s = Object.values(d?.quizScores||{}); return s.length ? Math.round(s.reduce((a,b)=>a+b,0)/s.length) : null; };
   const isUnlocked = (mod, done=[]) => {
     if (mod.defaultUnlocked) return true;
@@ -742,7 +742,7 @@ export default function App() {
   }
 
   const TABS = [{id:"home",label:"Home"},{id:"training",label:"Training"},{id:"scripts",label:"Scripts"},{id:"sops",label:"SOPs"},{id:"kpis",label:"KPIs"},{id:"assessments",label:"Assessments"}];
-  const totalItems = MODULES.length + 4;
+  const totalItems = MODULES.length + Object.keys(QUIZZES).length;
   const doneItems = (setterData?.completedModules?.length||0)+Object.keys(setterData?.quizScores||{}).length;
   const pct = Math.round((doneItems/totalItems)*100);
 
@@ -788,7 +788,7 @@ export default function App() {
               <ProgressBar pct={pct} height={6} />
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(110px,1fr))", gap:8, marginBottom:"1.5rem" }}>
-              {[["Programme","10 days","3 phases"],[`Modules`,`${setterData?.completedModules?.length||0}/${MODULES.length}`,"completed"],[`Quizzes`,`${Object.values(setterData?.quizScores||{}).filter(s=>s>=90).length}/4`,"passed"],["Score",avgScore(setterData)!==null?`${avgScore(setterData)}%`:"—","avg"]].map(([l,v,s])=>(
+              {[["Programme","10 days","3 phases"],[`Modules`,`${setterData?.completedModules?.length||0}/${MODULES.length}`,"completed"],[`Quizzes`,`${Object.values(setterData?.quizScores||{}).filter(s=>s>=90).length}/${Object.keys(QUIZZES).length}`,"passed"],["Score",avgScore(setterData)!==null?`${avgScore(setterData)}%`:"—","avg"]].map(([l,v,s])=>(
                 <div key={l} style={{ background:T.surf, borderRadius:10, padding:"0.9rem 1rem", border:`1px solid ${T.border}` }}>
                   <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
                   <div style={{ fontSize:20, fontWeight:800, color:T.text }}>{v}</div>

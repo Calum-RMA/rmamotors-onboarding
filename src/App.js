@@ -1123,8 +1123,7 @@ If hesitant: "What would need to happen for you to feel completely comfortable m
                 </div>
               ))}
             </div>
-          </div>
-          <div style={{ background:T.redBg, border:`1px solid ${T.red}`, borderRadius:10, padding:"12px 16px", marginBottom:"1.25rem" }}>
+            <div style={{ background:T.redBg, border:`1px solid ${T.red}`, borderRadius:10, padding:"12px 16px", marginBottom:"1.25rem" }}>
             <div style={{ fontSize:12, fontWeight:700, color:T.redTx, marginBottom:4 }}>⚠️ Setter rule — pricing</div>
             <div style={{ fontSize:13, color:T.text, lineHeight:1.65 }}>The <strong>best price will only be discussed in person</strong>. Your job as a setter is to build maximum value, get the appointment booked, and hand over to the Closer. The Closer works with the Sales Manager to get the customer the best deal on the day. Do not quote final prices or negotiate over the phone.</div>
           </div>
@@ -1255,7 +1254,6 @@ If they reply with an objection:
                 <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{t}</div>
               </div>
             ))}
-          </div>
           </>
           )}
         )}

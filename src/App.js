@@ -3,49 +3,46 @@ import React, { useState, useEffect } from "react";
 // ── Firebase Realtime Database Storage ──────────────────────────────────────
 const FIREBASE_URL = "https://rma-motors-onboarding-default-rtdb.firebaseio.com";
 
-// Firebase path-safe key — replace hyphens with underscores for the path
-const toFirebaseKey = (key) => key.replace(/-/g, "_");
-
-const sGet = async (key) => {
+const fbFetch = async (path, opts={}) => {
   try {
-    const fkey = toFirebaseKey(key);
-    const r = await fetch(`${FIREBASE_URL}/rma/${fkey}.json`);
-    if (!r.ok) { console.error('Firebase GET failed:', r.status, r.statusText); return null; }
-    const data = await r.json();
-    return data;
-  } catch(e) { console.error('Firebase GET error:', e); return null; }
+    const r = await fetch(`${FIREBASE_URL}/${path}.json`, opts);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+};
+
+// Store all setters under /setters node, keyed by a safe ID
+const sGet = async (key) => {
+  const data = await fbFetch(`setters/${key}`);
+  return data;
 };
 
 const sSet = async (key, val) => {
-  try {
-    const fkey = toFirebaseKey(key);
-    const r = await fetch(`${FIREBASE_URL}/rma/${fkey}.json`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(val)
-    });
-    if (!r.ok) console.error('Firebase SET failed:', r.status, r.statusText);
-    return r.ok;
-  } catch(e) { console.error('Firebase SET error:', e); return false; }
+  const r = await fetch(`${FIREBASE_URL}/setters/${key}.json`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(val)
+  });
+  return r ? r.ok : false;
 };
 
 const sList = async (prefix) => {
-  try {
-    const r = await fetch(`${FIREBASE_URL}/rma.json?shallow=true`);
-    if (!r.ok) { console.error('Firebase LIST failed:', r.status, r.statusText); return []; }
-    const data = await r.json();
-    if (!data) return [];
-    // Convert underscore keys back to hyphen format
-    return Object.keys(data).map(k => k.replace(/_/g, "-")).filter(k => k.startsWith(prefix));
-  } catch(e) { console.error('Firebase LIST error:', e); return []; }
+  const data = await fbFetch("setters");
+  if (!data) return [];
+  return Object.keys(data).filter(k => k.startsWith(prefix));
 };
 
 const sDelete = async (key) => {
-  try {
-    const fkey = toFirebaseKey(key);
-    await fetch(`${FIREBASE_URL}/rma/${fkey}.json`, { method: "DELETE" });
-    return true;
-  } catch { return false; }
+  await fetch(`${FIREBASE_URL}/setters/${key}.json`, { method: "DELETE" });
+  return true;
+};
+
+// Find setter by name (for name-based login)
+const sGetByName = async (name) => {
+  const data = await fbFetch("setters");
+  if (!data) return null;
+  const key = Object.keys(data).find(k => data[k]?.name?.toLowerCase() === name.toLowerCase());
+  return key ? { ...data[key], _key: key } : null;
 };
 
 const MGMT_PASSWORD = "RMAmanager2024";
@@ -437,14 +434,8 @@ export default function App() {
   const [quizBlocked, setQuizBlocked] = useState({});
 
   const loadSetter = async (id) => {
-    const data = await sGet(id);
-    if (data) {
-      setNameInput(data.name || "");
-      setSetterId(id);
-      setScreen("login");
-    } else {
-      setScreen("invalid");
-    }
+    // Just show the login screen — actual lookup happens by name on login
+    setScreen("login");
   };
 
   useEffect(() => {
@@ -453,7 +444,7 @@ export default function App() {
     document.head.appendChild(style);
     const hash = window.location.hash.replace("#","");
     if (hash === "mgmt") { setScreen("mgmt"); return; }
-    if (hash?.startsWith("setter-")) { setSetterId(hash); loadSetter(hash); }
+    if (hash?.startsWith("setter") || hash === "login") { setScreen("login"); }
     else { setScreen("mgmt"); }
   }, []);
 
@@ -481,26 +472,19 @@ export default function App() {
     if (!nameInput.trim() || !passwordInput.trim()) return;
     setLoginLoading(true);
     setLoginError(false);
-    // Use setterId from state OR re-read from URL hash as fallback
-    const id = setterId || window.location.hash.replace("#","");
-    console.log("Attempting login with id:", id);
-    if (!id || !id.startsWith("setter-")) {
-      setLoginLoading(false);
-      setLoginError("account_not_found");
-      return;
-    }
-    const data = await sGet(id);
-    console.log("Firebase data returned:", data);
+    // Look up by name — no longer depends on URL ID
+    const result = await sGetByName(nameInput.trim());
     setLoginLoading(false);
-    if (!data) { setLoginError("account_not_found"); return; }
-    if (data.password !== passwordInput.trim()) { setLoginError("wrong_password"); return; }
+    if (!result) { setLoginError("account_not_found"); return; }
+    if (result.password !== passwordInput.trim()) { setLoginError("wrong_password"); return; }
     setLoginError(false);
+    const id = result._key;
     setSetterId(id);
-    setSetterData(data);
-    setQuizAnswers(data.quizAnswers||{});
-    setQuizAttempts(data.quizAttempts||{});
-    setQuizBlocked(data.quizBlocked||{});
-    if (data.role) { setRole(data.role); setScreen("setter"); }
+    setSetterData(result);
+    setQuizAnswers(result.quizAnswers||{});
+    setQuizAttempts(result.quizAttempts||{});
+    setQuizBlocked(result.quizBlocked||{});
+    if (result.role) { setRole(result.role); setScreen("setter"); }
     else setScreen("role_select");
   };
 
@@ -565,8 +549,8 @@ export default function App() {
 
   const generateLink = async () => {
     if (!newName.trim() || !newPassword.trim()) return;
-    const slug = newName.trim().toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,"");
-    const id = `setter-${slug}-${Math.floor(1000+Math.random()*9000)}`;
+    const slug = newName.trim().toLowerCase().replace(/\s+/g,"_").replace(/[^a-z0-9_]/g,"");
+    const id = `setter_${slug}_${Math.floor(1000+Math.random()*9000)}`;
     const initials = newName.trim().split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
     const setterRecord = {
       name: newName.trim(), initials, password: newPassword.trim(),
@@ -574,7 +558,7 @@ export default function App() {
       completedModules:[], quizScores:{}, quizAnswers:{}, feedback:[], setterId:id
     };
     await sSet(id, setterRecord);
-    const url = `${window.location.href.split("#")[0]}#${id}`;
+    const url = `${window.location.href.split("#")[0]}#login`;
     setGenLink(url);
     setGenPassword(newPassword.trim());
     loadMgmt();

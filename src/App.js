@@ -499,20 +499,24 @@ export default function App() {
     if (!nameInput.trim() || !passwordInput.trim()) return;
     setLoginLoading(true);
     setLoginError(false);
-    // Look up by name — no longer depends on URL ID
-    const result = await sGetByName(nameInput.trim());
-    setLoginLoading(false);
-    if (!result) { setLoginError("account_not_found"); return; }
-    if (result.password !== passwordInput.trim()) { setLoginError("wrong_password"); return; }
-    setLoginError(false);
-    const id = result._key;
-    setSetterId(id);
-    setSetterData(result);
-    setQuizAnswers(result.quizAnswers||{});
-    setQuizAttempts(result.quizAttempts||{});
-    setQuizBlocked(result.quizBlocked||{});
-    if (result.role) { setRole(result.role); setScreen("setter"); }
-    else setScreen("role_select");
+    try {
+      const result = await sGetByName(nameInput.trim());
+      setLoginLoading(false);
+      if (!result) { setLoginError("account_not_found"); return; }
+      if (result.password !== passwordInput.trim()) { setLoginError("wrong_password"); return; }
+      setLoginError(false);
+      const id = result._key;
+      setSetterId(id);
+      setSetterData(result);
+      setQuizAnswers(result.quizAnswers||{});
+      setQuizAttempts(result.quizAttempts||{});
+      setQuizBlocked(result.quizBlocked||{});
+      if (result.role) { setRole(result.role); setScreen("setter"); }
+      else setScreen("role_select");
+    } catch(e) {
+      setLoginLoading(false);
+      setLoginError("error: " + e.message);
+    }
   };
 
   const toggleModule = async (mid) => {
@@ -687,9 +691,10 @@ export default function App() {
         <div style={{ background:T.card, borderRadius:16, border:`1px solid ${T.border}`, padding:"2rem", boxShadow:"0 0 40px rgba(201,168,76,0.06)" }}>
           <div style={{ fontSize:20, fontWeight:800, marginBottom:6, color:T.text }}>Welcome to the team.</div>
           <div style={{ fontSize:13, color:T.muted, marginBottom:"1.5rem", lineHeight:1.65 }}>Sign in using the credentials sent to you by your manager.</div>
-          {loginError==="account_not_found" && <Alert variant="danger" style={{ marginBottom:12 }}>Account not found. Your manager may need to recreate your account — ask them to delete and recreate it from the management dashboard.</Alert>}
+          {loginError && loginError !== "wrong_password" && loginError !== "account_not_found" && <Alert variant="danger" style={{ marginBottom:12 }}>{String(loginError)}</Alert>}
+          {loginError==="account_not_found" && <Alert variant="danger" style={{ marginBottom:12 }}>Account not found. Ask your manager to recreate your account.</Alert>}
           {loginError==="wrong_password" && <Alert variant="danger" style={{ marginBottom:12 }}>Incorrect password. Please check with your manager.</Alert>}
-          {loginError==="firebase_error" && <Alert variant="danger" style={{ marginBottom:12 }}>Connection error. Please check your internet connection and try again. If the problem persists, ask your manager.</Alert>}
+          {loginError==="firebase_error" && <Alert variant="danger" style={{ marginBottom:12 }}>Connection error. Please try again.</Alert>}
           <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Your full name</label>
           <Input value={nameInput} onChange={e=>setNameInput(e.target.value)} placeholder="e.g. Jordan Smith" style={{ marginBottom:"1rem" }} />
           <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Password</label>

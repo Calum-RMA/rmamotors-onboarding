@@ -380,7 +380,7 @@ const Input = ({ value, onChange, onKeyDown, placeholder, type="text", style={} 
 
 export default function App() {
   const [screen, setScreen] = useState("loading");
-  const [setterId, setSetterId] = useState(null);
+  const [role, setRole] = useState(null);
   const [setterData, setSetterData] = useState(null);
   const [nameInput, setNameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");

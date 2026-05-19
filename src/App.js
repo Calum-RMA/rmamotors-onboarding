@@ -585,7 +585,8 @@ export default function App() {
 
   const activeModules = role==="closer" ? CLOSER_MODULES : MODULES;
   const activeQuizzes = role==="closer" ? CLOSER_QUIZZES : QUIZZES;
-  const completionPct = (d) => d ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/((role==="closer"?CLOSER_MODULES:MODULES).length+Object.keys(role==="closer"?CLOSER_QUIZZES:QUIZZES).length)*100) : 0;
+  const safeModuleCount = (s) => s?.role==="closer" ? CLOSER_MODULES.length : MODULES.length;
+  const completionPct = (d) => { if (!d) return 0; const mods = d.role==="closer" ? CLOSER_MODULES : MODULES; const qzs = d.role==="closer" ? CLOSER_QUIZZES : QUIZZES; const total = mods.length + Object.keys(qzs).length; return total > 0 ? Math.round(((d.completedModules?.length||0)+Object.keys(d.quizScores||{}).length)/total*100) : 0; };
   const avgScore = (d) => { const s = Object.values(d?.quizScores||{}); return s.length ? Math.round(s.reduce((a,b)=>a+b,0)/s.length) : null; };
   const isUnlocked = (mod, done=[]) => {
     if (mod.defaultUnlocked) return true;
@@ -766,7 +767,7 @@ export default function App() {
                             <div style={{ fontSize:13, fontWeight:700, color:T.text }}>{s.name}</div>
                             {s.role && <span style={{ fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:99, background:s.role==="closer"?T.purpleBg:T.goldBg, color:s.role==="closer"?T.purpleTx:T.gold, textTransform:"uppercase" }}>{s.role}</span>}
                           </div>
-                          <div style={{ fontSize:11, color:T.muted }}>Started {s.startDate} · {s.completedModules?.length||0}/{MODULES.length} modules</div>
+                          <div style={{ fontSize:11, color:T.muted }}>Started {s.startDate} · {s.completedModules?.length||0}/{safeModuleCount(s)} modules</div>
                         </div>
                         {hasLocked && (
                           <span style={{ fontSize:11, fontWeight:700, padding:"3px 10px", borderRadius:99, background:T.redBg, color:T.redTx }}>
@@ -908,9 +909,9 @@ export default function App() {
   }
 
   const TABS = [{id:"home",label:"Home"},{id:"training",label:"Training"},{id:"scripts",label:"Scripts"},{id:"sops",label:"SOPs"},{id:"kpis",label:"KPIs"},{id:"assessments",label:"Assessments"}];
-  const totalItems = (role==="closer" ? CLOSER_MODULES.length + Object.keys(CLOSER_QUIZZES).length : MODULES.length + Object.keys(activeQuizzes).length);
+  const totalItems = role==="closer" ? (CLOSER_MODULES.length + Object.keys(CLOSER_QUIZZES).length) : (MODULES.length + Object.keys(QUIZZES).length);
   const doneItems = (setterData?.completedModules?.length||0)+Object.keys(setterData?.quizScores||{}).length;
-  const pct = Math.round((doneItems/totalItems)*100);
+  const pct = totalItems > 0 ? Math.round((doneItems/totalItems)*100) : 0;
 
   return (
     <div style={{ background:T.bg, minHeight:"100vh", padding:"1.5rem 2rem" }} className="fade">

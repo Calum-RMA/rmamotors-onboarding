@@ -41,7 +41,7 @@ const sDelete = async (key) => {
   } catch { return false; }
 };
 
-const MGMT_PASSWORD = "RMAmanager2026";
+const MGMT_PASSWORD = "RMAmanager2024";
 
 const QUIZZES = {
   sales: { label:"Speed & Response", icon:"⚡", questions:[
@@ -474,11 +474,21 @@ export default function App() {
     if (!nameInput.trim() || !passwordInput.trim()) return;
     setLoginLoading(true);
     setLoginError(false);
-    const data = await sGet(setterId);
+    // Use setterId from state OR re-read from URL hash as fallback
+    const id = setterId || window.location.hash.replace("#","");
+    console.log("Attempting login with id:", id);
+    if (!id || !id.startsWith("setter-")) {
+      setLoginLoading(false);
+      setLoginError("account_not_found");
+      return;
+    }
+    const data = await sGet(id);
+    console.log("Firebase data returned:", data);
     setLoginLoading(false);
     if (!data) { setLoginError("account_not_found"); return; }
     if (data.password !== passwordInput.trim()) { setLoginError("wrong_password"); return; }
     setLoginError(false);
+    setSetterId(id);
     setSetterData(data);
     setQuizAnswers(data.quizAnswers||{});
     setQuizAttempts(data.quizAttempts||{});

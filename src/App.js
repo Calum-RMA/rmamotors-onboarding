@@ -1,49 +1,59 @@
 import React, { useState, useEffect } from "react";
 
-// ── Firebase Realtime Database Storage ──────────────────────────────────────
-const FIREBASE_URL = "https://rma-motors-onboarding-default-rtdb.firebaseio.com";
+// ── Storage ───────────────────────────────────────────────────────────────────
+// Uses Firebase Realtime Database
+const DB = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/staff";
 
-const fbFetch = async (path, opts={}) => {
+const dbGet = async (key) => {
   try {
-    const r = await fetch(`${FIREBASE_URL}/${path}.json`, opts);
-    if (!r.ok) return null;
-    return await r.json();
+    const res = await fetch(`${DB}/${key}.json`);
+    const json = await res.json();
+    return json && typeof json === "object" ? json : null;
   } catch { return null; }
 };
 
-// Store all setters under /setters node, keyed by a safe ID
-const sGet = async (key) => {
-  const data = await fbFetch(`setters/${key}`);
-  return data;
+const dbSet = async (key, val) => {
+  try {
+    await fetch(`${DB}/${key}.json`, {
+      method: "PUT",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(val)
+    });
+    return true;
+  } catch { return false; }
 };
 
-const sSet = async (key, val) => {
-  const r = await fetch(`${FIREBASE_URL}/setters/${key}.json`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(val)
-  });
-  return r ? r.ok : false;
+const dbList = async () => {
+  try {
+    const res = await fetch(`${DB}.json?shallow=true`);
+    const json = await res.json();
+    return json && typeof json === "object" ? Object.keys(json) : [];
+  } catch { return []; }
 };
 
-const sList = async (prefix) => {
-  const data = await fbFetch("setters");
-  if (!data) return [];
-  return Object.keys(data).filter(k => k.startsWith(prefix));
+const dbDelete = async (key) => {
+  try {
+    await fetch(`${DB}/${key}.json`, { method: "DELETE" });
+    return true;
+  } catch { return false; }
 };
 
-const sDelete = async (key) => {
-  await fetch(`${FIREBASE_URL}/setters/${key}.json`, { method: "DELETE" });
-  return true;
+const dbFindByName = async (name) => {
+  try {
+    const res = await fetch(`${DB}.json`);
+    const json = await res.json();
+    if (!json || typeof json !== "object") return null;
+    const entry = Object.entries(json).find(([k,v]) => v?.name?.toLowerCase() === name.trim().toLowerCase());
+    return entry ? { ...entry[1], _key: entry[0] } : null;
+  } catch { return null; }
 };
 
-// Find setter by name (for name-based login)
-const sGetByName = async (name) => {
-  const data = await fbFetch("setters");
-  if (!data) return null;
-  const key = Object.keys(data).find(k => data[k]?.name?.toLowerCase() === name.toLowerCase());
-  return key ? { ...data[key], _key: key } : null;
-};
+// Aliases for compatibility
+const sGet = dbGet;
+const sSet = dbSet;
+const sList = async (prefix) => { const keys = await dbList(); return keys.filter(k=>k.startsWith(prefix||"")); };
+const sDelete = dbDelete;
+const sGetByName = dbFindByName;
 
 const MGMT_PASSWORD = "RMAmanager2024";
 

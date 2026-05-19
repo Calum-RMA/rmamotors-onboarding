@@ -1,55 +1,68 @@
 import React, { useState, useEffect } from "react";
 
 // ── Storage ───────────────────────────────────────────────────────────────────
-// Uses Firebase Realtime Database
 const DB = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/staff";
+const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/staff";
+
+const tryFetch = async (url, opts={}) => {
+  try {
+    const r = await fetch(url, opts);
+    if (r.ok) return r;
+    return null;
+  } catch { return null; }
+};
 
 const dbGet = async (key) => {
   try {
-    const res = await fetch(`${DB}/${key}.json`);
-    const json = await res.json();
-    return json && typeof json === "object" ? json : null;
+    let res = await tryFetch(`${DB}/${key}.json`);
+    if (!res) res = await tryFetch(`${DB2}/${key}.json`);
+    if (!res) return null;
+    const text = await res.text();
+    if (!text || text === "null") return null;
+    return JSON.parse(text);
   } catch { return null; }
 };
 
 const dbSet = async (key, val) => {
   try {
-    await fetch(`${DB}/${key}.json`, {
-      method: "PUT",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(val)
-    });
-    return true;
+    const body = JSON.stringify(val);
+    let res = await tryFetch(`${DB}/${key}.json`, { method:"PUT", headers:{"Content-Type":"application/json"}, body });
+    if (!res) res = await tryFetch(`${DB2}/${key}.json`, { method:"PUT", headers:{"Content-Type":"application/json"}, body });
+    return res ? res.ok : false;
   } catch { return false; }
 };
 
 const dbList = async () => {
   try {
-    const res = await fetch(`${DB}.json?shallow=true`);
-    const json = await res.json();
+    let res = await tryFetch(`${DB}.json?shallow=true`);
+    if (!res) res = await tryFetch(`${DB2}.json?shallow=true`);
+    if (!res) return [];
+    const text = await res.text();
+    if (!text || text === "null") return [];
+    const json = JSON.parse(text);
     return json && typeof json === "object" ? Object.keys(json) : [];
   } catch { return []; }
 };
 
 const dbDelete = async (key) => {
   try {
-    await fetch(`${DB}/${key}.json`, { method: "DELETE" });
+    await tryFetch(`${DB}/${key}.json`, { method:"DELETE" });
     return true;
   } catch { return false; }
 };
 
 const dbFindByName = async (name) => {
   try {
-    const res = await fetch(`${DB}.json`);
-    if (!res.ok) return null;
+    let res = await tryFetch(`${DB}.json`);
+    if (!res) res = await tryFetch(`${DB2}.json`);
+    if (!res) return null;
     const text = await res.text();
     if (!text || text === "null") return null;
     const json = JSON.parse(text);
     if (!json || typeof json !== "object") return null;
-    const entries = Object.entries(json);
-    const entry = entries.find(([k,v]) => v && v.name && v.name.toLowerCase().trim() === name.toLowerCase().trim());
+    const entry = Object.entries(json).find(([k,v]) => v && v.name && v.name.toLowerCase().trim() === name.toLowerCase().trim());
     return entry ? { ...entry[1], _key: entry[0] } : null;
-  } catch(e) { return null; }
+  } catch { return null; }
 };
 
 // Aliases for compatibility

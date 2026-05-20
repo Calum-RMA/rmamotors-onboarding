@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 51;
+const BUILD_VERSION = 52;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -876,7 +876,7 @@ export default function App() {
             <div style={{ width:1, height:24, background:T.border }} />
             <div>
               <div style={{ fontSize:16, fontWeight:800, color:T.text }}>Management Dashboard</div>
-              <div style={{ fontSize:11, color:T.muted }}>Setter onboarding tracker</div>
+              <div style={{ fontSize:11, color:T.muted }}>Onboarding and Training Tracker</div>
             </div>
           </div>
           <div style={{ display:"flex", gap:8, alignItems:"center" }}>
@@ -935,7 +935,7 @@ export default function App() {
         ) : (
           <>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:10, marginBottom:"1.75rem" }}>
-              {[["Active setters",mgmtSetters.length],["Avg completion",`${avgComp}%`],["Quizzes passed",`${passed}`,],["Shop floor ready",mgmtSetters.filter(s=>completionPct(s)>=90).length]].map(([l,v])=>(
+              {[["Active setters",mgmtSetters.filter(s=>s.role!=="closer").length],["Active closers",mgmtSetters.filter(s=>s.role==="closer").length],["Avg completion",`${avgComp}%`],["Quizzes passed",`${passed}`,],["Shop floor ready",mgmtSetters.filter(s=>completionPct(s)>=90).length]].map(([l,v])=>(
                 <div key={l} style={{ background:T.surf, borderRadius:10, padding:"1rem", border:`1px solid ${T.border}` }}>
                   <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.06em" }}>{l}</div>
                   <div style={{ fontSize:24, fontWeight:800, color:T.text }}>{v}</div>

@@ -4,6 +4,14 @@ import React, { useState, useEffect } from "react";
 const DB = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/staff";
 const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/staff";
 
+// ── App version ─────────────────────────────────────────────────────────────
+// Bump this number every time you deploy a new build. After deploying, a manager
+// clicks "Publish update" in the dashboard, which writes this value to Firebase.
+// Clients running an older version then see a "refresh" banner.
+const BUILD_VERSION = 51;
+const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
+const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
+
 const tryFetch = async (url, opts={}) => {
   try {
     const r = await fetch(url, opts);
@@ -71,6 +79,27 @@ const sSet = dbSet;
 const sList = async (prefix) => { const keys = await dbList(); return keys.filter(k=>k.startsWith(prefix||"")); };
 const sDelete = dbDelete;
 const sGetByName = dbFindByName;
+
+// Read/write the published app version from Firebase /meta/version
+const getServerVersion = async () => {
+  try {
+    let res = await tryFetch(`${META}/version.json`);
+    if (!res) res = await tryFetch(`${META2}/version.json`);
+    if (!res) return null;
+    const text = await res.text();
+    if (!text || text === "null") return null;
+    const n = JSON.parse(text);
+    return typeof n === "number" ? n : null;
+  } catch { return null; }
+};
+const setServerVersion = async (n) => {
+  try {
+    const body = JSON.stringify(n);
+    let res = await tryFetch(`${META}/version.json`, { method:"PUT", headers:{"Content-Type":"application/json"}, body });
+    if (!res) res = await tryFetch(`${META2}/version.json`, { method:"PUT", headers:{"Content-Type":"application/json"}, body });
+    return res ? res.ok : false;
+  } catch { return false; }
+};
 
 const MGMT_PASSWORD = "RMAmanager2024";
 
@@ -423,6 +452,8 @@ export default function App() {
   const [mgmtTab, setMgmtTab] = useState("overview");
   const [mgmtAuth, setMgmtAuth] = useState(false);
   const [mgmtPassword, setMgmtPassword] = useState("");
+  const [updateAvailable, setUpdateAvailable] = useState(false); // server version > BUILD_VERSION
+  const [publishDone, setPublishDone] = useState(false);
   const [mgmtAuthError, setMgmtAuthError] = useState(false);
   const [fbTarget, setFbTarget] = useState("");
   const [fbType, setFbType] = useState("General coaching");
@@ -508,6 +539,35 @@ export default function App() {
     if (hash?.startsWith("setter") || hash === "login" || hash === "") { setScreen("login"); }
     else { setScreen("mgmt"); }
   }, []);
+
+  // Version check — polls the published version and shows a refresh banner if a
+  // newer build has been published than the one this browser is running.
+  useEffect(() => {
+    let cancelled = false;
+    const check = async () => {
+      const sv = await getServerVersion();
+      if (!cancelled && typeof sv === "number" && sv > BUILD_VERSION) setUpdateAvailable(true);
+    };
+    check();
+    const interval = setInterval(check, 60000);
+    const onFocus = () => check();
+    window.addEventListener("focus", onFocus);
+    return () => { cancelled = true; clearInterval(interval); window.removeEventListener("focus", onFocus); };
+  }, []);
+
+  const handlePublishUpdate = async () => {
+    const ok = await setServerVersion(BUILD_VERSION);
+    if (ok) { setPublishDone(true); setTimeout(()=>setPublishDone(false), 4000); }
+  };
+
+  // Fixed refresh banner shown when a newer build has been published.
+  const updateBanner = updateAvailable ? (
+    <div style={{ position:"fixed", top:0, left:0, right:0, zIndex:9999, background:"linear-gradient(90deg,#C9A84C,#E0C56E)", color:"#1A1F2E", padding:"10px 16px", display:"flex", alignItems:"center", justifyContent:"center", gap:14, flexWrap:"wrap", boxShadow:"0 2px 12px rgba(0,0,0,0.35)", fontFamily:"'DM Sans',system-ui,sans-serif" }}>
+      <span style={{ fontSize:13, fontWeight:700 }}>✨ A new version of the platform is available.</span>
+      <button onClick={()=>window.location.reload()} style={{ background:"#1A1F2E", color:"#fff", border:"none", borderRadius:8, padding:"6px 16px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"'DM Sans',system-ui,sans-serif" }}>Refresh now</button>
+      <button onClick={()=>setUpdateAvailable(false)} style={{ background:"transparent", color:"#1A1F2E", border:"none", fontSize:13, fontWeight:600, cursor:"pointer", textDecoration:"underline", fontFamily:"'DM Sans',system-ui,sans-serif" }}>Later</button>
+    </div>
+  ) : null;
 
   const loadMgmt = async () => {
     setMgmtLoading(true);
@@ -751,11 +811,13 @@ export default function App() {
   );
 
   if (screen==="login") return (
+    <>
+    {updateBanner}
     <div style={{ minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"2rem 1rem", background:T.bg }} className="fade">
       <div style={{ width:"100%", maxWidth:420 }}>
         <div style={{ textAlign:"center", marginBottom:"2.5rem" }}>
           <RMALogo size={30} />
-          <div style={{ marginTop:12, fontSize:11, fontWeight:700, letterSpacing:"0.18em", color:T.muted, textTransform:"uppercase" }}>Setter Onboarding Platform</div>
+          <div style={{ marginTop:12, fontSize:11, fontWeight:700, letterSpacing:"0.18em", color:T.muted, textTransform:"uppercase" }}>Onboarding and Training Platform</div>
         </div>
         <div style={{ background:T.card, borderRadius:16, border:`1px solid ${T.border}`, padding:"2rem", boxShadow:"0 0 40px rgba(201,168,76,0.06)" }}>
           <div style={{ fontSize:20, fontWeight:800, marginBottom:6, color:T.text }}>Welcome to the team.</div>
@@ -776,6 +838,7 @@ export default function App() {
         </div>
       </div>
     </div>
+    </>
   );
 
   if (screen==="mgmt" && !mgmtAuth) return (
@@ -804,6 +867,8 @@ export default function App() {
     const avgComp = mgmtSetters.length ? Math.round(mgmtSetters.reduce((a,s)=>a+completionPct(s),0)/mgmtSetters.length) : 0;
     const passed = mgmtSetters.reduce((total, s) => total + Object.values(s.quizScores||{}).filter(score=>score>=90).length, 0);
     return (
+      <>
+      {updateBanner}
       <div style={{ padding:"2rem", maxWidth:1000, margin:"0 auto", background:T.bg, minHeight:"100vh" }} className="fade">
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.75rem", flexWrap:"wrap", gap:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:14 }}>
@@ -814,7 +879,9 @@ export default function App() {
               <div style={{ fontSize:11, color:T.muted }}>Setter onboarding tracker</div>
             </div>
           </div>
-          <div style={{ display:"flex", gap:8 }}>
+          <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+            <span style={{ fontSize:10, color:T.faint, fontFamily:"monospace" }} title="The build version this dashboard is running">v{BUILD_VERSION}</span>
+            <Btn small onClick={handlePublishUpdate} title="After deploying a new build to Netlify, click this to prompt all logged-in users to refresh">{publishDone ? "✓ Published" : "📢 Publish update"}</Btn>
             <Btn small onClick={loadMgmt}>↻ Refresh</Btn>
             <Btn small primary onClick={()=>setMgmtTab(mgmtTab==="links"?"overview":"links")}>{mgmtTab==="links"?"← Overview":"+ New account"}</Btn>
             <Btn small onClick={()=>{ setMgmtAuth(false); setMgmtPassword(""); }}>Sign out</Btn>
@@ -1060,6 +1127,7 @@ export default function App() {
           </>
         )}
       </div>
+      </>
     );
   }
 
@@ -1069,6 +1137,8 @@ export default function App() {
   const pct = totalItems > 0 ? Math.round((doneItems/totalItems)*100) : 0;
 
   return (
+    <>
+    {updateBanner}
     <div style={{ background:T.bg, minHeight:"100vh", padding:"1.5rem 2rem" }} className="fade">
       <div style={{ maxWidth:1000, margin:"0 auto" }}>
         <div style={{ display:"flex", alignItems:"center", gap:14, paddingBottom:"1.25rem", borderBottom:`1px solid ${T.border}`, marginBottom:"1.5rem", flexWrap:"wrap" }}>
@@ -1793,5 +1863,6 @@ If they reply with an objection:
         )}
       </div>
     </div>
+    </>
   );
 }

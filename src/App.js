@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 55;
+const BUILD_VERSION = 56;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -802,7 +802,8 @@ export default function App() {
   const PASS = passMarkForView(viewRole);
   const isUnlocked = (mod, done=[]) => {
     if (mod.defaultUnlocked) return true;
-    const order = ["m1","m2","m3","m4","m5","m6"];
+    // Unlock order follows the active role's own module sequence.
+    const order = (viewRole==="closer" ? CLOSER_MODULES : MODULES).map(m=>m.id);
     const idx = order.indexOf(mod.id);
     return idx > 0 && done.includes(order[idx-1]);
   };
@@ -1309,14 +1310,18 @@ export default function App() {
         {activeTab==="training" && (
           <div>
             {[1,2,3].map(phase=>{
-              const labels=["Phase 1 — Foundation","Phase 2 — CRM Mastery","Phase 3 — Live Operations"];
+              const labels = viewRole==="closer"
+                ? ["Phase 1 — Foundation","Phase 2 — Showroom & Deal Mastery","Phase 3 — Live Operations"]
+                : ["Phase 1 — Foundation","Phase 2 — CRM Mastery","Phase 3 — Live Operations"];
+              const phaseModules = activeModules.filter(m=>m.phase===phase);
+              if (phaseModules.length===0) return null;
               return (
                 <div key={phase}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, margin:phase===1?"0 0 10px":"1.5rem 0 10px" }}>
                     <div style={{ width:2, height:14, background:T.gold, borderRadius:1 }} />
                     <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.1em", color:T.gold, textTransform:"uppercase" }}>{labels[phase-1]}</div>
                   </div>
-                  {MODULES.filter(m=>m.phase===phase).map(mod=>{
+                  {phaseModules.map(mod=>{
                     const done=activeProgress.completedModules?.includes(mod.id), unlocked=isUnlocked(mod,activeProgress.completedModules||[]), open=expandedMod===mod.id;
                     return (
                       <div key={mod.id} className="mod-card" style={{ background:T.card, borderRadius:12, marginBottom:8, border:`1px solid ${open?T.borderLt:T.border}`, borderLeft:`3px solid ${done?T.green:open?T.gold:T.border}`, borderTopLeftRadius:0, borderBottomLeftRadius:0 }}>

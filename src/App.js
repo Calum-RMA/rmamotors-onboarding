@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 56;
+const BUILD_VERSION = 57;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -478,6 +478,52 @@ const Input = ({ value, onChange, onKeyDown, placeholder, type="text", style={} 
   <input type={type} value={value} onChange={onChange} onKeyDown={onKeyDown} placeholder={placeholder}
     style={{ width:"100%", background:T.surf, border:`1px solid ${T.border}`, color:T.text, borderRadius:9, padding:"11px 14px", fontSize:14, ...style }} />
 );
+
+// ── Script channel rendering ────────────────────────────────────────────────
+// Channels: "whatsapp" (sent message), "phone" (spoken call), "inperson" (face to face), "video" (Snap Cell)
+const CHANNEL_META = {
+  whatsapp: { label:"WhatsApp message", icon:"💬", bg:"rgba(37,211,102,0.12)", bd:"#25D366", tx:"#25D366" },
+  phone:    { label:"Phone call",       icon:"📞", bg:"rgba(96,165,250,0.12)", bd:T.blue,   tx:T.blueTx },
+  inperson: { label:"In person",        icon:"🧍", bg:"rgba(201,168,76,0.14)", bd:T.gold,   tx:T.gold },
+  video:    { label:"Snap Cell video",  icon:"🎥", bg:"rgba(146,109,222,0.14)",bd:T.purple, tx:T.purpleTx },
+};
+const ChannelBadge = ({ channel }) => {
+  const m = CHANNEL_META[channel] || CHANNEL_META.inperson;
+  return (
+    <span style={{ display:"inline-flex", alignItems:"center", gap:5, fontSize:10, fontWeight:700, padding:"3px 9px", borderRadius:99, background:m.bg, border:`1px solid ${m.bd}`, color:m.tx, textTransform:"uppercase", letterSpacing:"0.05em" }}>
+      <span style={{ fontSize:11 }}>{m.icon}</span>{m.label}
+    </span>
+  );
+};
+// Renders WhatsApp-channel scripts as green chat bubbles; everything else as the
+// spoken-dialogue monospace box. Lines beginning with → are treated as action notes.
+const ScriptBody = ({ channel, text }) => {
+  if (channel === "whatsapp" || channel === "video") {
+    const lines = text.split("\n");
+    return (
+      <div style={{ background:"#0B141A", borderRadius:10, padding:"12px 12px 12px", display:"flex", flexDirection:"column", gap:6 }}>
+        {lines.map((line, i) => {
+          const t = line.trim();
+          if (!t) return null;
+          if (t.startsWith("→") || t.startsWith("[") && t.endsWith("]")) {
+            return <div key={i} style={{ fontSize:11, color:T.faint, fontStyle:"italic", padding:"2px 4px", lineHeight:1.5 }}>{t}</div>;
+          }
+          const clean = t.replace(/^"|"$/g,"");
+          return (
+            <div key={i} style={{ alignSelf:"flex-end", maxWidth:"85%", background:"#005C4B", color:"#E9EDEF", borderRadius:"8px 8px 2px 8px", padding:"7px 10px 5px", fontSize:12.5, lineHeight:1.5, position:"relative", boxShadow:"0 1px 1px rgba(0,0,0,0.2)" }}>
+              {clean}
+              <span style={{ display:"block", textAlign:"right", fontSize:9, color:"rgba(233,237,239,0.5)", marginTop:2 }}>✓✓</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+  // Spoken dialogue (phone / in person)
+  return (
+    <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{text}</div>
+  );
+};
 
 export default function App() {
   const [screen, setScreen] = useState("loading");
@@ -1360,6 +1406,14 @@ export default function App() {
 
         {activeTab==="scripts" && (
           <div>
+            <div style={{ display:"flex", gap:8, flexWrap:"wrap", alignItems:"center", marginBottom:14, padding:"10px 12px", background:T.surf, border:`1px solid ${T.border}`, borderRadius:10 }}>
+              <span style={{ fontSize:10, fontWeight:700, color:T.faint, textTransform:"uppercase", letterSpacing:"0.06em", marginRight:2 }}>Channel key:</span>
+              <ChannelBadge channel="whatsapp" />
+              <ChannelBadge channel="video" />
+              <ChannelBadge channel="phone" />
+              <ChannelBadge channel="inperson" />
+              <span style={{ fontSize:11, color:T.muted, width:"100%", marginTop:2 }}>Green chat bubbles = messages to send. Mono boxes = spoken word (phone or face to face).</span>
+            </div>
           {viewRole==="closer" ? (
             <div>
               <SectionLabel style={{ marginTop:0 }}>Closer scripts & frameworks</SectionLabel>
@@ -1368,13 +1422,13 @@ export default function App() {
                 <div style={{ fontSize:12, color:T.text, lineHeight:1.6 }}>These follow the 14-step process (see the SOPs tab → Road to the Sale). Weave them into your own personality so they flow naturally — never rigid or scripted. Drill them with your Sales Manager.</div>
               </div>
               {[
-                ["Step 2 — Greeting & RDR handling","In person: stand, come out from behind the desk, eye contact, get their name.",
+                ["Step 2 — Greeting & RDR handling","In person: stand, come out from behind the desk, eye contact, get their name.","inperson",
 `"Good [morning/afternoon], welcome to RMA Motors — I'm [Your Name]. You must be [Customer Name]? Great to meet you. Can I grab you a water or a coffee?"
 
 Handling the RDR "I'm just looking around":
 "Absolutely, take your time — that's exactly what we're here for. We've got around 150 cars on site, so rather than have you wander, let me point you in the right direction. Can I ask — what's brought you in today / what are you currently driving?"
 → Acknowledge, then move straight into Fact Finding.`],
-                ["Step 3 — Fact Finding questions","Probe and MUST get answers before moving on. Always revert to their 'WHY'.",
+                ["Step 3 — Fact Finding questions","Probe and MUST get answers before moving on. Always revert to their 'WHY'.","inperson",
 `"What's prompting the change from your current car?"
 "What do you love about it — and what would you change if you could?"
 "Is it the right size — too big, too small, enough seats for the family?"
@@ -1382,76 +1436,79 @@ Handling the RDR "I'm just looking around":
 "Are you thinking cash, or would finance suit you better? Which bank do you use?"
 "Are you fairly new to the country or to your current role?"
 → Identify the decision maker. Pin down their WHY and leverage the weaknesses of their current car throughout.`],
-                ["Step 4 — Appraisal / trade-in transition","Transition naturally from fact finding.",
+                ["Step 4 — Appraisal / trade-in transition","Transition naturally from fact finding.","inperson",
 `With a trade-in:
 "It sounds like your current car has served you well. Would you like me to get our team to take a quick look and put a trade-in figure together for you while we look at the options?"
 
 No trade-in:
 "What did you drive before this one? How did you find selling or trading that — smooth, or a bit of a headache?"
 → Past experiences tell you what they value in a transaction.`],
-                ["Step 6 — Demonstration & up-sale seed #1","Customers believe what they SEE. Have all literature to hand.",
+                ["Step 6 — Demonstration & up-sale seed #1","Customers believe what they SEE. Have all literature to hand.","inperson",
 `"Let me show you exactly what we've done to get this car to the standard it's at now."
 → Show printed service history, receipts, warranty and service-pack literature.
 "Every car we sell goes through a full RMA Car Care detailing package — deep polishing, paint correction, PDR, wheel refurbishment and a full technical inspection. That package alone is worth 2,500 AED, and it's already done."
 "To keep it looking this good, the natural next step is protecting it — PPF, ceramic coating or tints. I'll come back to that, but keep it in mind."`],
-                ["Step 8 — Trial close (after the road test)","While the emotional attachment is fresh.",
+                ["Step 8 — Trial close (after the road test)","While the emotional attachment is fresh.","inperson",
 `"How did you feel in your new car?"
 "Did you enjoy that compared to your old one?"
 "On a scale of 1 to 10, where does this sit against what you're driving now?"
 "Can you see yourself in this?"
 → Gauge the response honestly — their guard is down. Listen for objections starting to form so you can prepare to handle them.`],
-                ["Step 9 — Build value in the brand","Seat them at your desk. Do NOT jump to figures yet.",
+                ["Step 9 — Build value in the brand","Seat them at your desk. Do NOT jump to figures yet.","inperson",
 `"Before we talk numbers, let me tell you a little about who we are. RMA Motors isn't your average dealership — we're enthusiasts. Every car is hand-picked, fully prepared and presented to a standard you won't find with a private seller or even most main dealers. That's why our customers keep coming back and refer their friends."
 → 3rd up-sale seed: "Part of that is our RMA Car Care division — PPF, ceramic, tints — we're accredited with GTechniq and Profilm. Whatever you need down the line, we're here."`],
-                ["Step 10 — Deal sheet & the silent pause","PPF up-sell in every quote is mandatory. Then go silent.",
+                ["Step 10 — Deal sheet & the silent pause","PPF up-sell in every quote is mandatory. Then go silent.","inperson",
 `"Let me put this on screen for you. Here's the car, registration, and everything included — RMA Car Protect, Smart Protect, and your paint protection options."
 → Highlight the lowest monthly / lowest down payment, or a figure near what they pay now.
 "It's just a 3,000 AED holding deposit to reserve it, and that's included in your payment. For a newer, better car — at around the same monthly as you're paying now."
 → Then STOP. Sit back, say nothing, and let them speak first.`],
-                ["Step 11 — Negotiation logic","Price is never our issue. Negotiate with their money, not ours.",
+                ["Step 11 — Negotiation logic","Price is never our issue. Negotiate with their money, not ours.","inperson",
 `"I completely understand wanting the best deal — let me ask, do you agree that the best deal isn't always the cheapest price? Nobody wants a cheap car that turns into a headache."
 → Build value: lower than main dealer, better prepared than a private seller, 0% down options, multiple banks, no evaluation costs, no RTA running around, no insurance chasing.
 "Let me show you on Deal Drive what similar cars are doing on the market — see these ones that have sat for months with price drop after price drop? There's usually a reason."
 → If stuck, introduce your Sales Manager (second face). A token discount is a last resort, manager-approved, ideally offset by a trade-in or by them taking Car Protect / PPF.`],
-                ["Step 14 — Follow up (value-first)","Never 'just following up'. Always give before you receive.",
+                ["Step 14 — Follow up (value-first)","Never 'just following up'. Always give before you receive.","whatsapp",
 `Initial contact / wishlist match / no-show → always a personal Snap Cell video.
 
 Quotation follow-up (be creative and varied):
 "Hi [Name] — thought of you today. The market's shifted a little this week and I wanted to share something that might affect your decision…"
 "[Name], a quick bit of market info for you — [education / spec / comparison]. Whenever you're ready, I'm here."
 → Keep adapting the message until you get a response. Come from a point of value every time.`],
-                ["Appointment confirmation call","Use this script when confirming an appointment after the Setter has booked it.",
+                ["Appointment confirmation call","Use this script when confirming an appointment after the Setter has booked it.","phone",
 `"Hi [Name], it's [Your Name] from RMA Motors — I'm the Sales Closer who's going to be looking after you when you come in. [Setter Name] mentioned you're coming in at [time] to see the [Car Model] — I just wanted to personally reach out and confirm that, and let you know the car is ready and waiting for you. Is there anything you'd like me to prepare before you arrive?"`],
-                ["Post-Setter introduction Snap Cell","Send within 30 minutes of the Setter's warm introduction.",
+                ["Post-Setter introduction Snap Cell","Send within 30 minutes of the Setter's warm introduction.","video",
 `Record in front of the specific car. Include:
 1. "Hi [Name], I'm [Your Name] — I'll be looking after you from here."
 2. Brief walk around the car — highlight 2-3 features relevant to what they mentioned.
 3. "I'm looking forward to meeting you at [time]. Any questions before then, message me directly."`],
-                ["No show — immediate response (within 5 mins)","Warm, not pushy.",
+                ["No show — immediate response (within 5 mins)","Warm, not pushy.","whatsapp",
 `"Hi [Name], I was looking forward to meeting you today at [time] — I hope everything is okay. The [Car Model] is still here and I'd love to show it to you. Would you like to reschedule? Just reply here and we'll sort something that works for you."`],
-                ["No show — 2 hour follow-up Snap Cell","Film in front of the car.",
+                ["No show — 2 hour follow-up Snap Cell","Film in front of the car.","video",
 `"Hey [Name] — just wanted to reach out. The [Car] is still here and I genuinely think you're going to love it. No pressure at all — if something came up today that's totally fine. Just let me know when works and I'll make sure it's ready for you."`],
-                ["Trial close — after test drive","Use after the customer has experienced the car.",
+                ["Trial close — after test drive","Use after the customer has experienced the car.","inperson",
 `Closer: "Based on what you've seen and felt today — is this the car for you?"
 Customer: "Yes, I think so."
 Closer: "The next step is to secure it with a deposit — this takes it off the market and we begin the process. Shall we do that now?"
 
 If hesitant: "What would need to happen for you to feel completely comfortable moving forward today?"`],
-                ["Deposit close","When the customer is ready.",
+                ["Deposit close","When the customer is ready.","inperson",
 `Closer: "Let's get this locked in for you. We'll need a deposit today to secure the car — what works better for you, card or bank transfer?"
 → Always offer two options, never ask open-ended "how would you like to pay?"
 → Complete deal sheet immediately. Three signed copies: customer, F&I, Accounts.
 → Update CRM to 'Deposit Received' immediately.`],
-                ["Post-handover Google Review request","Ask at the reveal while energy is high.",
+                ["Post-handover Google Review request","Ask at the reveal while energy is high.","inperson",
 `"[Name], it's been an absolute pleasure getting this sorted for you. Would you mind doing us a huge favour? If you could leave us a quick Google Review — it genuinely helps other buyers feel confident choosing RMA. I'll send you the link right now."
 → Send the Google Review link to WhatsApp immediately. Don't wait.`],
-                ["Referral ask at handover","At the point of the reveal.",
+                ["Referral ask at handover","At the point of the reveal.","inperson",
 `"While I have you here in the best mood — is there anyone in your circle, family, friends, colleagues, who is looking for a car? We'd love an introduction. We'll make sure they're looked after just as well as you've been."`],
-              ].map(([title, sub, script]) => (
+              ].map(([title, sub, channel, script]) => (
                 <div key={title} style={{ borderLeft:`2px solid ${T.gold}`, padding:"0.9rem 1rem", marginBottom:8, borderRadius:"0 8px 8px 0", background:T.goldBg, border:`1px solid ${T.goldDim}`, borderLeftWidth:2 }}>
-                  <div style={{ fontSize:11, fontWeight:700, color:T.gold, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.08em" }}>{title}</div>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8, marginBottom:2, flexWrap:"wrap" }}>
+                    <div style={{ fontSize:11, fontWeight:700, color:T.gold, textTransform:"uppercase", letterSpacing:"0.08em" }}>{title}</div>
+                    <ChannelBadge channel={channel} />
+                  </div>
                   <div style={{ fontSize:11, color:T.goldLt, marginBottom:6, fontWeight:500 }}>{sub}</div>
-                  <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{script}</div>
+                  <ScriptBody channel={channel} text={script} />
                 </div>
               ))}
             </div>
@@ -1476,83 +1533,89 @@ If hesitant: "What would need to happen for you to feel completely comfortable m
           </div>
           <SectionLabel style={{ marginTop:0 }}>8-step setter framework — full conversational examples</SectionLabel>
             {[
-              ["Step 1 — Connection","Open with energy. Confirm who they are and what they enquired about.",
+              ["Step 1 — Connection","Open with energy. Confirm who they are and what they enquired about.","phone",
 `Setter: "Yeah hi [Name], this is [Your Name] from RMA Motors — you reached out about the [Car Model] earlier, right?"
 Customer: "Yeah that's me."
 Setter: "Perfect, glad I caught you. I've actually just been standing in front of the car — it's a great spec. Got a couple of minutes so I can tell you more about it?"`],
-              ["Step 2 — Clarify interest","Find out specifically what drew them to this car. Do not assume.",
+              ["Step 2 — Clarify interest","Find out specifically what drew them to this car. Do not assume.","phone",
 `Setter: "Just so I understand properly — what was it about the [Car Model] that caught your eye? The spec, the mileage, the price?"
 Customer: "Mainly the price and mileage to be honest."
 Setter: "That makes sense — it's one of the best-priced options we've had for that spec. The mileage is really clean too. How long have you been looking?"`],
-              ["Step 3 — Discovery","Qualify on budget, timeline, current car, and priorities. Listen more than you talk.",
+              ["Step 3 — Discovery","Qualify on budget, timeline, current car, and priorities. Listen more than you talk.","phone",
 `Setter: "What are you driving at the moment?"
 Customer: "A 2019 Camry."
 Setter: "Are you looking to sell it or keeping it? And timing-wise — actively looking in the next couple of weeks or more of a right-deal-comes-along situation?"
 Customer: "Actively looking if the right car comes up."
 Setter: "Perfect. And budget — cash or would you explore finance?"`],
-              ["Step 4 — Position RMA","Build trust. Be transparent before they even ask.",
+              ["Step 4 — Position RMA","Build trust. Be transparent before they even ask.","phone",
 `Setter: "One thing that matters to a lot of our buyers — we're fully upfront about the car's history before you even come in. Every car is inspected before we list it. No surprises when you arrive. That's the RMA difference."`],
-              ["Step 5 — Sell the appointment","Sell the visit, not the car.",
+              ["Step 5 — Sell the appointment","Sell the visit, not the car.","phone",
 `Setter: "Here's what I'd suggest — come in, have a proper look, go through the history with me, see how it feels in person. We can also run through finance options and talk about our RMA PPF paint protection — most of our customers add it to keep the car in showroom condition. Takes about 45 minutes and you'll know exactly where you stand."
 Customer: "Yeah that works."
 Setter: "Great — let's get that locked in."`],
-              ["Step 6 — Verbal commitment","Get their word. This is the single biggest lever for improving show rates.",
+              ["Step 6 — Verbal commitment","Get their word. This is the single biggest lever for improving show rates.","phone",
 `Setter: "Before I put it in the diary — can I get your word that you'll show up? I ask everyone this because I want to hold that slot for you and not show the car to anyone else at that time. If anything comes up, just message me and we'll move it. But I need that commitment."
 Customer: "Yes, I'll be there."
 Setter: "Perfect — I appreciate that."`],
-              ["Step 7 — Confirmation","Lock in all details and update CRM immediately.",
+              ["Step 7 — Confirmation","Lock in all details and update CRM immediately.","phone",
 `Setter: "So we're confirmed — [Day] at [Time], Showroom 3, Speedex Centre, DIP 1. I'll send you the location on WhatsApp now. Car will be ready and waiting. Any questions before then, message me directly on this number."
 → Update CRM to 'Appointment Booked' immediately. Set reminder for pre-appointment message.`],
-              ["Step 8 — Pre-appointment reinforcement","Send the day before. Video is more personal than text.",
+              ["Step 8 — Pre-appointment reinforcement","Send the day before. Video is more personal than text.","video",
 `"Hey [Name] — just confirming we're on for tomorrow at [time]. The [Car Model] is ready for you. You mentioned [what they said] — I think you'll like it. See you tomorrow. Any issues, message me here."
 → Send as a Snap Cell video filmed in front of the car if possible.`]
-            ].map(([l,sub,t])=>(
+            ].map(([l,sub,channel,t])=>(
               <div key={l} style={{ borderLeft:`2px solid ${T.gold}`, padding:"0.9rem 0.9rem 0.9rem 1rem", marginBottom:8, borderRadius:"0 8px 8px 0", background:T.goldBg, border:`1px solid ${T.goldDim}`, borderLeftWidth:2 }}>
-                <div style={{ fontSize:10, fontWeight:700, color:T.gold, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8, marginBottom:2, flexWrap:"wrap" }}>
+                  <div style={{ fontSize:10, fontWeight:700, color:T.gold, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                  <ChannelBadge channel={channel} />
+                </div>
                 <div style={{ fontSize:11, color:T.goldLt, marginBottom:6, fontWeight:500 }}>{sub}</div>
-                <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{t}</div>
+                <ScriptBody channel={channel} text={t} />
               </div>
             ))}
             <SectionLabel>BAMFAM follow-up sequence — no answer</SectionLabel>
             <div style={{ fontSize:12, color:T.muted, marginBottom:12, lineHeight:1.65 }}>When a lead does not answer after x2 double dial, send these messages in sequence over 15 days. Space them out — do not send all at once.</div>
             {[
-              ["Message 1 — Intro (send immediately) + Snap Cell","Send a personalised Snap Cell video immediately alongside this message.",
+              ["Message 1 — Intro (send immediately) + Snap Cell","Send a personalised Snap Cell video immediately alongside this message.","whatsapp",
 `"Hi [Name], tried giving you a quick call because I saw you reached out about the [Car Model]. I've got a few minutes now, or later today if that works? If you have any questions, just message me here."
 
 → Send a personalised Snap Cell video immediately — filmed in front of the specific car they enquired about, face visible. This significantly increases the chance of a callback.`],
-              ["Message 2 — Education (Day 2)","Send your intro/process video asset.",
+              ["Message 2 — Education (Day 2)","Send your intro/process video asset.","whatsapp",
 `"Hi [Name], [Your Name] from RMA Motors. Thought this might be useful — shows you how we do business here and the process of buying a car with us. [INSERT ASSET VIDEO]"`],
-              ["Message 3 — Authority (Day 4)","Send your 'avoid costly mistakes' video.",
+              ["Message 3 — Authority (Day 4)","Send your 'avoid costly mistakes' video.","whatsapp",
 `"The video explains how to avoid costly mistakes when buying a car in the UAE. This usually comes down to dealerships not being fully transparent about the car's history. Put together a short video showing what to look out for. [INSERT ASSET VIDEO]"`],
-              ["Message 4 — FAQ (Day 7)","Answer questions they haven't asked yet.",
+              ["Message 4 — FAQ (Day 7)","Answer questions they haven't asked yet.","whatsapp",
 `"Some of the most common questions buyers have here at RMA:
 'What should I check when buying this model?'
 'How does financing normally work?'
 'What affects resale value?'
 Short answer: [Insert answer]. Quick video explains it in more detail. [SEND VIDEO]"`],
-              ["Message 5 — Product (Day 10)","Present a relevant vehicle.",
+              ["Message 5 — Product (Day 10)","Present a relevant vehicle.","whatsapp",
 `"This just came across my desk. Thought it would help if you haven't found what you're looking for.
 
 [Car Model] [Year]
 KM: [Mileage]
 AED [Price]
 [INSERT LINK — let it load for image preview]"`],
-              ["Message 6 — Final reopener (Day 15)","Keep it short.",
+              ["Message 6 — Final reopener (Day 15)","Keep it short.","whatsapp",
 `"Hi [Name], tried contacting you but didn't hear back… Where should we go from here?"`],
-              ["Manager close — if still no response","A manager stepping in creates a fresh conversation.",
+              ["Manager close — if still no response","A manager stepping in creates a fresh conversation.","whatsapp",
 `"Hi [Name], [Sales Rep] looped me in. What do we need to do on our side to get this deal wrapped up for you? — [Manager Name]"
 
 Alternative: "Hi [Name], what would need to happen for us to get this sorted for you in the best way possible? — [Manager Name]"`]
-            ].map(([l,sub,t])=>(
+            ].map(([l,sub,channel,t])=>(
               <div key={l} style={{ borderLeft:`2px solid ${T.purple}`, padding:"0.9rem 0.9rem 0.9rem 1rem", marginBottom:8, borderRadius:"0 8px 8px 0", background:T.purpleBg, border:`1px solid ${T.purple}`, borderLeftWidth:2 }}>
-                <div style={{ fontSize:10, fontWeight:700, color:T.purpleTx, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8, marginBottom:2, flexWrap:"wrap" }}>
+                  <div style={{ fontSize:10, fontWeight:700, color:T.purpleTx, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                  <ChannelBadge channel={channel} />
+                </div>
                 {sub && <div style={{ fontSize:11, color:T.muted, marginBottom:6, fontWeight:500 }}>{sub}</div>}
-                <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{t}</div>
+                <ScriptBody channel={channel} text={t} />
               </div>
             ))}
             <SectionLabel>Objection handling — conversational examples</SectionLabel>
             {[
-              [T.amber,T.amberBg,T.amberTx,"Stall — 'I need to think about it'","Find what they're actually thinking about. Goal is clarity, not pressure.",
+              [T.amber,T.amberBg,T.amberTx,"Stall — 'I need to think about it'","Find what they're actually thinking about. Goal is clarity, not pressure.","phone",
 `Customer: "I just need to think about it."
 Setter: "Of course — do you mind if I ask what part specifically? Is it the car itself, the price, the timing?"
 Customer: "Mainly the price."
@@ -1560,7 +1623,7 @@ Setter: "Makes sense. Is it that it's over budget, or more that you want to make
 → Now you have the real objection. Handle that specifically.
 
 Also try: "If everything felt right with the car and the price was where you needed it — would you move forward?"`],
-              [T.amber,T.amberBg,T.amberTx,"Price — 'It's too expensive' or 'Found it cheaper'","Never drop price without manager approval. Anchor value first.",
+              [T.amber,T.amberBg,T.amberTx,"Price — 'It's too expensive' or 'Found it cheaper'","Never drop price without manager approval. Anchor value first.","phone",
 `Customer: "I've seen the same car cheaper elsewhere."
 Setter: "Same year, spec, and mileage?"
 Customer: "Pretty similar."
@@ -1571,7 +1634,7 @@ Setter: "So the question is whether the difference is worth the peace of mind. H
 Also try: "That company is cheaper — what's stopping you from just buying from them?"
 
 DD Pro angle: "I can actually pull up that car's full history right now. [Run DD Pro report] — that car has been in stock for X days compared to ours which has only been here X days. When a car sits that long it usually means something is putting buyers off — could be a hidden issue, could be an overpriced spec. Ours is fresh stock for a reason."`],
-              [T.amber,T.amberBg,T.amberTx,"Decision maker — 'Need to speak to my wife/husband'","Include them, don't fight them.",
+              [T.amber,T.amberBg,T.amberTx,"Decision maker — 'Need to speak to my wife/husband'","Include them, don't fight them.","phone",
 `Customer: "I need to run it past my wife first."
 Setter: "Totally understand — big purchase. Would it help if I sent a quick video so she can see exactly what you're looking at?"
 Customer: "Yeah that could work."
@@ -1584,21 +1647,24 @@ Customer: "Yes actually."
 Setter: "So if she trusted you to make that purchase, it's fair to assume she trusts you to make this one too — especially since you clearly have great taste." [smile]
 Customer: "Ha — fair point."
 → Use warmly and with humour. Works well when the customer is clearly confident and the spouse objection feels like an excuse.`],
-              [T.green,T.greenBg,T.greenTx,"Show rate — 'I'll try to make it'","'Try' means no commitment. Push for a real yes.",
+              [T.green,T.greenBg,T.greenTx,"Show rate — 'I'll try to make it'","'Try' means no commitment. Push for a real yes.","phone",
 `Customer: "Yeah I'll try to come in Thursday."
 Setter: "Okay great — Thursday is actually my day off but I will make sure I am here at [time] to show you the car personally and make sure you get the best deal. Can I get your word you'll be there? I'll have the car ready and won't show it to anyone else at that time. If anything comes up just message me — but I need that commitment."
 Customer: "Yes, I'll be there."
 Setter: "Perfect — you're confirmed for Thursday at [time]."`],
-              [T.green,T.greenBg,T.greenTx,"Where did we lose you? — re-engagement","When a customer goes silent after showing interest.",
+              [T.green,T.greenBg,T.greenTx,"Where did we lose you? — re-engagement","When a customer goes silent after showing interest.","whatsapp",
 `"Hi [Name], if you're not opposed — could you send me 1-2 sentences on where we lost you? I'd appreciate it so we can improve. Thank you — [Your Name]"
 
 If they reply with an objection:
 "That makes sense. The way we usually handle that is [answer clearly]. Would it be worth a quick 5-minute call to walk through it?"`]
-            ].map(([acc,bg,tc,l,sub,t])=>(
+            ].map(([acc,bg,tc,l,sub,channel,t])=>(
               <div key={l} style={{ borderLeft:`2px solid ${acc}`, padding:"0.9rem 0.9rem 0.9rem 1rem", marginBottom:8, borderRadius:"0 8px 8px 0", background:bg, border:`1px solid ${acc}`, borderLeftWidth:2 }}>
-                <div style={{ fontSize:10, fontWeight:700, color:tc, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8, marginBottom:2, flexWrap:"wrap" }}>
+                  <div style={{ fontSize:10, fontWeight:700, color:tc, textTransform:"uppercase", letterSpacing:"0.08em" }}>{l}</div>
+                  <ChannelBadge channel={channel} />
+                </div>
                 <div style={{ fontSize:11, color:T.muted, marginBottom:6, fontWeight:500 }}>{sub}</div>
-                <div style={{ fontSize:12, color:T.muted, lineHeight:1.75, fontFamily:"monospace", whiteSpace:"pre-line", background:T.bg, padding:"8px 10px", borderRadius:6 }}>{t}</div>
+                <ScriptBody channel={channel} text={t} />
               </div>
             ))}
           </>

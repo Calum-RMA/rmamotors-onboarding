@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 57;
+const BUILD_VERSION = 58;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -2099,15 +2099,38 @@ If they reply with an objection:
           <div>
             <SectionLabel style={{ marginTop:0 }}>Performance targets</SectionLabel>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(175px,1fr))", gap:10, marginBottom:"1.5rem" }}>
-              {[["⏱","Speed to lead","60 seconds","All inbound leads — no exceptions"],["📅","Lead → appointment","33% min","Responded leads → booked"],["🚪","Show rate","66% min","Booked appointments that attend"],["📹","Snap cells","50% min","Of responded customers"],["📞","Connected calls","40 / day","Min 1 minute each"],["⭐","AI call score","80% avg","CallGear — in & outbound"]].map(([ico,l,v,n])=>(
-                <div key={l} style={{ background:T.surf, borderRadius:10, padding:"1rem", border:`1px solid ${T.border}` }}>
+              {(viewRole==="closer" ? [
+                ["🚪","Appointment show ratio","2:3 (66%)","Booked appointments that attend"],
+                ["✅","Conversion rate","1:2 (50%)","From appointments that show"],
+                ["🛡","PPF / SPV target","5,250 AED","Average across the month"],
+                ["📋","Extended warranty","50%","Attach rate on eligible deals"],
+                ["🚚","ROI — deposit to delivery","6 days","Target turnaround per deal"],
+                ["⭐","Google reviews","5 / month","Verified customer reviews"],
+                ["🗣","Testimonials","5 / month","Filmed or written testimonials"],
+              ] : [
+                ["⏱","Speed to lead","60 seconds","All inbound leads — no exceptions"],
+                ["📅","Lead → appointment","33% min","Responded leads → booked"],
+                ["🚪","Show rate","66% min","Booked appointments that attend"],
+                ["📹","Snap cells","50% min","Of responded customers"],
+                ["📞","Connected calls","40 / day","Min 1 minute each"],
+                ["⭐","AI call score","80% avg","CallGear — in & outbound"],
+              ]).map(([ico,l,v,n])=>(
+                <div key={l} style={{ background:T.surf, borderRadius:10, padding:"1rem", border:`1px solid ${viewRole==="closer"?T.purple:T.border}` }}>
                   <div style={{ fontSize:20, marginBottom:6 }}>{ico}</div>
                   <div style={{ fontSize:11, color:T.muted, marginBottom:4, fontWeight:600 }}>{l}</div>
-                  <div style={{ fontSize:20, fontWeight:800, color:T.gold }}>{v}</div>
+                  <div style={{ fontSize:20, fontWeight:800, color:viewRole==="closer"?T.purpleTx:T.gold }}>{v}</div>
                   <div style={{ fontSize:11, color:T.faint, marginTop:3 }}>{n}</div>
                 </div>
               ))}
             </div>
+            {viewRole==="closer" && (
+              <div style={{ background:T.amberBg, border:`1px solid ${T.amber}`, borderRadius:10, padding:"12px 16px", display:"flex", gap:10, alignItems:"flex-start" }}>
+                <span style={{ fontSize:16, flexShrink:0 }}>⚠️</span>
+                <div style={{ fontSize:12.5, color:T.text, lineHeight:1.6 }}>
+                  <strong>Performance standard.</strong> Closer KPIs are reviewed monthly. Failure to achieve these targets for <strong>2 recurring months</strong> may lead to the Closer being demoted to the Setter role, after which a formal performance review will be put in place.
+                </div>
+              </div>
+            )}
           </div>
         )}
 

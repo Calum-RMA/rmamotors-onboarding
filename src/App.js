@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 54;
+const BUILD_VERSION = 55;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -1358,7 +1358,63 @@ export default function App() {
           {viewRole==="closer" ? (
             <div>
               <SectionLabel style={{ marginTop:0 }}>Closer scripts & frameworks</SectionLabel>
+              <div style={{ background:T.purpleBg, border:`1px solid ${T.purple}`, borderRadius:10, padding:"12px 16px", marginBottom:12 }}>
+                <div style={{ fontSize:11, fontWeight:700, color:T.purpleTx, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.06em" }}>🛣️ Road to the Sale — conversational scripts</div>
+                <div style={{ fontSize:12, color:T.text, lineHeight:1.6 }}>These follow the 14-step process (see the SOPs tab → Road to the Sale). Weave them into your own personality so they flow naturally — never rigid or scripted. Drill them with your Sales Manager.</div>
+              </div>
               {[
+                ["Step 2 — Greeting & RDR handling","In person: stand, come out from behind the desk, eye contact, get their name.",
+`"Good [morning/afternoon], welcome to RMA Motors — I'm [Your Name]. You must be [Customer Name]? Great to meet you. Can I grab you a water or a coffee?"
+
+Handling the RDR "I'm just looking around":
+"Absolutely, take your time — that's exactly what we're here for. We've got around 150 cars on site, so rather than have you wander, let me point you in the right direction. Can I ask — what's brought you in today / what are you currently driving?"
+→ Acknowledge, then move straight into Fact Finding.`],
+                ["Step 3 — Fact Finding questions","Probe and MUST get answers before moving on. Always revert to their 'WHY'.",
+`"What's prompting the change from your current car?"
+"What do you love about it — and what would you change if you could?"
+"Is it the right size — too big, too small, enough seats for the family?"
+"What are you driving now, and are you paying monthly on it at the moment?"
+"Are you thinking cash, or would finance suit you better? Which bank do you use?"
+"Are you fairly new to the country or to your current role?"
+→ Identify the decision maker. Pin down their WHY and leverage the weaknesses of their current car throughout.`],
+                ["Step 4 — Appraisal / trade-in transition","Transition naturally from fact finding.",
+`With a trade-in:
+"It sounds like your current car has served you well. Would you like me to get our team to take a quick look and put a trade-in figure together for you while we look at the options?"
+
+No trade-in:
+"What did you drive before this one? How did you find selling or trading that — smooth, or a bit of a headache?"
+→ Past experiences tell you what they value in a transaction.`],
+                ["Step 6 — Demonstration & up-sale seed #1","Customers believe what they SEE. Have all literature to hand.",
+`"Let me show you exactly what we've done to get this car to the standard it's at now."
+→ Show printed service history, receipts, warranty and service-pack literature.
+"Every car we sell goes through a full RMA Car Care detailing package — deep polishing, paint correction, PDR, wheel refurbishment and a full technical inspection. That package alone is worth 2,500 AED, and it's already done."
+"To keep it looking this good, the natural next step is protecting it — PPF, ceramic coating or tints. I'll come back to that, but keep it in mind."`],
+                ["Step 8 — Trial close (after the road test)","While the emotional attachment is fresh.",
+`"How did you feel in your new car?"
+"Did you enjoy that compared to your old one?"
+"On a scale of 1 to 10, where does this sit against what you're driving now?"
+"Can you see yourself in this?"
+→ Gauge the response honestly — their guard is down. Listen for objections starting to form so you can prepare to handle them.`],
+                ["Step 9 — Build value in the brand","Seat them at your desk. Do NOT jump to figures yet.",
+`"Before we talk numbers, let me tell you a little about who we are. RMA Motors isn't your average dealership — we're enthusiasts. Every car is hand-picked, fully prepared and presented to a standard you won't find with a private seller or even most main dealers. That's why our customers keep coming back and refer their friends."
+→ 3rd up-sale seed: "Part of that is our RMA Car Care division — PPF, ceramic, tints — we're accredited with GTechniq and Profilm. Whatever you need down the line, we're here."`],
+                ["Step 10 — Deal sheet & the silent pause","PPF up-sell in every quote is mandatory. Then go silent.",
+`"Let me put this on screen for you. Here's the car, registration, and everything included — RMA Car Protect, Smart Protect, and your paint protection options."
+→ Highlight the lowest monthly / lowest down payment, or a figure near what they pay now.
+"It's just a 3,000 AED holding deposit to reserve it, and that's included in your payment. For a newer, better car — at around the same monthly as you're paying now."
+→ Then STOP. Sit back, say nothing, and let them speak first.`],
+                ["Step 11 — Negotiation logic","Price is never our issue. Negotiate with their money, not ours.",
+`"I completely understand wanting the best deal — let me ask, do you agree that the best deal isn't always the cheapest price? Nobody wants a cheap car that turns into a headache."
+→ Build value: lower than main dealer, better prepared than a private seller, 0% down options, multiple banks, no evaluation costs, no RTA running around, no insurance chasing.
+"Let me show you on Deal Drive what similar cars are doing on the market — see these ones that have sat for months with price drop after price drop? There's usually a reason."
+→ If stuck, introduce your Sales Manager (second face). A token discount is a last resort, manager-approved, ideally offset by a trade-in or by them taking Car Protect / PPF.`],
+                ["Step 14 — Follow up (value-first)","Never 'just following up'. Always give before you receive.",
+`Initial contact / wishlist match / no-show → always a personal Snap Cell video.
+
+Quotation follow-up (be creative and varied):
+"Hi [Name] — thought of you today. The market's shifted a little this week and I wanted to share something that might affect your decision…"
+"[Name], a quick bit of market info for you — [education / spec / comparison]. Whenever you're ready, I'm here."
+→ Keep adapting the message until you get a response. Come from a point of value every time.`],
                 ["Appointment confirmation call","Use this script when confirming an appointment after the Setter has booked it.",
 `"Hi [Name], it's [Your Name] from RMA Motors — I'm the Sales Closer who's going to be looking after you when you come in. [Setter Name] mentioned you're coming in at [time] to see the [Car Model] — I just wanted to personally reach out and confirm that, and let you know the car is ready and waiting for you. Is there anything you'd like me to prepare before you arrive?"`],
                 ["Post-Setter introduction Snap Cell","Send within 30 minutes of the Setter's warm introduction.",
@@ -1548,7 +1604,7 @@ If they reply with an objection:
         {activeTab==="sops" && (
           <div>
             <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:"0.75rem" }}>
-              {[["sales","Sales process"],["crm","CRM stages"],["fi","Finance & admin"],["handover","Handover"],["stock","Stock & pricing"],["marketing","Marketing"],["ppf","RMA PPF"],["disciplinary","Disciplinary"]].map(([id,label])=>(
+              {[...(viewRole==="closer"?[["rtts","Road to the Sale"]]:[]),["sales","Sales process"],["crm","CRM stages"],["fi","Finance & admin"],["handover","Handover"],["stock","Stock & pricing"],["marketing","Marketing"],["ppf","RMA PPF"],["disciplinary","Disciplinary"]].map(([id,label])=>(
                 <button key={id} className={`sub-tab ${activeSop===id?"active":""}`} onClick={()=>setActiveSop(id)}>{label}</button>
               ))}
             </div>
@@ -1568,7 +1624,162 @@ If they reply with an objection:
                 </a>
               ))}
             </div>
-            {activeSop==="sales" && (<div>
+            {(activeSop==="rtts" && viewRole==="closer") && (<div>
+              <div style={{ background:T.purpleBg, border:`1px solid ${T.purple}`, borderRadius:10, padding:"12px 16px", marginBottom:"1rem" }}>
+                <div style={{ fontSize:12, fontWeight:700, color:T.purpleTx, marginBottom:4 }}>🛣️ The Road to the Sale — the RMA Closer process</div>
+                <div style={{ fontSize:12, color:T.text, lineHeight:1.65 }}>The definitive step-by-step process for every in-person showroom customer. Each customer is handled the same way. <strong>Do not skip steps or cut corners</strong> — it detracts from profit and up-sale potential. Approach every step from a point of <strong>service</strong> (service is senior to sales) and control the process. Drill it with your Sales Manager until it is second nature.</div>
+              </div>
+              <div style={{ background:T.goldBg, border:`1px solid ${T.goldDim}`, borderRadius:10, padding:"12px 16px", marginBottom:"1rem" }}>
+                <div style={{ fontSize:11, fontWeight:700, color:T.gold, marginBottom:6, textTransform:"uppercase", letterSpacing:"0.06em" }}>Golden rules — non-negotiable</div>
+                <ul style={{ listStyle:"none", padding:0, margin:0 }}>
+                  {["DO NOT skip steps.","ALWAYS get answers to fact-finding questions — this keeps you on the right product.","ASK questions — don't just answer them.","ALWAYS acknowledge and handle questions and objections.","ALWAYS be positive and communicate with a smile.","AGREE with the customer, then logically educate them when they object.","Plant the up-sale (PPF) seed three times: Demonstration, Road Test, Build Value.","EVERY customer leaves with a written quote saved in the CRM — no exceptions.","Including PPF up-sell in every quotation is mandatory.","Keep average GP on the whole above 20K+ AED when considering discounts."].map((r,i,a)=>(
+                    <li key={i} style={{ display:"flex", gap:8, fontSize:12, padding:"4px 0", borderBottom:i<a.length-1?`1px solid ${T.goldDim}`:"none", color:T.text, lineHeight:1.55, alignItems:"flex-start" }}>
+                      <span style={{ color:T.gold, flexShrink:0, fontWeight:700 }}>★</span><span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {[
+                { n:"Step 1", title:"Be Sold On Yourself", points:[
+                  "Be sold on the company, the process and every product we sell — you must be happy to buy a car from us yourself.",
+                  "Know all stock: what's on the floor, coming soon and in prep; condition and history.",
+                  "Have in-depth knowledge of all up-sale products — PPF, tints, ceramic, service packs.",
+                  "Check your personal presentation: posture, dress, clean and tidy workspace.",
+                  "Be self-aware of body language, surroundings and your own mental state.",
+                  "Start the day right: eat healthy, hydrate, exercise, sleep well, arrive prepared and focused.",
+                  "Lead every conversation with positivity, direction and conviction — never carry negative energy onto the customer.",
+                ]},
+                { n:"Step 2", title:"Greeting", points:[
+                  "Convey positive, energetic, clear communication — on phone, email/WhatsApp, or in person.",
+                  "Introduce yourself, give your name, make them feel welcome.",
+                  "In person: stand and come out from behind the desk, make eye contact, get their name, find out where they saw us advertised (for the CRM), offer water or coffee.",
+                  "Give full attention — no fidgeting, no phone, no distractions. Get on common ground.",
+                  "For digital leads, speed of response is critical to an impactful greeting and your closing ratio.",
+                  "Be ready for RDRs (Reactionary Defence Responses) like 'I'm just looking around' — acknowledge it, then move into fact finding (we have 150 cars on site and can point them in the right direction).",
+                ]},
+                { n:"Step 3", title:"Fact Finding", points:[
+                  "Build the buyer's profile — probe for what's critical to them and what problem they are trying to solve.",
+                  "What are they driving now? What do they like/dislike (too big, too small, more seats, too slow, uncomfortable, his or hers)?",
+                  "Are they paying monthly now? Which bank? Cash or finance? New in the country / newly employed? Do they need Lease To Own rather than finance?",
+                  "You MUST get answers before moving forward — confirm they are on the right product and are the decision maker.",
+                  "Always revert back to their 'WHY'. Leverage the weaknesses of their current car throughout the process.",
+                ]},
+                { n:"Step 4", title:"Appraisal", points:[
+                  "Transition from fact finding: ask if they're looking to trade in their current car.",
+                  "Offer to inspect and price the trade-in; pass key info to the purchasing team (why they're changing, where they bought it).",
+                  "If NO trade-in: use this step to get on common ground and understand their buying behaviour — what they've driven/traded before and how those experiences went.",
+                  "Past experiences reveal what they value and give you focus points that show you care and are paying attention.",
+                ]},
+                { n:"Step 5", title:"Selection Of The Correct Product", points:[
+                  "Using all gathered info, identify the right product. Show the stock line-up from our website.",
+                  "Most customers buy something different from their initial enquiry — be ready with cheaper AND more expensive alternatives to cement them on the right product.",
+                  "If the enquired car is unavailable, you MUST offer alternatives and gauge interest.",
+                  "If that fails: record everything in the CRM with a follow-up date, add to the vehicle wishlist, and inform purchasing to search via Deal Drive and trade partner showrooms.",
+                ]},
+                { n:"Step 6", title:"The Demonstration — plant up-sale seed #1", points:[
+                  "Be prepared with all sales literature, history and up-sale education at hand.",
+                  "Customers believe what they SEE, not what they hear — use printed service histories, receipts, warranties and service package literature.",
+                  "Show features, benefits and standout options; tailor the demo to the needs found in Fact Finding & Appraisal.",
+                  "PLANT THE 1ST UP-SALE SEED: explain the detail of sourcing/prep — deep polishing, paint correction, PDR, wheel refurb, full technical inspection. Every car gets a full RMA Car Care detailing package worth 2,500 AED.",
+                  "Introduce paint protection (PPF, Ceramic, tints) and RMA Car Protect / Smart Protect briefly; the brands we're accredited with (GTechniq, Profilm).",
+                  "Be transparent about any paint repairs or reports — we don't sell accident cars, but disclose bumper/smart repairs.",
+                ]},
+                { n:"Step 7", title:"The Road Test — plant up-sale seed #2", points:[
+                  "This creates the emotional attachment. DO NOT let the buyer go out alone or with non-sales staff.",
+                  "Bring the car round the front; walk them round again in sunlight (PLANT THE 2ND UP-SALE SEED on how good it looks after Car Care work).",
+                  "Seat them comfortably, close their door, and enter the vehicle last. Windows closed, music low.",
+                  "Set off on the normal road test route in standard mode; revert to their 'WHY'.",
+                  "At the motorway junction, switch to Sport mode (if available and the customer suits the profile) for the sharp turn at the exit.",
+                  "On return, demo infotainment — sound system, CarPlay, navigation. GET THEM EXCITED.",
+                ]},
+                { n:"Step 8", title:"The Trial Close", points:[
+                  "Back at the showroom entrance, run your first trial closes: 'How did you feel in your new car?', 'Did you enjoy the drive compared to your old car?', 'Can you see yourself in this?', 'Rate it 1–10 vs your old car?'",
+                  "Transition them into mental ownership while the emotional attachment is fresh.",
+                  "At this moment they are full of excitement, dopamine and serotonin — guard down, answers immediate and truthful.",
+                  "Assess how you'll present the negotiation and spot any objections creeping in.",
+                  "Bring the car into the showroom up the middle for theatre while they have some alone time.",
+                ]},
+                { n:"Step 9", title:"Build Value In The Brand — plant up-sale seed #3", points:[
+                  "Offer another drink, seat them at your desk — do NOT jump straight into figures.",
+                  "Give an elevator pitch of who RMA is, why we're different, our reviews/testimonials, how we buy, prep and advertise cars.",
+                  "PLANT THE 3RD UP-SALE SEED with RMA Car Care PPF — talk PPF, tints, ceramic in more technical detail.",
+                  "Aim for a long-term relationship — we are the pros and enthusiasts who serve them in future.",
+                  "Use subliminal PPF/paint-protection messaging on the background TV and desk as a silent salesman.",
+                  "Even if they don't buy PPF now, they're primed for follow-up and future prospecting.",
+                ]},
+                { n:"Step 10", title:"The Deal Sheet Write-Up", points:[
+                  "Transition to numbers; offer to show your screen. Ideally have the quote pre-prepared before the appointment for smooth, fast transitions.",
+                  "Get details into the CRM, assign to a vehicle (create one if needed), and produce a deal sheet with full up-packs, registration, deposit, trade-in value (if any) and optional packs.",
+                  "INCLUDING PPF UP-SELL IN EVERY QUOTATION IS MANDATORY. For older/non-warranty cars, include ARM service pack in the monthly and comments.",
+                  "Turn the screen to them with the lowest monthly / lowest down payment highlighted (or near what they currently pay) — mental ownership for the same or less, for a newer better car.",
+                  "Point out the 3K AED holding deposit reserves the car, and the monthly includes RMA Car Protect & Smart Protect (plus PPF/Warranty/Service Pack if applicable).",
+                  "Then PAUSE — sit, say nothing, and let them speak first.",
+                  "NON-NEGOTIABLE: every customer gets a written-up quote saved in the CRM. NO customer leaves without a quote. If they push on time, send it via WhatsApp immediately.",
+                ]},
+                { n:"Step 11", title:"The Negotiation", points:[
+                  "If value is built properly, there's often no negotiation — they sign and hand the card over. Negotiation does NOT have to mean a discount on the car.",
+                  "Buyers have a finite set of objections ('I've seen one cheaper', 'what's your last price', 'can you do better') — be drilled on them (Cardone closes, Andy Elliot objection handling).",
+                  "Price is NEVER our issue: lower than the main dealer with better-prepared cars, better than a private seller, with 0% down options, multiple banks, no evaluation costs, less hassle, no RTA running around, no insurance chasing.",
+                  "Negotiate with THEIR money not ours — aim for their target monthly via a better interest rate or a slight Car Protect/PPF concession.",
+                  "Use Deal Drive to show market pricing and long-listed cars with multiple price drops — no one wants a car that's too cheap.",
+                  "Use the second-face technique with your Sales Manager if struggling; make the customer feel special.",
+                  "A small token discount is a last resort, manager-aware, ideally offset by a trade-in or by them taking Car Protect/Smart Protect/PPF.",
+                  "Management: keep average GP on the whole above 20K+ AED when considering discounts.",
+                ]},
+                { n:"Step 12", title:"The Close", points:[
+                  "Use all technology at hand — CRM deal sheet, online deposit method (if they need to think or can't make it in).",
+                  "There is NO close until you have a monetary exchange (holding deposit) AND a signed sales agreement — until then there is no deal.",
+                  "ALWAYS ASK for the deposit and to reserve the car.",
+                  "Finance cases: complete a finance check sheet and get the deal sheet approved and signed off by the Sales Manager.",
+                  "Disclose anything not included now (e.g. only one key). Put all extras in the comments section.",
+                  "Print three copies of the deal sheet — customer / F&I / Accounts.",
+                  "Complete the DMS Order the same day or next morning, and inform marketing to reserve the car.",
+                ]},
+                { n:"Step 13", title:"The Handover", points:[
+                  "Ensure every point agreed on the deal sheet and any additional requests are noted, actioned and completed across all departments (F&I, Car Care up-sell, mechanical/cosmetic).",
+                  "Keep the customer informed with updates and a realistic handover date you MUST deliver on.",
+                  "DO NOT rush this step — check the car the day before AND the morning of handover.",
+                  "Clear old phone connections, customer profiles and saved navigation addresses; check glovebox and boot for old paperwork.",
+                  "Ensure invoice, owner's handover pack and handover form are signed.",
+                  "Make the handover a spectacle — use the reveal covers in a lit bay, prepare marketing for filming, and ask permission to tag them on social media and for a quick testimonial Q&A.",
+                  "Delivering on this guarantees repeat business and referrals.",
+                ]},
+                { n:"Step 14", title:"The Follow Up", points:[
+                  "Often overlooked but essential — and it varies by situation: after initial phone contact, after giving a quote (pushing for the close), from a wishlist match, or after sale (thank you + Google & Trustpilot review).",
+                  "Initial contact / wishlist match / no-show: ALWAYS send a personal Snap Cell video.",
+                  "Quotation follow-up: find creative, varied ways to stay in touch (Andy Elliot & Cardone follow-up methods).",
+                  "Always give before you receive — market knowledge, info, technical specs, education.",
+                  "Never send a generic 'Hi, just following up' — come from a point of value.",
+                  "Keep following up with different messaging until you get a response. People buy from people — especially when your skills are deadly. 'Make your skill set larger than your fears.'",
+                ]},
+              ].map(({n, title, points}) => {
+                const key = "rtts-"+n;
+                const isOpen = openStep === key;
+                return (
+                  <div key={key} style={{ background:T.surf, borderRadius:10, marginBottom:6, borderLeft:`2px solid ${isOpen?T.purple:T.border}`, borderTopLeftRadius:0, borderBottomLeftRadius:0, transition:"border-color .2s" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:12, padding:"0.85rem 1rem", cursor:"pointer" }} onClick={()=>setOpenStep(isOpen?null:key)}>
+                      <div style={{ fontSize:9, fontWeight:700, color:T.faint, textTransform:"uppercase", letterSpacing:"0.08em", width:52, flexShrink:0 }}>{n}</div>
+                      <div style={{ fontSize:13, fontWeight:700, color:T.text, flex:1 }}>{title}</div>
+                      <div style={{ color:T.faint, fontSize:11, transition:"transform .2s", transform:isOpen?"rotate(180deg)":"none" }}>▾</div>
+                    </div>
+                    {isOpen && (
+                      <div style={{ padding:"0 1rem 0.85rem", borderTop:`1px solid ${T.border}` }}>
+                        <ul style={{ listStyle:"none", padding:0, margin:"0.75rem 0 0" }}>
+                          {points.map((pt,i)=>(
+                            <li key={i} style={{ display:"flex", gap:8, fontSize:12, padding:"5px 0", borderBottom:i<points.length-1?`1px solid ${T.border}`:"none", color:T.muted, lineHeight:1.6, alignItems:"flex-start" }}>
+                              <span style={{ color:T.purple, flexShrink:0, fontWeight:700, marginTop:1 }}>→</span>
+                              <span>{pt}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              <Alert variant="info">This process is assessed in the Assessments tab — 'The Road to the Sale'. A 100% pass is required.</Alert>
+            </div>)}
+            {(activeSop==="sales" || (activeSop==="rtts" && viewRole!=="closer")) && (<div>
               {[
                 { n:"Step 1", title:"Lead entry & data integrity", points:[
                   "ALL leads must be entered into Eskimo CRM immediately upon receipt.",

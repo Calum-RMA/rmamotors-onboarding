@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 58;
+const BUILD_VERSION = 59;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -801,19 +801,53 @@ export default function App() {
   const handleChangeRole = async (setterId, newRole) => {
     const d = await sGet(setterId);
     if (!d) return;
-    // Reset module/quiz progress when role changes — curriculum differs.
-    // Also clear secondaryProgress (it was for the OPPOSITE role of their old primary).
-    await sSet(setterId, {
-      ...d,
-      role: newRole,
-      completedModules: [],
-      quizScores: {},
-      quizAnswers: {},
-      quizAttempts: {},
-      quizBlocked: {},
-      secondaryProgress: {},
-      roleHistory: [...(d.roleHistory||[]), { from: d.role||"setter", to: newRole, date: new Date().toISOString().slice(0,10) }],
-    });
+    const oldRole = d.role || "setter";
+    // Snapshot of the person's CURRENT primary-role progress.
+    const currentProgress = {
+      completedModules: d.completedModules || [],
+      quizScores: d.quizScores || {},
+      quizAnswers: d.quizAnswers || {},
+      quizAttempts: d.quizAttempts || {},
+      quizBlocked: d.quizBlocked || {},
+    };
+    const secondary = d.secondaryProgress || {};
+
+    let updated;
+    if (oldRole !== "closer" && newRole === "closer") {
+      // PROMOTION Setter -> Closer.
+      // Move their existing Setter progress into secondaryProgress (visible in Setter view).
+      // Start fresh top-level Closer progress.
+      updated = {
+        ...d,
+        role: newRole,
+        completedModules: [],
+        quizScores: {},
+        quizAnswers: {},
+        quizAttempts: {},
+        quizBlocked: {},
+        secondaryProgress: currentProgress,
+      };
+    } else if (oldRole === "closer" && newRole !== "closer") {
+      // DEMOTION Closer -> Setter.
+      // Restore their Setter-view progress (secondaryProgress) to top-level.
+      // Archive the Closer progress so nothing is ever destroyed.
+      updated = {
+        ...d,
+        role: newRole,
+        completedModules: secondary.completedModules || [],
+        quizScores: secondary.quizScores || {},
+        quizAnswers: secondary.quizAnswers || {},
+        quizAttempts: secondary.quizAttempts || {},
+        quizBlocked: secondary.quizBlocked || {},
+        secondaryProgress: {},
+        archivedCloserProgress: currentProgress,
+      };
+    } else {
+      // Same-category change (rare) — just set the role, touch nothing else.
+      updated = { ...d, role: newRole };
+    }
+    updated.roleHistory = [...(d.roleHistory||[]), { from: oldRole, to: newRole, date: new Date().toISOString().slice(0,10) }];
+    await sSet(setterId, updated);
     setRoleChangeConfirm(null);
     loadMgmt();
   };
@@ -1126,8 +1160,8 @@ export default function App() {
                               <>
                                 <span style={{ fontSize:12, fontWeight:600, color:T.text }}>
                                   {roleChangeConfirm.newRole==="closer"
-                                    ? "Promote to Closer? Module & quiz progress will reset for the new curriculum."
-                                    : "Demote to Setter? Module & quiz progress will reset for the new curriculum."}
+                                    ? "Promote to Closer? They start the Closer programme fresh. Their existing Setter progress is preserved and stays visible in their Setter view."
+                                    : "Demote to Setter? Their Setter progress is restored. Their Closer progress is archived (not deleted)."}
                                 </span>
                                 <Btn small onClick={()=>handleChangeRole(s.id, roleChangeConfirm.newRole)} style={{ background:roleChangeConfirm.newRole==="closer"?T.purple:T.red, color:"#fff", border:"none" }}>
                                   Yes, {roleChangeConfirm.newRole==="closer"?"promote":"demote"}

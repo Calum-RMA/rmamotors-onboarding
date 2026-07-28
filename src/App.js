@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 61;
+const BUILD_VERSION = 62;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -2424,7 +2424,9 @@ If they reply with an objection:
                         })()}
                         {ans!==undefined && (
                           <div style={{ fontSize:12, padding:"9px 12px", borderRadius:8, marginTop:8, background:ans.correct?T.greenBg:T.redBg, border:`1px solid ${ans.correct?T.green:T.red}`, color:ans.correct?T.greenTx:T.redTx, lineHeight:1.55 }}>
-                            {ans.correct ? <><strong>✓ Correct!</strong></> : <><strong>✗ Incorrect.</strong> {" "}{q.exp}</>}
+                            {ans.correct
+                              ? <><strong>✓ Correct!</strong></>
+                              : <><strong>✗ Incorrect.</strong> Review the training material and retake. You can find this information in the {activeQuizzes[activeQuiz]?.label || "current"} training module{q.where ? ` — ${q.where}` : ""} and the relevant SOP.</>}
                           </div>
                         )}
                       </div>
@@ -2441,7 +2443,17 @@ If they reply with an objection:
                       </div>
                     </div>
                   )}
-                  {allDone && !quizBlocked[activeQuiz] && displayScore < PASS && <div style={{ marginTop:10 }}><Btn small primary onClick={()=>{ setQuizAnswers({}); setShuffledOpts({}); }}>Retake quiz</Btn></div>}
+                  {allDone && !quizBlocked[activeQuiz] && displayScore < PASS && <div style={{ marginTop:10 }}><Btn small primary onClick={async ()=>{
+                    setQuizAnswers({});
+                    setShuffledOpts({});
+                    // Also wipe the saved answers for THIS quiz in the person's record so they don't reappear next session.
+                    if (setterData) {
+                      const prog = getProgress(setterData, viewRole);
+                      const cleanedAnswers = Object.fromEntries(Object.entries(prog.quizAnswers||{}).filter(([k])=>!k.startsWith(`${activeQuiz}-`)));
+                      const updated = writeProgress(setterData, viewRole, { quizAnswers: cleanedAnswers });
+                      await saveData(updated);
+                    }
+                  }}>Retake quiz</Btn></div>}
                 </div>
               );
             })()}

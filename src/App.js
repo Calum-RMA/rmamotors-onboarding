@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 60;
+const BUILD_VERSION = 61;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -138,9 +138,11 @@ const QUIZZES = {
   ]},
   ppf: { label:"RMA PPF Upsell", icon:"🛡️", questions:[
     { q:"How many protection packages does RMA PPF offer and what are they called?", opts:["2 packages — Basic and Premium","3 packages — Essential, Elite, and Signature","4 packages — Bronze, Silver, Gold, and Platinum","2 packages — Standard and Deluxe"], correct:1, exp:"Refer to the Training tab — RMA PPF Upsell module." },
+    { q:"Which package should you present to the customer FIRST, and what is the strategy if they object on price?", opts:["Essential — start low so it's an easy yes","Elite — always the safest middle option","Signature — present the top tier first, then down-sell to Elite (and then Essential) only if they object on price","Whichever the customer asks about"], correct:2, exp:"Present Signature first to anchor high. Down-sell to Elite, then Essential, only if the customer objects on price. Never start low." },
     { q:"What is the Elite package price for a Large SUV?", opts:["AED 16,950","AED 18,950","AED 20,950","AED 23,950"], correct:2, exp:"Refer to the Training tab — RMA PPF Upsell module, pricing section." },
     { q:"How much extra value does the Signature package offer compared to buying services separately?", opts:["AED 2,000","AED 4,000","AED 8,000","AED 10,000"], correct:3, exp:"Refer to the Training tab — RMA PPF Upsell module, Signature package section." },
-    { q:"What is the warranty period on all Shogun PPF products?", opts:["1 year","3 years","5 years","10 years"], correct:3, exp:"Refer to the Training tab — RMA PPF Upsell module, warranty section." },
+    { q:"What is the warranty period on Shogun GLOSS PPF films (X8 Plus, Track, Obsidian Black, X7)?", opts:["3 years","5 years","8 years","10 years"], correct:3, exp:"Shogun gloss films carry a 10-year warranty." },
+    { q:"What is the warranty period on Shogun SATIN and MATTE PPF films?", opts:["5 years","8 years","10 years","12 years"], correct:1, exp:"Shogun satin and matte films carry an 8-year warranty — shorter than the gloss range's 10 years. Quote the correct warranty per finish." },
     { q:"Where are Shogun PPF films manufactured?", opts:["South Korea","Germany","Nagoya, Japan","United States"], correct:2, exp:"Refer to the Training tab — RMA PPF Upsell module, Shogun product knowledge section." },
     { q:"Which Shogun product is specifically described as the SIGNATURE PRODUCT designed for the Middle East climate?", opts:["Shogun Track","Shogun Matte","Shogun X8 Plus","Shogun Obsidian Black"], correct:2, exp:"Refer to the Training tab — RMA PPF Upsell module, Shogun gloss films section." },
   ]},
@@ -249,23 +251,25 @@ const CLOSER_MODULES = [
     "RMA PPF operates as a key upsell and SPV (special product/vehicle) opportunity on every sale. Best price is discussed in person only — never quoted or negotiated over the phone.",
     "PROTECTION PACKAGES — know all three inside out:",
     "Essential — Full Body PPF only. Entry-level protection for budget-conscious buyers.",
-    "Elite — Full Body PPF + Interior PPF + Leather & Fabric Coating + Window Tint + Halo Ceramic + Glass Ceramic + Wheel Armour + 0% Windscreen Film. Saves the customer AED 4,000+ vs buying separately. 10-year warranty. THIS IS THE ONE TO RECOMMEND FIRST.",
-    "Signature — Everything in Elite + Windscreen Protection Film + Panoramic Sunroof Protection + 12 Safe Washes + 5 Panel Replacements in 12 months. Saves AED 10,000+. 10-year warranty. For Hypercars, Exotics, and premium SUVs.",
+    "Elite — Full Body PPF + Interior PPF + Leather & Fabric Coating + Window Tint + Halo Ceramic + Glass Ceramic + Wheel Armour + 0% Windscreen Film. Saves the customer AED 4,000+ vs buying separately.",
+    "Signature — Everything in Elite + Windscreen Protection Film + Panoramic Sunroof Protection + 12 Safe Washes + 5 Panel Replacements in 12 months. Saves AED 10,000+. For Hypercars, Exotics, and premium SUVs.",
+    "SELLING STRATEGY: ALWAYS present the Signature package FIRST — anchor the customer at the top tier. Only down-sell to Elite (and then Essential) if the customer objects on price. Starting low limits the deal from the outset; starting high leaves room to negotiate down while still landing above where you'd have started otherwise.",
     "PRICING BY VEHICLE TYPE — memorise these figures:",
     "Coupe — Essential AED 14,000 · Elite AED 17,950 · Signature AED 22,950",
     "Small SUV / Saloon — Essential AED 14,495 · Elite AED 18,950 · Signature AED 23,950",
     "Large SUV — Essential AED 16,950 · Elite AED 20,950 · Signature AED 26,950",
     "Hypercar / Exotic — Essential AED 19,000 · Elite AED 23,950 · Signature AED 28,950",
-    "SHOGUN PPF product range — TPU film manufactured in Nagoya, Japan. Engineered for the Middle East climate (heat, UV, sand, debris). 10-year warranty against fading, bubbling, discolouration, cracking, peeling, and adhesion failure.",
-    "GLOSS FILMS: X8 Plus — SIGNATURE PRODUCT, over 90 GU gloss, anti-yellowing. Track — racing-grade, 9.7mil thick. Obsidian Black — stylish black gloss. X7 — quality and affordability.",
-    "MATTE FILMS: Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU.",
+    "SHOGUN PPF product range — TPU film manufactured in Nagoya, Japan. Engineered for the Middle East climate (heat, UV, sand, debris).",
+    "WARRANTY — differs by film finish, quote the correct one: GLOSS films (X8 Plus, Track, Obsidian Black, X7) = 10-year warranty. SATIN and MATTE films (Shogun Matte, Kuro Matte, Satin) = 8-year warranty. All warranties cover fading, bubbling, discolouration, cracking, peeling, and adhesion failure.",
+    "GLOSS FILMS (10-year warranty): X8 Plus — SIGNATURE PRODUCT, over 90 GU gloss, anti-yellowing. Track — racing-grade, 9.7mil thick. Obsidian Black — stylish black gloss. X7 — quality and affordability.",
+    "MATTE / SATIN FILMS (8-year warranty): Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU.",
     "SPECIALIST FILMS: Panorama — glass sunroof protection, 98% UV rejection, 95% IR rejection, self-healing. WPF-7 — windshield protection, shatter-resistant and self-healing.",
     "UPSELL PROCESS (drilled from the Road to the Sale):",
     "Step 1 — Introduce PPF during the appointment, after building rapport and before or during the test drive. Frame it as: 'Most buyers add protection to keep the car in showroom condition long-term.'",
-    "Step 2 — Recommend the Elite package first (most popular, saves AED 4,000+, 10-year warranty). Describe what's included: full body PPF, interior protection, tints, ceramic coating.",
-    "Step 3 — For Hypercars, Exotics, and premium SUVs, mention the Signature package. It adds 5 panel replacements and 12 professional safe washes — over AED 10,000 in extra value.",
+    "Step 2 — Present the Signature package FIRST. Describe everything it includes and the AED 10,000+ in extra value. This anchors the customer high.",
+    "Step 3 — If the customer objects on price, down-sell to Elite (still the most popular, still saves AED 4,000+). If they still object, down-sell to Essential. Never open with the cheaper option.",
     "Step 4 — Hand the customer to the PPF team for a full in-person consultation, colour/finish selection, and formal quote. NEVER quote a final price over the phone or without the PPF team present.",
-    "KEY UPSELL SCRIPT: 'While you're here, I'd love to show you our RMA PPF options — most buyers add protection to keep the car in showroom condition. The Elite saves over AED 4,000 and comes with a 10-year warranty.'",
+    "KEY UPSELL SCRIPT: 'While you're here, I'd love to show you our RMA PPF Signature package — this is our top-tier protection with over AED 10,000 in extra value. Most of our customers add protection to keep the car in showroom condition long-term.'",
     "REMEMBER: including PPF up-sell in EVERY quotation is mandatory (Road to the Sale, Step 10). The 3rd up-sale seed is planted at Step 9 (Build Value) with more technical PPF/tints/ceramic detail.",
   ]},
   { id:"c7", day:"Module 7", title:"Uploading onto Titan DMS", phase:2, defaultUnlocked:false, items:[
@@ -327,11 +331,12 @@ const CLOSER_QUIZZES = {
   ]},
   closer_ppf: { label:"RMA PPF & Upsell", icon:"🛡️", questions:[
     { q:"Name the three RMA PPF protection packages in ascending order of value.", opts:["Bronze, Silver, Gold","Basic, Standard, Premium","Essential, Elite, Signature","Standard, Deluxe, Elite"], correct:2, exp:"The three packages are Essential (entry), Elite (most popular), and Signature (top-tier)." },
-    { q:"Which package should you recommend FIRST to a typical buyer, and specifically why?", opts:["Essential — cheapest, easiest yes","Elite — most popular, saves the customer over AED 4,000 vs buying separately, 10-year warranty","Signature — always upsell to the highest tier","Whichever the customer asks about"], correct:1, exp:"Elite is the go-to first recommendation: most popular, saves AED 4,000+, and carries the 10-year warranty." },
+    { q:"Which package should you present FIRST to the customer, and what is the strategy if they object on price?", opts:["Essential — cheapest, easiest yes","Elite — most popular, best value","Signature — present the top tier first, then down-sell to Elite (and then Essential) only if the customer objects on price","Whichever the customer asks about"], correct:2, exp:"Signature is presented first — anchor at the top tier. If the customer objects on price, down-sell to Elite; if they still object, down-sell to Essential. Never start low." },
     { q:"For a Large SUV, what is the Elite package price?", opts:["AED 16,950","AED 18,950","AED 20,950","AED 23,950"], correct:2, exp:"Elite for a Large SUV is AED 20,950." },
     { q:"For a Hypercar / Exotic, what is the Signature package price?", opts:["AED 22,950","AED 26,950","AED 28,950","AED 31,950"], correct:2, exp:"Signature for a Hypercar / Exotic is AED 28,950." },
     { q:"How much additional value (vs buying separately) does the Signature package offer, and what specifically is included in that extra?", opts:["AED 4,000+ — extra ceramic layers","AED 6,000+ — extended tinting","AED 10,000+ — Windscreen Protection Film, Panoramic Sunroof Protection, 12 Safe Washes, and 5 Panel Replacements in 12 months","AED 15,000+ — lifetime warranty upgrade"], correct:2, exp:"Signature saves AED 10,000+ and specifically adds Windscreen Protection Film, Panoramic Sunroof Protection, 12 Safe Washes, and 5 Panel Replacements in 12 months on top of everything in Elite." },
-    { q:"What is the warranty period on ALL Shogun PPF products?", opts:["3 years","5 years","7 years","10 years"], correct:3, exp:"All Shogun PPF products carry a 10-year warranty against fading, bubbling, discolouration, cracking, peeling, and adhesion failure." },
+    { q:"What is the warranty period on Shogun GLOSS PPF films (X8 Plus, Track, Obsidian Black, X7)?", opts:["3 years","5 years","8 years","10 years"], correct:3, exp:"Shogun gloss films carry a 10-year warranty against fading, bubbling, discolouration, cracking, peeling, and adhesion failure." },
+    { q:"What is the warranty period on Shogun SATIN and MATTE PPF films?", opts:["5 years","8 years","10 years","12 years"], correct:1, exp:"Shogun satin and matte films carry an 8-year warranty — shorter than the gloss range's 10 years. Be sure to quote the correct warranty per finish." },
     { q:"Where is Shogun PPF film manufactured, and what is the film material?", opts:["South Korea, PVC film","Germany, PU film","Nagoya, Japan — TPU film","United States, hybrid film"], correct:2, exp:"Shogun PPF is TPU film manufactured in Nagoya, Japan, engineered for the Middle East climate." },
     { q:"Which Shogun product is described as the SIGNATURE PRODUCT engineered specifically for the Middle East climate?", opts:["Shogun Track","Shogun Kuro Matte","Shogun X8 Plus","Shogun Panorama"], correct:2, exp:"X8 Plus is the signature gloss product — over 90 GU gloss, anti-yellowing, engineered for the Middle East." },
     { q:"A customer asks over the phone for a firm PPF price before their appointment. What is the correct response?", opts:["Quote the Elite price for their vehicle class immediately to secure the sale","Explain that best price is discussed in person only, and hand-off to the PPF team happens at the appointment for a full consultation","Offer them a 10% discount to close over the phone","Refer them to the website"], correct:1, exp:"Best price is discussed in person only. Never quote a final price over the phone. The customer is handed to the PPF team at the appointment for consultation, colour/finish selection, and formal quote." },
@@ -368,17 +373,19 @@ const MODULES = [
   { id:"m5", day:"Day 5 — PPF/SPV, Purchasing", title:"Purchasing & Fundamentals Test", phase:2, defaultUnlocked:false, items:["Morning: half-day with Barry (Purchasing Manager) — stock acquisition strategies and sourcing flow","Understand department workflow: sourcing to after-sales, roles within the Purchasing team","Sourcing process: Seller → Inspect → Negotiate → Buy — understand each stage thoroughly","Product identification: VIN and chassis number verification, model variations, exact trim levels, GCC vs non-GCC specs","Understand pricing structures: purchase pricing, RMA margin requirements, VAT on profit margin vs full VAT","Understand retail vs trade pricing strategies and discounting policies (management approval always required)","Reconditioning costing: how recon cost impacts buying price and required margin","Inspection training with Ricardo: RMA vehicle inspection standards, mechanical assessment (EVC), cosmetic evaluation (paintwork, panel work, accident history), RTA passing requirements","DD Pro: how to run a full vehicle history and market valuation report — used to verify pricing, flag hidden issues, and support price negotiation with customers","Vehicle file creation with Zora: stock entry in Titan DMS within one hour of vehicle arrival, documentation verification","Marketing push process: preparing vehicles for photography, coordination with Marketing team, 24-hour listing goal after recon sign-off","Top sellers by ROI: Cadillac (8 days avg, AED 38,748 profit), Porsche (15 days, AED 31,541), Ford (22 days, AED 23,301)","Age-based discount ladder — 0–14 days: full retail; 75+ days: exit pricing","Afternoon: RMA Fundamentals test — 10 Finance/Admin, 10 CRM, 10 Purchasing. Must pass all 30 to progress to Phase 3",
     "RMA PPF Upsell training: understand the 3 protection packages — Essential, Elite, and Signature",
     "Essential: Full Body PPF — entry-level protection",
-    "Elite: Full Body PPF + Interior PPF + Leather & Fabric Coating + Window Tint + Ceramic Coating + Wheel Armour + Windscreen Film. Saves customer over AED 4,000 vs buying separately. 10-year warranty.",
-    "Signature: Everything in Elite PLUS Windscreen Protection Film + Panoramic Sunroof Protection + 12 Safe Washes + 5 Panel Replacements in 12 months. Over AED 10,000 in extra value. 10-year warranty.",
+    "Elite: Full Body PPF + Interior PPF + Leather & Fabric Coating + Window Tint + Ceramic Coating + Wheel Armour + Windscreen Film. Saves customer over AED 4,000 vs buying separately.",
+    "Signature: Everything in Elite PLUS Windscreen Protection Film + Panoramic Sunroof Protection + 12 Safe Washes + 5 Panel Replacements in 12 months. Over AED 10,000 in extra value.",
+    "SELLING STRATEGY: ALWAYS present the Signature package FIRST — anchor the customer at the top tier. Only down-sell to Elite (and then Essential) if the customer objects on price. Never open with the cheaper option.",
     "Pricing — Coupe: Essential AED 14,000 / Elite AED 17,950 / Signature AED 22,950",
     "Pricing — Small SUV/Saloon: Essential AED 14,495 / Elite AED 18,950 / Signature AED 23,950",
     "Pricing — Large SUV: Essential AED 16,950 / Elite AED 20,950 / Signature AED 26,950",
     "Pricing — Hypercar/Exotic: Essential AED 19,000 / Elite AED 23,950 / Signature AED 28,950",
-    "Shogun PPF: engineered for the Middle East climate (heat, UV, sand, debris). TPU film from Nagoya, Japan. 10-year warranty on all products.",
-    "Gloss films: X8 Plus (SIGNATURE PRODUCT, >90 GU, anti-yellowing), Track (9.7mil, racing), Obsidian Black (stylish black gloss), X7 (quality + affordability)",
-    "Matte films: Shogun Matte (<20 GU), Kuro Matte (stealth black), Satin (20–30 GU smooth finish)",
+    "Shogun PPF: engineered for the Middle East climate (heat, UV, sand, debris). TPU film from Nagoya, Japan.",
+    "WARRANTY differs by finish — quote the correct one: GLOSS films (X8 Plus, Track, Obsidian Black, X7) = 10 years. SATIN and MATTE films (Shogun Matte, Kuro Matte, Satin) = 8 years. All warranties cover fading, bubbling, discolouration, cracking, peeling, and adhesion failure.",
+    "Gloss films (10-year warranty): X8 Plus (SIGNATURE PRODUCT, >90 GU, anti-yellowing), Track (9.7mil, racing), Obsidian Black (stylish black gloss), X7 (quality + affordability)",
+    "Matte / satin films (8-year warranty): Shogun Matte (<20 GU), Kuro Matte (stealth black), Satin (20–30 GU smooth finish)",
     "Specialist films: Panorama (sunroof, 98% UV rejection), WPF-7 (windshield, shatter-resistant, self-healing)",
-    "Key upsell script: 'While you're here, I'd love to show you our RMA PPF options — most buyers add protection to keep the car in showroom condition. The Elite saves over AED 4,000 and comes with a 10-year warranty.' Best price discussed in person only."] },
+    "Key upsell script: 'While you're here, I'd love to show you our RMA PPF Signature package — this is our top-tier protection with over AED 10,000 in extra value. Most of our customers add protection to keep the car in showroom condition.' Best price discussed in person only."] },
   { id:"m6", day:"Days 6–10", title:"Shadowing, Role Play & Live Calls", phase:3, defaultUnlocked:false, items:["Day 6: 1-1 with Department Manager to review progress against training plan. Full day shadowing Department Manager workflows — CRM management, team communication, escalation handling","Day 7 morning: sit with Accounts team — understand their role in the sales lifecycle, deal processing, and payment reconciliation","Day 7 afternoon: shadow a Sales Rep selected by the Department Manager — observe live lead handling, call structure, and CRM updates in real time","Day 8 morning: sit with Marketing team — understand lead generation, brand standards, listing process, platform management, and the 'Just Arrived' update process","Day 8 afternoon: shadow a Sales Rep selected by the Department Manager — focus on objection handling and appointment setting technique","Day 9: structured role play sessions coordinated by Department Managers — practise full 8-step setter framework, stall objections, price objections, decision maker objections, BAMFAM sequence, and appointment close","Day 10: supervised live calling under Department Team Leaders — real leads, real conversations, manager monitoring","Day 10 final test: 10 marketing questions + 10 purchasing questions — must pass to receive Shop Floor Ready sign-off","Shop Floor Ready sign-off: Department Manager formally signs off that you have demonstrated CRM proficiency, professional communication standards, and full knowledge of the setter framework","Completion requirements: 30 questions passed on Day 5 + 20 questions passed on Day 10 + supervised live call standard + Department Manager sign-off"] },
 ];
 
@@ -2217,9 +2224,9 @@ If they reply with an objection:
               <SectionLabel style={{ marginTop:0 }}>Protection packages</SectionLabel>
               <Card style={{ padding:"0.75rem 1.25rem", marginBottom:10 }}>
                 {[
-                  ["Essential","Full Body PPF only. Entry-level protection for budget-conscious buyers.","—","—"],
-                  ["Elite","Full Body PPF + Interior PPF + Leather & Fabric Coating + Window Tint + Halo Ceramic + Glass Ceramic + Wheel Armour + 0% Windscreen Film.","Saves AED 4,000+","10 years"],
-                  ["Signature","Everything in Elite + Windscreen Protection Film + Panoramic Sunroof Protection + 12 Safe Washes + 5 Panel Replacements in 12 months.","Saves AED 10,000+","10 years"],
+                  ["Essential","Full Body PPF only. Entry-level protection for budget-conscious buyers.","—","Per film"],
+                  ["Elite","Full Body PPF + Interior PPF + Leather & Fabric Coating + Window Tint + Halo Ceramic + Glass Ceramic + Wheel Armour + 0% Windscreen Film.","Saves AED 4,000+","Per film"],
+                  ["Signature","Everything in Elite + Windscreen Protection Film + Panoramic Sunroof Protection + 12 Safe Washes + 5 Panel Replacements in 12 months.","Saves AED 10,000+","Per film"],
                 ].map(([pkg,desc,saving,warranty],i,a)=>(
                   <div key={pkg} style={{ display:"flex", gap:12, padding:"10px 0", borderBottom:i<a.length-1?`1px solid ${T.border}`:"none", alignItems:"flex-start" }}>
                     <div style={{ width:90, fontWeight:700, color:T.gold, fontSize:12, flexShrink:0 }}>{pkg}</div>
@@ -2229,6 +2236,7 @@ If they reply with an objection:
                   </div>
                 ))}
               </Card>
+              <Alert variant="warn">Warranty depends on the FILM FINISH chosen, not the package tier. Gloss films = 10 years. Satin / Matte films = 8 years. Always confirm the customer's film choice and quote the correct warranty.</Alert>
               <SectionLabel>Pricing by vehicle type</SectionLabel>
               <Card style={{ padding:"0.75rem 1.25rem", marginBottom:10 }}>
                 <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1fr", gap:8, marginBottom:6 }}>
@@ -2249,14 +2257,14 @@ If they reply with an objection:
                 ))}
               </Card>
               <SectionLabel>Shogun PPF product range</SectionLabel>
-              <StepBlock title="Gloss Films" desc="X8 Plus — SIGNATURE PRODUCT. Engineered for Middle East climate. Over 90 GU gloss, anti-yellowing, 10-year warranty. Track — racing-grade, 9.7mil thick. Obsidian Black — stylish black gloss. X7 — quality and affordability." />
-              <StepBlock title="Matte Films" accent={T.purple} desc="Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU." />
+              <StepBlock title="Gloss Films — 10-year warranty" desc="X8 Plus — SIGNATURE PRODUCT. Engineered for Middle East climate. Over 90 GU gloss, anti-yellowing. Track — racing-grade, 9.7mil thick. Obsidian Black — stylish black gloss. X7 — quality and affordability." />
+              <StepBlock title="Matte / Satin Films — 8-year warranty" accent={T.purple} desc="Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU." />
               <StepBlock title="Specialist Films" accent={T.blue} desc="Panorama — glass sunroof protection, 98% UV rejection, 95% IR rejection, self-healing. WPF-7 — windshield protection, shatter-resistant and self-healing." />
-              <Alert variant="info">All Shogun PPF: 10-year warranty against fading, bubbling, discolouration, cracking, peeling, and adhesion failure. All films tested for chemical and stain resistance. TPU film manufactured in Nagoya, Japan.</Alert>
+              <Alert variant="info">Shogun warranties cover fading, bubbling, discolouration, cracking, peeling, and adhesion failure. All films tested for chemical and stain resistance. TPU film manufactured in Nagoya, Japan. Gloss range = 10 years, satin / matte range = 8 years.</Alert>
               <SectionLabel>Upsell process</SectionLabel>
               <StepBlock n="Step 1" title="Introduce PPF during the appointment" desc="After building rapport and before or during the test drive, introduce the RMA PPF concept: most buyers add protection to keep the car in showroom condition long-term." />
-              <StepBlock n="Step 2" title="Recommend the Elite package first" desc="The Elite is the most popular — it saves the customer over AED 4,000 compared to buying services separately and comes with a 10-year warranty. Describe what is included: full body PPF, interior protection, tints, ceramic coating." />
-              <StepBlock n="Step 3" title="Mention the Signature for high-value vehicles" desc="For Hypercars, Exotics, and premium SUVs: the Signature package adds 5 panel replacements and 12 professional safe washes — over AED 10,000 in extra value. Well suited to buyers who want complete peace of mind." />
+              <StepBlock n="Step 2" title="Present the Signature package first" desc="Anchor the customer at the top tier. Signature offers over AED 10,000 in extra value — Windscreen Protection Film, Panoramic Sunroof Protection, 12 Safe Washes, and 5 Panel Replacements in 12 months on top of everything in Elite. Describe the full package with confidence." />
+              <StepBlock n="Step 3" title="Down-sell only if the customer objects on price" desc="If Signature is out of budget, down-sell to Elite (still saves AED 4,000+ vs buying separately). If Elite is still too much, down-sell to Essential. Never open with the cheaper option — start high and let them work down if needed." />
               <StepBlock n="Step 4" title="Hand to the PPF team for consultation" desc="Never quote a final price over the phone or without the PPF team present. Hand the customer to the PPF team for a full in-person consultation, colour/finish selection, and formal quote." />
               <Alert variant="warn">The best price will only be discussed in person. Never give final PPF pricing over the phone or before the PPF team consultation.</Alert>
             </div>)}

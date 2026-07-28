@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 59;
+const BUILD_VERSION = 60;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -244,6 +244,30 @@ const CLOSER_MODULES = [
     "Finance enquiry form must be completed in full — no blank fields. F&I cannot proceed without this",
     "Passport and Emirates ID copies to be taken on the day — do not rely on the customer sending them later",
   ]},
+  { id:"c_ppf", day:"Module 6.5", title:"RMA PPF & Upsell Mastery", phase:2, defaultUnlocked:false, items:[
+    "PPF is a core RMA offering and a mandatory line item in every quotation — Closers must know the products and pricing in depth, not just refer them to the PPF team.",
+    "RMA PPF operates as a key upsell and SPV (special product/vehicle) opportunity on every sale. Best price is discussed in person only — never quoted or negotiated over the phone.",
+    "PROTECTION PACKAGES — know all three inside out:",
+    "Essential — Full Body PPF only. Entry-level protection for budget-conscious buyers.",
+    "Elite — Full Body PPF + Interior PPF + Leather & Fabric Coating + Window Tint + Halo Ceramic + Glass Ceramic + Wheel Armour + 0% Windscreen Film. Saves the customer AED 4,000+ vs buying separately. 10-year warranty. THIS IS THE ONE TO RECOMMEND FIRST.",
+    "Signature — Everything in Elite + Windscreen Protection Film + Panoramic Sunroof Protection + 12 Safe Washes + 5 Panel Replacements in 12 months. Saves AED 10,000+. 10-year warranty. For Hypercars, Exotics, and premium SUVs.",
+    "PRICING BY VEHICLE TYPE — memorise these figures:",
+    "Coupe — Essential AED 14,000 · Elite AED 17,950 · Signature AED 22,950",
+    "Small SUV / Saloon — Essential AED 14,495 · Elite AED 18,950 · Signature AED 23,950",
+    "Large SUV — Essential AED 16,950 · Elite AED 20,950 · Signature AED 26,950",
+    "Hypercar / Exotic — Essential AED 19,000 · Elite AED 23,950 · Signature AED 28,950",
+    "SHOGUN PPF product range — TPU film manufactured in Nagoya, Japan. Engineered for the Middle East climate (heat, UV, sand, debris). 10-year warranty against fading, bubbling, discolouration, cracking, peeling, and adhesion failure.",
+    "GLOSS FILMS: X8 Plus — SIGNATURE PRODUCT, over 90 GU gloss, anti-yellowing. Track — racing-grade, 9.7mil thick. Obsidian Black — stylish black gloss. X7 — quality and affordability.",
+    "MATTE FILMS: Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU.",
+    "SPECIALIST FILMS: Panorama — glass sunroof protection, 98% UV rejection, 95% IR rejection, self-healing. WPF-7 — windshield protection, shatter-resistant and self-healing.",
+    "UPSELL PROCESS (drilled from the Road to the Sale):",
+    "Step 1 — Introduce PPF during the appointment, after building rapport and before or during the test drive. Frame it as: 'Most buyers add protection to keep the car in showroom condition long-term.'",
+    "Step 2 — Recommend the Elite package first (most popular, saves AED 4,000+, 10-year warranty). Describe what's included: full body PPF, interior protection, tints, ceramic coating.",
+    "Step 3 — For Hypercars, Exotics, and premium SUVs, mention the Signature package. It adds 5 panel replacements and 12 professional safe washes — over AED 10,000 in extra value.",
+    "Step 4 — Hand the customer to the PPF team for a full in-person consultation, colour/finish selection, and formal quote. NEVER quote a final price over the phone or without the PPF team present.",
+    "KEY UPSELL SCRIPT: 'While you're here, I'd love to show you our RMA PPF options — most buyers add protection to keep the car in showroom condition. The Elite saves over AED 4,000 and comes with a 10-year warranty.'",
+    "REMEMBER: including PPF up-sell in EVERY quotation is mandatory (Road to the Sale, Step 10). The 3rd up-sale seed is planted at Step 9 (Build Value) with more technical PPF/tints/ceramic detail.",
+  ]},
   { id:"c7", day:"Module 7", title:"Uploading onto Titan DMS", phase:2, defaultUnlocked:false, items:[
     "Titan DMS is the primary Dealer Management System — all deal information must be entered accurately and in real time",
     "After deposit is received: open the deal in Titan DMS and update the status to reflect deposit taken",
@@ -300,6 +324,19 @@ const CLOSER_QUIZZES = {
     { q:"What does 'RDR' stand for, and at which step do you prepare for it?", opts:["Rapid Deal Response — Step 10","Reactionary Defence Response — Step 2 (Greeting), e.g. 'I'm just looking around'","Required Document Review — Step 6","Repeat Demo Request — Step 7"], correct:1, exp:"Step 2 (Greeting): be prepared for RDRs (Reactionary Defence Responses) such as 'I'm just looking around' — acknowledge and move into fact finding." },
     { q:"In the document's hierarchy, what is 'senior to sales'?", opts:["Profit","Service","The manager","The product"], correct:1, exp:"The process states: approach all steps from a point of SERVICE — 'Service is senior to sales' — and control the process." },
     { q:"For a quotation follow-up (Step 14) versus an initial-contact / wishlist / no-show follow-up, what is the key difference in method?", opts:["Both must always be a Snap Cell video","Initial contact / wishlist match / no-show ALWAYS requires a personal Snap Cell video; a quotation follow-up requires creative, varied methods of staying in touch","Quotation follow-up must always be a phone call only","There is no difference — all follow-ups use the same generic message"], correct:1, exp:"Step 14: initial phone contact, wishlist matches and no-shows always get a personal Snap Cell video; quotation follow-ups need creative, varied approaches — never a generic 'just following up'." },
+  ]},
+  closer_ppf: { label:"RMA PPF & Upsell", icon:"🛡️", questions:[
+    { q:"Name the three RMA PPF protection packages in ascending order of value.", opts:["Bronze, Silver, Gold","Basic, Standard, Premium","Essential, Elite, Signature","Standard, Deluxe, Elite"], correct:2, exp:"The three packages are Essential (entry), Elite (most popular), and Signature (top-tier)." },
+    { q:"Which package should you recommend FIRST to a typical buyer, and specifically why?", opts:["Essential — cheapest, easiest yes","Elite — most popular, saves the customer over AED 4,000 vs buying separately, 10-year warranty","Signature — always upsell to the highest tier","Whichever the customer asks about"], correct:1, exp:"Elite is the go-to first recommendation: most popular, saves AED 4,000+, and carries the 10-year warranty." },
+    { q:"For a Large SUV, what is the Elite package price?", opts:["AED 16,950","AED 18,950","AED 20,950","AED 23,950"], correct:2, exp:"Elite for a Large SUV is AED 20,950." },
+    { q:"For a Hypercar / Exotic, what is the Signature package price?", opts:["AED 22,950","AED 26,950","AED 28,950","AED 31,950"], correct:2, exp:"Signature for a Hypercar / Exotic is AED 28,950." },
+    { q:"How much additional value (vs buying separately) does the Signature package offer, and what specifically is included in that extra?", opts:["AED 4,000+ — extra ceramic layers","AED 6,000+ — extended tinting","AED 10,000+ — Windscreen Protection Film, Panoramic Sunroof Protection, 12 Safe Washes, and 5 Panel Replacements in 12 months","AED 15,000+ — lifetime warranty upgrade"], correct:2, exp:"Signature saves AED 10,000+ and specifically adds Windscreen Protection Film, Panoramic Sunroof Protection, 12 Safe Washes, and 5 Panel Replacements in 12 months on top of everything in Elite." },
+    { q:"What is the warranty period on ALL Shogun PPF products?", opts:["3 years","5 years","7 years","10 years"], correct:3, exp:"All Shogun PPF products carry a 10-year warranty against fading, bubbling, discolouration, cracking, peeling, and adhesion failure." },
+    { q:"Where is Shogun PPF film manufactured, and what is the film material?", opts:["South Korea, PVC film","Germany, PU film","Nagoya, Japan — TPU film","United States, hybrid film"], correct:2, exp:"Shogun PPF is TPU film manufactured in Nagoya, Japan, engineered for the Middle East climate." },
+    { q:"Which Shogun product is described as the SIGNATURE PRODUCT engineered specifically for the Middle East climate?", opts:["Shogun Track","Shogun Kuro Matte","Shogun X8 Plus","Shogun Panorama"], correct:2, exp:"X8 Plus is the signature gloss product — over 90 GU gloss, anti-yellowing, engineered for the Middle East." },
+    { q:"A customer asks over the phone for a firm PPF price before their appointment. What is the correct response?", opts:["Quote the Elite price for their vehicle class immediately to secure the sale","Explain that best price is discussed in person only, and hand-off to the PPF team happens at the appointment for a full consultation","Offer them a 10% discount to close over the phone","Refer them to the website"], correct:1, exp:"Best price is discussed in person only. Never quote a final price over the phone. The customer is handed to the PPF team at the appointment for consultation, colour/finish selection, and formal quote." },
+    { q:"At which step of the Road to the Sale is including PPF in the quotation made explicitly mandatory?", opts:["Step 6 — The Demonstration","Step 9 — Build Value","Step 10 — The Deal Sheet Write-Up","Step 11 — The Negotiation"], correct:2, exp:"Step 10: 'Including PPF up-sell in every quotation is mandatory.'" },
+    { q:"Panorama and WPF-7 are examples of which category in the Shogun range?", opts:["Gloss films","Matte films","Specialist films","Racing films"], correct:2, exp:"Panorama (glass sunroof protection) and WPF-7 (windshield protection) are the Specialist Films category — the remaining Shogun categories are Gloss and Matte." },
   ]},
   closer_comms: { label:"Appointment & Comms", icon:"📅", questions:[
     { q:"A Setter introduces you to a customer at 2:00pm. By what time must your personalised Snap Cell be sent, and where must it be filmed?", opts:["By 4:00pm, filmed anywhere in the showroom","By 2:30pm, filmed in front of the specific car the customer enquired about with your face clearly visible","By end of day, filmed at your desk","By 2:05pm, a text-only message is acceptable"], correct:1, exp:"Module 2: send within 30 minutes of the Setter introduction, filmed in front of the specific car with your face clearly visible." },
@@ -554,9 +591,17 @@ export default function App() {
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [roleChangeConfirm, setRoleChangeConfirm] = useState(null); // { id, newRole } | null
   const [expandedSetter, setExpandedSetter] = useState(null);
+  const [emailEditFor, setEmailEditFor] = useState(null); // staff id being email-edited
+  const [emailEditValue, setEmailEditValue] = useState("");
+  const [announceOpen, setAnnounceOpen] = useState(false);
+  const [announceAssessment, setAnnounceAssessment] = useState("");
+  const [announceScope, setAnnounceScope] = useState("all"); // all | setters | closers | individuals
+  const [announceIndividuals, setAnnounceIndividuals] = useState([]); // staff ids
+  const [announceDeadline, setAnnounceDeadline] = useState(""); // optional deadline text
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newRole, setNewRole] = useState("setter"); // Role assigned at account creation
+  const [newEmail, setNewEmail] = useState(""); // Optional email for announcements
   const [genPassword, setGenPassword] = useState("");
   const [genLink, setGenLink] = useState("");
   const [linkCopied, setLinkCopied] = useState(false);
@@ -779,6 +824,7 @@ export default function App() {
     const initials = newName.trim().split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
     const setterRecord = {
       name: newName.trim(), initials, password: newPassword.trim(),
+      email: newEmail.trim().toLowerCase(),
       startDate: new Date().toISOString().split("T")[0],
       role: newRole,
       completedModules:[], quizScores:{}, quizAnswers:{}, feedback:[], setterId:id
@@ -849,6 +895,15 @@ export default function App() {
     updated.roleHistory = [...(d.roleHistory||[]), { from: oldRole, to: newRole, date: new Date().toISOString().slice(0,10) }];
     await sSet(setterId, updated);
     setRoleChangeConfirm(null);
+    loadMgmt();
+  };
+
+  const handleUpdateEmail = async (setterId, email) => {
+    const d = await sGet(setterId);
+    if (!d) return;
+    await sSet(setterId, { ...d, email: (email||"").trim().toLowerCase() });
+    setEmailEditFor(null);
+    setEmailEditValue("");
     loadMgmt();
   };
 
@@ -1001,6 +1056,114 @@ export default function App() {
     return (
       <>
       {updateBanner}
+      {announceOpen && (() => {
+        // Build recipient list from staff who have an email on file
+        const recipients = mgmtSetters.filter(s => {
+          if (!s.email) return false;
+          if (announceScope === "all") return true;
+          if (announceScope === "setters") return s.role !== "closer";
+          if (announceScope === "closers") return s.role === "closer";
+          if (announceScope === "individuals") return announceIndividuals.includes(s.id);
+          return false;
+        });
+        const toList = recipients.map(s => s.email).join(",");
+        const missingEmails = mgmtSetters.filter(s => {
+          if (!s.email) {
+            if (announceScope === "all") return true;
+            if (announceScope === "setters" && s.role !== "closer") return true;
+            if (announceScope === "closers" && s.role === "closer") return true;
+            if (announceScope === "individuals" && announceIndividuals.includes(s.id)) return true;
+          }
+          return false;
+        });
+        const subject = announceAssessment
+          ? `New assessment added: ${announceAssessment}`
+          : "New assessment added to your training platform";
+        const bodyLines = [
+          `Hi team,`,
+          ``,
+          `A new assessment has been added to the RMA Motors Onboarding & Training Platform:`,
+          ``,
+          announceAssessment ? `  • ${announceAssessment}` : `  • [assessment name]`,
+          ``,
+          `Please log in and complete it${announceDeadline ? ` by ${announceDeadline}` : " at your earliest convenience"}.`,
+          ``,
+          `Platform: ${window.location.href.split("#")[0]}`,
+          ``,
+          `A reminder that the pass mark for all assessments is 100%. Review the relevant module and SOP thoroughly before attempting. You have 3 attempts before the assessment locks — after which a manager must unlock it.`,
+          ``,
+          `Any questions, come and find me.`,
+          ``,
+          `Thanks,`,
+          `Management`,
+        ];
+        const body = bodyLines.join("\n");
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(toList)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        return (
+          <div style={{ position:"fixed", inset:0, background:"rgba(11,14,25,0.75)", zIndex:10000, display:"flex", alignItems:"center", justifyContent:"center", padding:"1rem", backdropFilter:"blur(3px)" }} onClick={()=>setAnnounceOpen(false)}>
+            <div onClick={e=>e.stopPropagation()} style={{ background:T.card, border:`1px solid ${T.border}`, borderRadius:14, padding:"1.5rem", maxWidth:640, width:"100%", maxHeight:"90vh", overflow:"auto", fontFamily:"'DM Sans',system-ui,sans-serif" }}>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+                <div>
+                  <div style={{ fontSize:16, fontWeight:800, color:T.text }}>Announce a new assessment</div>
+                  <div style={{ fontSize:11, color:T.muted, marginTop:2 }}>Compose an email that opens in Gmail with recipients pre-filled.</div>
+                </div>
+                <button onClick={()=>setAnnounceOpen(false)} style={{ background:"transparent", border:"none", fontSize:20, color:T.faint, cursor:"pointer", padding:4 }}>×</button>
+              </div>
+              <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Assessment name</label>
+              <input type="text" value={announceAssessment} onChange={e=>setAnnounceAssessment(e.target.value)} placeholder="e.g. RMA PPF & Upsell"
+                style={{ width:"100%", background:T.surf, border:`1px solid ${T.border}`, color:T.text, borderRadius:9, padding:"9px 12px", fontSize:13, marginBottom:12, fontFamily:"inherit", boxSizing:"border-box" }} />
+              <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Deadline <span style={{ color:T.faint, fontWeight:500, textTransform:"none", letterSpacing:0, fontSize:10 }}>· optional</span></label>
+              <input type="text" value={announceDeadline} onChange={e=>setAnnounceDeadline(e.target.value)} placeholder="e.g. end of this week, Friday 5pm"
+                style={{ width:"100%", background:T.surf, border:`1px solid ${T.border}`, color:T.text, borderRadius:9, padding:"9px 12px", fontSize:13, marginBottom:12, fontFamily:"inherit", boxSizing:"border-box" }} />
+              <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Send to</label>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:6, marginBottom:12 }}>
+                {[["all","👥 All staff"],["setters","⚡ Setters only"],["closers","🤝 Closers only"],["individuals","👤 Pick individuals"]].map(([v,l])=>(
+                  <button key={v} onClick={()=>setAnnounceScope(v)}
+                    style={{ padding:"9px 10px", background:announceScope===v?T.blueBg:T.surf, border:`1px solid ${announceScope===v?T.blue:T.border}`, color:announceScope===v?T.blueTx:T.text, borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>{l}</button>
+                ))}
+              </div>
+              {announceScope==="individuals" && (
+                <div style={{ background:T.surf, border:`1px solid ${T.border}`, borderRadius:10, padding:"10px 12px", marginBottom:12, maxHeight:180, overflow:"auto" }}>
+                  {mgmtSetters.length === 0 ? (
+                    <div style={{ fontSize:12, color:T.faint }}>No staff on file.</div>
+                  ) : mgmtSetters.map(s => (
+                    <label key={s.id} style={{ display:"flex", alignItems:"center", gap:8, padding:"5px 0", fontSize:12, color:T.text, cursor:"pointer" }}>
+                      <input type="checkbox" checked={announceIndividuals.includes(s.id)}
+                        onChange={()=>setAnnounceIndividuals(prev => prev.includes(s.id) ? prev.filter(x=>x!==s.id) : [...prev, s.id])} />
+                      <span style={{ flex:1 }}>{s.name} <span style={{ fontSize:10, color:T.faint }}>· {s.role==="closer"?"Closer":"Setter"}</span></span>
+                      <span style={{ fontSize:10, color:s.email?T.greenTx:T.redTx, fontFamily:"monospace" }}>{s.email || "no email"}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+              <div style={{ background:T.surf, border:`1px solid ${T.border}`, borderRadius:10, padding:"10px 14px", marginBottom:14 }}>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
+                  <div style={{ fontSize:10, fontWeight:700, color:T.faint, textTransform:"uppercase", letterSpacing:"0.06em" }}>Recipients ready to email</div>
+                  <div style={{ fontSize:13, fontWeight:700, color:recipients.length?T.greenTx:T.faint }}>{recipients.length}</div>
+                </div>
+                {recipients.length > 0 && (
+                  <div style={{ fontSize:11, color:T.muted, marginTop:4, wordBreak:"break-word" }}>{recipients.map(r=>r.name).join(", ")}</div>
+                )}
+                {missingEmails.length > 0 && (
+                  <div style={{ marginTop:8, padding:"8px 10px", background:T.amberBg, border:`1px solid ${T.amber}`, borderRadius:6, fontSize:11, color:T.text, lineHeight:1.5 }}>
+                    ⚠️ {missingEmails.length} in your selected group {missingEmails.length===1?"has":"have"} no email on file and will NOT receive the announcement: <strong>{missingEmails.map(m=>m.name).join(", ")}</strong>. Add their email in the Overview tab (expand their row).
+                  </div>
+                )}
+              </div>
+              <div style={{ display:"flex", gap:8, flexWrap:"wrap", justifyContent:"flex-end" }}>
+                <Btn small onClick={()=>setAnnounceOpen(false)}>Cancel</Btn>
+                <Btn small onClick={()=>{ navigator.clipboard?.writeText(body); }}>Copy body only</Btn>
+                <a href={recipients.length ? gmailUrl : undefined}
+                  target="_blank" rel="noreferrer"
+                  onClick={e=>{ if (!recipients.length) e.preventDefault(); else setAnnounceOpen(false); }}
+                  style={{ textDecoration:"none" }}>
+                  <Btn small primary disabled={!recipients.length}>Open in Gmail →</Btn>
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
       <div style={{ padding:"2rem", maxWidth:1000, margin:"0 auto", background:T.bg, minHeight:"100vh" }} className="fade">
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1.75rem", flexWrap:"wrap", gap:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:14 }}>
@@ -1014,6 +1177,7 @@ export default function App() {
           <div style={{ display:"flex", gap:8, alignItems:"center" }}>
             <span style={{ fontSize:10, color:T.faint, fontFamily:"monospace" }} title="The build version this dashboard is running">v{BUILD_VERSION}</span>
             <Btn small onClick={handlePublishUpdate} title="After deploying a new build to Netlify, click this to prompt all logged-in users to refresh">{publishDone ? "✓ Published" : "📢 Publish update"}</Btn>
+            <Btn small onClick={()=>{ setAnnounceOpen(true); setAnnounceAssessment(""); setAnnounceScope("all"); setAnnounceIndividuals([]); setAnnounceDeadline(""); }} title="Compose an email to notify staff about a new assessment">✉️ Announce assessment</Btn>
             <Btn small onClick={loadMgmt}>↻ Refresh</Btn>
             <Btn small primary onClick={()=>setMgmtTab(mgmtTab==="links"?"overview":"links")}>{mgmtTab==="links"?"← Overview":"+ New account"}</Btn>
             <Btn small onClick={()=>{ setMgmtAuth(false); setMgmtPassword(""); }}>Sign out</Btn>
@@ -1047,6 +1211,8 @@ export default function App() {
             </div>
             <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>{newRole==="closer"?"Closer's":"Setter's"} full name</label>
             <Input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="e.g. Alex Mitchell" style={{ marginBottom:10 }} />
+            <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Email address <span style={{ color:T.faint, fontWeight:500, textTransform:"none", letterSpacing:0, fontSize:10 }}>· optional, used for announcements</span></label>
+            <Input type="email" value={newEmail} onChange={e=>setNewEmail(e.target.value)} placeholder="e.g. alex.mitchell@rmamotors.ae" style={{ marginBottom:10 }} />
             <label style={{ fontSize:11, fontWeight:700, color:T.faint, display:"block", marginBottom:6, textTransform:"uppercase", letterSpacing:"0.1em" }}>Set their password</label>
             <Input value={newPassword} onChange={e=>setNewPassword(e.target.value)} placeholder="e.g. RMA2024Alex" style={{ marginBottom:14 }} />
             <Btn primary small onClick={generateLink} disabled={!newName.trim()||!newPassword.trim()}>Create {newRole==="closer"?"Closer":"Setter"} account →</Btn>
@@ -1059,7 +1225,7 @@ export default function App() {
                 <div style={{ fontSize:14, fontWeight:700, color:T.text, fontFamily:"monospace", background:T.bg, padding:"8px 10px", borderRadius:6, marginBottom:12 }}>{genPassword}</div>
                 <div style={{ display:"flex", gap:8 }}>
                   <Btn small primary onClick={()=>{ navigator.clipboard?.writeText(`Link: ${genLink}\nPassword: ${genPassword}`); setLinkCopied(true); setTimeout(()=>setLinkCopied(false),2000); }}>{linkCopied?"✓ Copied!":"Copy both to clipboard"}</Btn>
-                  <Btn small onClick={()=>{ setGenLink(""); setGenPassword(""); setNewName(""); setNewPassword(""); }}>Create another</Btn>
+                  <Btn small onClick={()=>{ setGenLink(""); setGenPassword(""); setNewName(""); setNewPassword(""); setNewEmail(""); }}>Create another</Btn>
                 </div>
               </div>
             )}
@@ -1149,6 +1315,28 @@ export default function App() {
                             <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px" }}>
                               <div style={{ fontSize:10, fontWeight:700, color:T.faint, marginBottom:3, textTransform:"uppercase", letterSpacing:"0.08em" }}>Quiz average</div>
                               <div style={{ fontSize:13, fontWeight:600, color:avg!==null?(good?T.greenTx:T.redTx):T.faint }}>{avg!==null?`${avg}%`:"No quizzes taken"}</div>
+                            </div>
+                            <div style={{ background:T.surf, borderRadius:8, padding:"8px 12px", gridColumn:"span 2" }}>
+                              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:3 }}>
+                                <div style={{ fontSize:10, fontWeight:700, color:T.faint, textTransform:"uppercase", letterSpacing:"0.08em" }}>Email address</div>
+                                {emailEditFor !== s.id && (
+                                  <button onClick={()=>{ setEmailEditFor(s.id); setEmailEditValue(s.email||""); }}
+                                    style={{ fontSize:10, color:T.blueTx, background:"transparent", border:"none", cursor:"pointer", fontWeight:700, fontFamily:"'DM Sans',system-ui,sans-serif" }}>
+                                    {s.email ? "Edit" : "+ Add email"}
+                                  </button>
+                                )}
+                              </div>
+                              {emailEditFor === s.id ? (
+                                <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+                                  <input type="email" value={emailEditValue} onChange={e=>setEmailEditValue(e.target.value)}
+                                    placeholder="name@rmamotors.ae"
+                                    style={{ flex:1, background:T.bg, border:`1px solid ${T.border}`, color:T.text, borderRadius:6, padding:"5px 8px", fontSize:12 }} />
+                                  <Btn small onClick={()=>handleUpdateEmail(s.id, emailEditValue)}>Save</Btn>
+                                  <Btn small onClick={()=>{ setEmailEditFor(null); setEmailEditValue(""); }}>Cancel</Btn>
+                                </div>
+                              ) : (
+                                <div style={{ fontSize:13, fontWeight:600, color:s.email?T.text:T.faint, fontFamily:s.email?"monospace":"inherit" }}>{s.email || "— not on file"}</div>
+                              )}
                             </div>
                           </div>
                           <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", padding:"10px 12px", background:s.role==="closer"?T.purpleBg:T.goldBg, border:`1px solid ${s.role==="closer"?T.purple:T.gold}`, borderRadius:10, marginBottom:10 }}>

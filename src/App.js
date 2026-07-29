@@ -8,7 +8,7 @@ const DB2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedata
 // Bump this number every time you deploy a new build. After deploying, a manager
 // clicks "Publish update" in the dashboard, which writes this value to Firebase.
 // Clients running an older version then see a "refresh" banner.
-const BUILD_VERSION = 62;
+const BUILD_VERSION = 63;
 const META = "https://rma-motors-onboarding-default-rtdb.firebaseio.com/meta";
 const META2 = "https://rma-motors-onboarding-default-rtdb.us-central1.firebasedatabase.app/meta";
 
@@ -142,7 +142,7 @@ const QUIZZES = {
     { q:"What is the Elite package price for a Large SUV?", opts:["AED 16,950","AED 18,950","AED 20,950","AED 23,950"], correct:2, exp:"Refer to the Training tab — RMA PPF Upsell module, pricing section." },
     { q:"How much extra value does the Signature package offer compared to buying services separately?", opts:["AED 2,000","AED 4,000","AED 8,000","AED 10,000"], correct:3, exp:"Refer to the Training tab — RMA PPF Upsell module, Signature package section." },
     { q:"What is the warranty period on Shogun GLOSS PPF films (X8 Plus, Track, Obsidian Black, X7)?", opts:["3 years","5 years","8 years","10 years"], correct:3, exp:"Shogun gloss films carry a 10-year warranty." },
-    { q:"What is the warranty period on Shogun SATIN and MATTE PPF films?", opts:["5 years","8 years","10 years","12 years"], correct:1, exp:"Shogun satin and matte films carry an 8-year warranty — shorter than the gloss range's 10 years. Quote the correct warranty per finish." },
+    { q:"What is the warranty period on Shogun SATIN and MATTE PPF films?", opts:["5 years","7 years","10 years","12 years"], correct:1, exp:"Shogun satin and matte films carry a 7-year warranty — shorter than the gloss range's 10 years. Quote the correct warranty per finish." },
     { q:"Where are Shogun PPF films manufactured?", opts:["South Korea","Germany","Nagoya, Japan","United States"], correct:2, exp:"Refer to the Training tab — RMA PPF Upsell module, Shogun product knowledge section." },
     { q:"Which Shogun product is specifically described as the SIGNATURE PRODUCT designed for the Middle East climate?", opts:["Shogun Track","Shogun Matte","Shogun X8 Plus","Shogun Obsidian Black"], correct:2, exp:"Refer to the Training tab — RMA PPF Upsell module, Shogun gloss films section." },
   ]},
@@ -260,9 +260,9 @@ const CLOSER_MODULES = [
     "Large SUV — Essential AED 16,950 · Elite AED 20,950 · Signature AED 26,950",
     "Hypercar / Exotic — Essential AED 19,000 · Elite AED 23,950 · Signature AED 28,950",
     "SHOGUN PPF product range — TPU film manufactured in Nagoya, Japan. Engineered for the Middle East climate (heat, UV, sand, debris).",
-    "WARRANTY — differs by film finish, quote the correct one: GLOSS films (X8 Plus, Track, Obsidian Black, X7) = 10-year warranty. SATIN and MATTE films (Shogun Matte, Kuro Matte, Satin) = 8-year warranty. All warranties cover fading, bubbling, discolouration, cracking, peeling, and adhesion failure.",
+    "WARRANTY — differs by film finish, quote the correct one: GLOSS films (X8 Plus, Track, Obsidian Black, X7) = 10-year warranty. SATIN and MATTE films (Shogun Matte, Kuro Matte, Satin) = 7-year warranty. All warranties cover fading, bubbling, discolouration, cracking, peeling, and adhesion failure.",
     "GLOSS FILMS (10-year warranty): X8 Plus — SIGNATURE PRODUCT, over 90 GU gloss, anti-yellowing. Track — racing-grade, 9.7mil thick. Obsidian Black — stylish black gloss. X7 — quality and affordability.",
-    "MATTE / SATIN FILMS (8-year warranty): Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU.",
+    "MATTE / SATIN FILMS (7-year warranty): Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU.",
     "SPECIALIST FILMS: Panorama — glass sunroof protection, 98% UV rejection, 95% IR rejection, self-healing. WPF-7 — windshield protection, shatter-resistant and self-healing.",
     "UPSELL PROCESS (drilled from the Road to the Sale):",
     "Step 1 — Introduce PPF during the appointment, after building rapport and before or during the test drive. Frame it as: 'Most buyers add protection to keep the car in showroom condition long-term.'",
@@ -336,7 +336,7 @@ const CLOSER_QUIZZES = {
     { q:"For a Hypercar / Exotic, what is the Signature package price?", opts:["AED 22,950","AED 26,950","AED 28,950","AED 31,950"], correct:2, exp:"Signature for a Hypercar / Exotic is AED 28,950." },
     { q:"How much additional value (vs buying separately) does the Signature package offer, and what specifically is included in that extra?", opts:["AED 4,000+ — extra ceramic layers","AED 6,000+ — extended tinting","AED 10,000+ — Windscreen Protection Film, Panoramic Sunroof Protection, 12 Safe Washes, and 5 Panel Replacements in 12 months","AED 15,000+ — lifetime warranty upgrade"], correct:2, exp:"Signature saves AED 10,000+ and specifically adds Windscreen Protection Film, Panoramic Sunroof Protection, 12 Safe Washes, and 5 Panel Replacements in 12 months on top of everything in Elite." },
     { q:"What is the warranty period on Shogun GLOSS PPF films (X8 Plus, Track, Obsidian Black, X7)?", opts:["3 years","5 years","8 years","10 years"], correct:3, exp:"Shogun gloss films carry a 10-year warranty against fading, bubbling, discolouration, cracking, peeling, and adhesion failure." },
-    { q:"What is the warranty period on Shogun SATIN and MATTE PPF films?", opts:["5 years","8 years","10 years","12 years"], correct:1, exp:"Shogun satin and matte films carry an 8-year warranty — shorter than the gloss range's 10 years. Be sure to quote the correct warranty per finish." },
+    { q:"What is the warranty period on Shogun SATIN and MATTE PPF films?", opts:["5 years","7 years","10 years","12 years"], correct:1, exp:"Shogun satin and matte films carry a 7-year warranty — shorter than the gloss range's 10 years. Be sure to quote the correct warranty per finish." },
     { q:"Where is Shogun PPF film manufactured, and what is the film material?", opts:["South Korea, PVC film","Germany, PU film","Nagoya, Japan — TPU film","United States, hybrid film"], correct:2, exp:"Shogun PPF is TPU film manufactured in Nagoya, Japan, engineered for the Middle East climate." },
     { q:"Which Shogun product is described as the SIGNATURE PRODUCT engineered specifically for the Middle East climate?", opts:["Shogun Track","Shogun Kuro Matte","Shogun X8 Plus","Shogun Panorama"], correct:2, exp:"X8 Plus is the signature gloss product — over 90 GU gloss, anti-yellowing, engineered for the Middle East." },
     { q:"A customer asks over the phone for a firm PPF price before their appointment. What is the correct response?", opts:["Quote the Elite price for their vehicle class immediately to secure the sale","Explain that best price is discussed in person only, and hand-off to the PPF team happens at the appointment for a full consultation","Offer them a 10% discount to close over the phone","Refer them to the website"], correct:1, exp:"Best price is discussed in person only. Never quote a final price over the phone. The customer is handed to the PPF team at the appointment for consultation, colour/finish selection, and formal quote." },
@@ -381,9 +381,9 @@ const MODULES = [
     "Pricing — Large SUV: Essential AED 16,950 / Elite AED 20,950 / Signature AED 26,950",
     "Pricing — Hypercar/Exotic: Essential AED 19,000 / Elite AED 23,950 / Signature AED 28,950",
     "Shogun PPF: engineered for the Middle East climate (heat, UV, sand, debris). TPU film from Nagoya, Japan.",
-    "WARRANTY differs by finish — quote the correct one: GLOSS films (X8 Plus, Track, Obsidian Black, X7) = 10 years. SATIN and MATTE films (Shogun Matte, Kuro Matte, Satin) = 8 years. All warranties cover fading, bubbling, discolouration, cracking, peeling, and adhesion failure.",
+    "WARRANTY differs by finish — quote the correct one: GLOSS films (X8 Plus, Track, Obsidian Black, X7) = 10 years. SATIN and MATTE films (Shogun Matte, Kuro Matte, Satin) = 7 years. All warranties cover fading, bubbling, discolouration, cracking, peeling, and adhesion failure.",
     "Gloss films (10-year warranty): X8 Plus (SIGNATURE PRODUCT, >90 GU, anti-yellowing), Track (9.7mil, racing), Obsidian Black (stylish black gloss), X7 (quality + affordability)",
-    "Matte / satin films (8-year warranty): Shogun Matte (<20 GU), Kuro Matte (stealth black), Satin (20–30 GU smooth finish)",
+    "Matte / satin films (7-year warranty): Shogun Matte (<20 GU), Kuro Matte (stealth black), Satin (20–30 GU smooth finish)",
     "Specialist films: Panorama (sunroof, 98% UV rejection), WPF-7 (windshield, shatter-resistant, self-healing)",
     "Key upsell script: 'While you're here, I'd love to show you our RMA PPF Signature package — this is our top-tier protection with over AED 10,000 in extra value. Most of our customers add protection to keep the car in showroom condition.' Best price discussed in person only."] },
   { id:"m6", day:"Days 6–10", title:"Shadowing, Role Play & Live Calls", phase:3, defaultUnlocked:false, items:["Day 6: 1-1 with Department Manager to review progress against training plan. Full day shadowing Department Manager workflows — CRM management, team communication, escalation handling","Day 7 morning: sit with Accounts team — understand their role in the sales lifecycle, deal processing, and payment reconciliation","Day 7 afternoon: shadow a Sales Rep selected by the Department Manager — observe live lead handling, call structure, and CRM updates in real time","Day 8 morning: sit with Marketing team — understand lead generation, brand standards, listing process, platform management, and the 'Just Arrived' update process","Day 8 afternoon: shadow a Sales Rep selected by the Department Manager — focus on objection handling and appointment setting technique","Day 9: structured role play sessions coordinated by Department Managers — practise full 8-step setter framework, stall objections, price objections, decision maker objections, BAMFAM sequence, and appointment close","Day 10: supervised live calling under Department Team Leaders — real leads, real conversations, manager monitoring","Day 10 final test: 10 marketing questions + 10 purchasing questions — must pass to receive Shop Floor Ready sign-off","Shop Floor Ready sign-off: Department Manager formally signs off that you have demonstrated CRM proficiency, professional communication standards, and full knowledge of the setter framework","Completion requirements: 30 questions passed on Day 5 + 20 questions passed on Day 10 + supervised live call standard + Department Manager sign-off"] },
@@ -2236,7 +2236,7 @@ If they reply with an objection:
                   </div>
                 ))}
               </Card>
-              <Alert variant="warn">Warranty depends on the FILM FINISH chosen, not the package tier. Gloss films = 10 years. Satin / Matte films = 8 years. Always confirm the customer's film choice and quote the correct warranty.</Alert>
+              <Alert variant="warn">Warranty depends on the FILM FINISH chosen, not the package tier. Gloss films = 10 years. Satin / Matte films = 7 years. Always confirm the customer's film choice and quote the correct warranty.</Alert>
               <SectionLabel>Pricing by vehicle type</SectionLabel>
               <Card style={{ padding:"0.75rem 1.25rem", marginBottom:10 }}>
                 <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1fr", gap:8, marginBottom:6 }}>
@@ -2258,9 +2258,9 @@ If they reply with an objection:
               </Card>
               <SectionLabel>Shogun PPF product range</SectionLabel>
               <StepBlock title="Gloss Films — 10-year warranty" desc="X8 Plus — SIGNATURE PRODUCT. Engineered for Middle East climate. Over 90 GU gloss, anti-yellowing. Track — racing-grade, 9.7mil thick. Obsidian Black — stylish black gloss. X7 — quality and affordability." />
-              <StepBlock title="Matte / Satin Films — 8-year warranty" accent={T.purple} desc="Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU." />
+              <StepBlock title="Matte / Satin Films — 7-year warranty" accent={T.purple} desc="Shogun Matte — pure matte, under 20 GU. Kuro Matte — stealth black, under 20 GU. Satin — smooth finish, 20 to 30 GU." />
               <StepBlock title="Specialist Films" accent={T.blue} desc="Panorama — glass sunroof protection, 98% UV rejection, 95% IR rejection, self-healing. WPF-7 — windshield protection, shatter-resistant and self-healing." />
-              <Alert variant="info">Shogun warranties cover fading, bubbling, discolouration, cracking, peeling, and adhesion failure. All films tested for chemical and stain resistance. TPU film manufactured in Nagoya, Japan. Gloss range = 10 years, satin / matte range = 8 years.</Alert>
+              <Alert variant="info">Shogun warranties cover fading, bubbling, discolouration, cracking, peeling, and adhesion failure. All films tested for chemical and stain resistance. TPU film manufactured in Nagoya, Japan. Gloss range = 10 years, satin / matte range = 7 years.</Alert>
               <SectionLabel>Upsell process</SectionLabel>
               <StepBlock n="Step 1" title="Introduce PPF during the appointment" desc="After building rapport and before or during the test drive, introduce the RMA PPF concept: most buyers add protection to keep the car in showroom condition long-term." />
               <StepBlock n="Step 2" title="Present the Signature package first" desc="Anchor the customer at the top tier. Signature offers over AED 10,000 in extra value — Windscreen Protection Film, Panoramic Sunroof Protection, 12 Safe Washes, and 5 Panel Replacements in 12 months on top of everything in Elite. Describe the full package with confidence." />
